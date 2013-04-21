@@ -4,7 +4,7 @@
 		\edef\qrr@tikz@norm{\pgfmathresult\ifpgfmathunitsdeclared pt\fi}%
 		\let\ifqrr@tikz@normcs@unitsdeclared\ifpgfmathunitsdeclared},
 	Norm=1,
-	norm/.style={to path={-- ++(norm cs: \tikztotarget\space from \tikztostart)}}
+	norm/.style={to path={-- ++(norm cs: \tikztotarget\space from \tikztostart) \tikztonodes}}
 }
 \newif\ifqrr@tikz@normcs@unitsdeclared
 \newdimen\qrr@pgf@normcs@from@x\newdimen\qrr@pgf@normcs@from@y
