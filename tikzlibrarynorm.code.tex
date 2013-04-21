@@ -1,0 +1,58 @@
+\tikzset{norm/.store in=\qrr@tikz@norm,norm=1}
+\newif\ifqrr@tikz@normcs@easy
+\newdimen\qrr@pgf@from@x
+\newdimen\qrr@pgf@from@y
+\tikzdeclarecoordinatesystem{norm}{%
+  \pgfutil@in@{ from }{#1}%
+	\ifpgfutil@in@
+		\expandafter\pgfutil@firstoftwo
+	\else
+		\expandafter\pgfutil@secondoftwo
+	\fi
+	{\qrr@tikz@parse@from#1\@qrr@tikz@parse@from}
+	{\qrr@tikz@parse@from#1 from +0pt,+0pt\@qrr@tikz@parse@from}%
+	\expandafter\qrr@tikz@parse@@to\expandafter{\qrr@tikz@parse@to}%
+}
+\def\qrr@tikz@parse@@to#1{%
+	\ifdim\qrr@pgf@from@x=\z@\ifdim\qrr@pgf@from@y=\z@
+	\else
+		\pgfutil@in@,{#1}% cartesian coordinate?
+		\ifpgfutil@in@
+			\qrr@tikz@normcs@easytrue
+		\else
+			\pgfutil@in@:{#1}% relative coordinate?
+			\ifpgfutil@in@
+				\qrr@tikz@normcs@easytrue
+			\fi
+		\fi
+	\fi\fi
+	\ifqrr@tikz@normcs@easy
+		\begingroup
+			\pgf@xx\@ne
+			\pgf@yy\@ne
+			\pgf@xy\z@
+			\pgf@yx\z@
+			\tikz@scan@one@point\pgfutil@firstofone(#1)\relax
+			\pgfmathatantwo{+\pgf@x}{+\pgf@y}%
+			\pgfmathsmuggle\pgfmathresult
+		\endgroup
+	\else % neither cartesian nor relative coordinate => something worse!
+		\tikz@scan@one@point\pgfutil@firstofone(#1)\relax
+		\pgf@xa\pgf@x\pgf@ya\pgf@y
+		\advance\pgf@xa-\qrr@pgf@from@x
+		\advance\pgf@ya-\qrr@pgf@from@y
+		\tikz@scan@one@point\pgfpointnormalised(+\pgf@xa,+\pgf@ya)\relax
+		\pgfmathsetlength\pgf@x{\pgf@yy*\pgf@xa-\pgf@yx*\pgf@ya}
+		\pgfmathsetlength\pgf@y{-\pgf@xy*\pgf@xa+\pgf@xx*\pgf@ya}
+		\pgfmathatantwo{+\pgf@x}{+\pgf@y}
+	\fi
+	\let\pgf@tempa\pgfmathresult
+	\pgfmathifthenelse{\pgf@tempa<0}{\pgf@tempa+180}{\pgf@tempa}%
+	\tikz@scan@one@point\pgfutil@firstofone(\pgf@tempa:\qrr@tikz@norm)\relax
+}
+\def\qrr@tikz@parse@from#1 from #2\@qrr@tikz@parse@from{%
+	\def\qrr@tikz@parse@to{#1}%
+	\tikz@scan@one@point\pgfutil@firstofone(#2)\relax
+	\qrr@pgf@from@x\pgf@x
+	\qrr@pgf@from@y\pgf@y
+}
