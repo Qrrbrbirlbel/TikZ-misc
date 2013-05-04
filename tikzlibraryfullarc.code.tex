@@ -1,0 +1,11 @@
+% The fullarc library allows to specify the angle that makes one arc.
+% This is usually 360 which is the default.
+
+\RequirePackage{etoolbox}
+\tikzset{
+  cs/full arc/.store in=\tikz@cs@full@arc,
+	cs/full arc=360,
+	full arc/.style={cs/full arc={#1}},
+}
+\patchcmd\pgfpointpolar{#1}{#1*(360/\tikz@cs@full@arc)}{}{}
+\patchcmd\pgfpointpolarxy{#1}{#1*(360/\tikz@cs@full@arc)}{}{}
