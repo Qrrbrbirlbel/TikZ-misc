@@ -1,0 +1,70 @@
+% This is the TikZ library positioning-plus
+% Load with \usetikzlibrary{positioning-plus}
+%
+% This small library extends TikZ options like 'above', 'left' or 'below right'
+% so that they can be used with an optional prefixed factor seperated by ':' (colon)
+%
+% The option 'left=.5:of somenode' will place
+% a new node .5cm (default 'node distance' is '1cm and 1cm') left to (somenode).
+% The option 'above right=.2 and .7:of someothernode' will place
+% a new node .2cm above and .7cm right of (someothernode).
+%
+% Additional the options 'xshift*' and 'yshift*' add an additional shift
+% as a factor of 'node distance'
+% Inspired by http://tex.stackexchange.com/a/117610/16595
+
+\usetikzlibrary{positioning}
+\def\tikz@lib@place@handle@#1#2#3#4#5#6{%
+  \pgfutil@in@{:}{#1}%
+  \ifpgfutil@in@
+    \tikz@lib@place@handle@qrr@#1\tikz@stop
+    \pgfmathsetmacro\pgf@tempa{\pgf@tempa*(#4)}%
+    \pgfmathsetmacro\pgf@tempb{\pgf@tempb*(#3)}%
+    \pgfmathparse{\pgf@tempa*(#6)}%
+    \edef\pgf@temp{\noexpand\tikz@lib@place@handle@{\pgf@temp}{#2}{\pgf@tempb}{\pgf@tempa}{#5}{\pgfmathresult}}%
+    \pgf@temp
+  \else
+    \def\tikz@anchor{#2}%
+    \let\tikz@do@auto@anchor=\relax%
+    \edef\tikz@temp{#1}%
+    \def\tikz@lib@place@single@factor{#6}%
+    \expandafter\tikz@lib@place@handle@@\expandafter{\tikz@temp}{#3}{#4}{#5}%
+  \fi
+}
+\def\tikz@lib@place@handle@qrr@#1:#2\tikz@stop{%
+  \pgfutil@in@{and}{#1}%
+  \ifpgfutil@in@
+    \tikz@lib@place@handle@qrr@@#1\tikz@stop
+  \else
+    \tikz@lib@place@handle@qrr@@#1and#1\tikz@stop
+  \fi
+  \def\pgf@temp{#2}%
+}
+\def\tikz@lib@place@handle@qrr@@#1and#2\tikz@stop{%
+  \def\pgf@tempa{#1}%
+  \def\pgf@tempb{#2}%
+}
+\def\qrr@xyshift@starred#1#2#3{
+  \edef\pgf@temp{\noexpand\pgfutil@in@{and}{\tikz@node@distance}}%
+  \pgf@temp
+  \ifpgfutil@in@
+    \expandafter\tikz@lib@place@handle@qrr@@\tikz@node@distance\tikz@stop
+  \else
+    \let#3\tikz@node@distance
+  \fi
+  \pgfmathparse{#3}%
+  \ifpgfmathunitsdeclared
+    \pgf@xa=\pgfmathresult pt%
+  \else
+    \let\tikz@lib@temp=\pgfmathresult
+    \pgf@process{\pgfpointxy{\tikz@lib@temp}{0}}%
+    \pgf@xa=\pgf@x
+  \fi
+  \pgfkeys{/tikz/#2shift=(#1)*\pgf@xa}
+}
+\tikzset{
+  xshift*/.code=\qrr@xyshift@starred{#1}x\pgf@tempb,
+  xshift*/.default=1,
+  yshift*/.code=\qrr@xyshift@starred{#1}y\pgf@tempa,
+  yshift*/.default=1
+}
