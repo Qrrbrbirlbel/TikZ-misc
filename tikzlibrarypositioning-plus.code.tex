@@ -57,8 +57,13 @@
     \pgf@xa=\pgfmathresult pt%
   \else
     \let\tikz@lib@temp=\pgfmathresult
-    \pgf@process{\pgfpointxy{\tikz@lib@temp}{0}}%
-    \pgf@xa=\pgf@x
+    \ifx#2x
+      \pgf@process{\pgfpointxy{\tikz@lib@temp}{0}}%
+      \pgf@xa=\pgf@x
+    \else
+      \pgf@process{\pgfpointxy{0}{\tikz@lib@temp}}%
+      \pgf@xa=\pgf@y
+    \fi
   \fi
   \pgfkeys{/tikz/#2shift=(#1)*\pgf@xa}
 }
