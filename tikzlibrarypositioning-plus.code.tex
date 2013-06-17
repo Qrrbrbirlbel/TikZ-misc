@@ -14,6 +14,16 @@
 % Inspired by http://tex.stackexchange.com/a/117610/16595
 
 \usetikzlibrary{positioning}
+\tikzset{north left/.code =\tikz@lib@place@handle@{#1}{north east}{-1}{0}{north west}{1}}
+\tikzset{north right/.code=\tikz@lib@place@handle@{#1}{north west}{1}{0}{north east}{1}}
+\tikzset{south left/.code =\tikz@lib@place@handle@{#1}{south east}{-1}{0}{south west}{1}}
+\tikzset{south right/.code=\tikz@lib@place@handle@{#1}{south west}{1}{0}{south east}{1}}
+
+\tikzset{west above/.code =\tikz@lib@place@handle@{#1}{south west}{0}{1}{north west}{1}}
+\tikzset{west below/.code=\tikz@lib@place@handle@{#1}{north west}{0}{-1}{south west}{1}}
+\tikzset{east above/.code =\tikz@lib@place@handle@{#1}{south east}{0}{1}{north east}{1}}
+\tikzset{east below/.code=\tikz@lib@place@handle@{#1}{north east}{0}{-1}{south east}{1}}
+
 \def\tikz@lib@place@handle@#1#2#3#4#5#6{%
   \pgfutil@in@{:}{#1}%
   \ifpgfutil@in@
