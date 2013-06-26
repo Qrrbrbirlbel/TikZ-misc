@@ -109,3 +109,6 @@
 	\def\pgf@tempa{#1}%
 	\pgfkeysalso{/tikz/Norm={#2}}%
 }
+
+% a fix for the 2.10 version of PGF/TikZ
+\expandafter\let\expandafter\pgfmathatantwo\csname pgfmathatan2\endcsname
