@@ -1,0 +1,202 @@
+\pgfset{
+  rectangle with rounded corners north west radius/.initial=6pt,
+  rectangle with rounded corners north east radius/.initial=6pt,
+  rectangle with rounded corners south west radius/.initial=6pt,
+  rectangle with rounded corners south east radius/.initial=6pt
+}
+\pgfdeclareshape{rectangle with rounded corners}{%
+  \savedanchor\centerpoint{
+    \pgf@x.5\wd\pgfnodeparttextbox
+    \pgf@y.5\ht\pgfnodeparttextbox
+    \advance\pgf@y-.5\dp\pgfnodeparttextbox
+    }
+  \savedanchor\belownorthwest{%
+    \pgfmathsetlength\pgf@xa{\pgfkeysvalueof{/pgf/inner xsep}}%
+    \pgfmathsetlength\pgf@ya{\pgfkeysvalueof{/pgf/inner ysep}}%
+    \pgfmathsetlength\pgf@xb{\pgfkeysvalueof{/pgf/outer xsep}}%
+    \pgfmathsetlength\pgf@yb{\pgfkeysvalueof{/pgf/outer ysep}}%
+    \pgfmathsetlength\pgf@xc{\pgfkeysvalueof{/pgf/minimum width}}%
+    \pgfmathsetlength\pgf@yc{\pgfkeysvalueof{/pgf/minimum height}}%
+    \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners north west radius}}%
+    \pgfutil@tempdimb\wd\pgfnodeparttextbox
+    \advance\pgfutil@tempdimb2\pgf@xa
+    \ifdim\pgfutil@tempdimb>\pgf@xc
+      \pgf@xc\pgfutil@tempdimb
+    \fi
+    \pgfutil@tempdimb\ht\pgfnodeparttextbox
+    \advance\pgfutil@tempdimb\dp\pgfnodeparttextbox
+    \advance\pgfutil@tempdimb2\pgf@ya
+    \ifdim\pgfutil@tempdimb>\pgf@yc
+      \pgf@yc\pgfutil@tempdimb
+    \fi
+    %
+    \pgf@xc.5\pgf@xc
+    \advance\pgf@xc-.5\wd\pgfnodeparttextbox
+    \pgf@xc-\pgf@xc
+    \advance\pgf@xc-\pgf@xb
+    %
+    \pgf@yc.5\pgf@yc
+    \advance\pgf@yc.5\ht\pgfnodeparttextbox
+    \advance\pgf@yc-.5\dp\pgfnodeparttextbox % Minus or Plus?
+    \advance\pgf@yc-\pgfutil@tempdima
+    \advance\pgf@yc\pgf@yb
+    %
+    \pgf@x\pgf@xc
+    \pgf@y\pgf@yc
+  }
+  \savedanchor\leftnortheast{%
+    \pgfmathsetlength\pgf@xa{\pgfkeysvalueof{/pgf/inner xsep}}%
+    \pgfmathsetlength\pgf@ya{\pgfkeysvalueof{/pgf/inner ysep}}%
+    \pgfmathsetlength\pgf@xb{\pgfkeysvalueof{/pgf/outer xsep}}%
+    \pgfmathsetlength\pgf@yb{\pgfkeysvalueof{/pgf/outer ysep}}%
+    \pgfmathsetlength\pgf@xc{\pgfkeysvalueof{/pgf/minimum width}}%
+    \pgfmathsetlength\pgf@yc{\pgfkeysvalueof{/pgf/minimum height}}%
+    \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners north east radius}}%
+    \pgfutil@tempdimb\wd\pgfnodeparttextbox
+    \advance\pgfutil@tempdimb2\pgf@xa
+    \ifdim\pgfutil@tempdimb>\pgf@xc
+      \pgf@xc\pgfutil@tempdimb
+    \fi
+    \pgfutil@tempdimb\ht\pgfnodeparttextbox
+    \advance\pgfutil@tempdimb\dp\pgfnodeparttextbox
+    \advance\pgfutil@tempdimb2\pgf@ya
+    \ifdim\pgfutil@tempdimb>\pgf@yc
+      \pgf@yc\pgfutil@tempdimb
+    \fi
+    %
+    \pgf@xc.5\pgf@xc
+    \advance\pgf@xc.5\wd\pgfnodeparttextbox
+    \advance\pgf@xc-\pgfutil@tempdima
+    \advance\pgf@xc\pgf@xb
+    \pgf@x\pgf@xc
+    %
+    \pgf@yc.5\pgf@yc
+    \advance\pgf@yc.5\ht\pgfnodeparttextbox
+    \advance\pgf@yc-.5\dp\pgfnodeparttextbox % Minus or Plus?
+    \advance\pgf@yc\pgf@yb
+    %
+    \pgf@x\pgf@xc
+    \pgf@y\pgf@yc
+  }
+  \savedanchor\abovesoutheast{%
+    \pgfmathsetlength\pgf@xa{\pgfkeysvalueof{/pgf/inner xsep}}%
+    \pgfmathsetlength\pgf@ya{\pgfkeysvalueof{/pgf/inner ysep}}%
+    \pgfmathsetlength\pgf@xb{\pgfkeysvalueof{/pgf/outer xsep}}%
+    \pgfmathsetlength\pgf@yb{\pgfkeysvalueof{/pgf/outer ysep}}%
+    \pgfmathsetlength\pgf@xc{\pgfkeysvalueof{/pgf/minimum width}}%
+    \pgfmathsetlength\pgf@yc{\pgfkeysvalueof{/pgf/minimum height}}%
+    \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners south east radius}}%
+    \pgfutil@tempdimb\wd\pgfnodeparttextbox
+    \advance\pgfutil@tempdimb2\pgf@xa
+    \ifdim\pgfutil@tempdimb>\pgf@xc
+      \pgf@xc\pgfutil@tempdimb
+    \fi
+    \pgfutil@tempdimb\ht\pgfnodeparttextbox
+    \advance\pgfutil@tempdimb\dp\pgfnodeparttextbox
+    \advance\pgfutil@tempdimb2\pgf@ya
+    \ifdim\pgfutil@tempdimb>\pgf@yc
+      \pgf@yc\pgfutil@tempdimb
+    \fi
+    %
+    \pgf@xc.5\pgf@xc
+    \advance\pgf@xc.5\wd\pgfnodeparttextbox
+    \advance\pgf@xc\pgf@xb
+    \pgf@x\pgf@xc
+    %
+    \pgf@yc-.5\pgf@yc
+    \advance\pgf@yc.5\ht\pgfnodeparttextbox
+    \advance\pgf@yc-.5\dp\pgfnodeparttextbox % Minus or Plus?
+    \advance\pgf@yc\pgfutil@tempdima
+    \advance\pgf@yc\pgf@yb
+    %
+    \pgf@x\pgf@xc
+    \pgf@y\pgf@yc
+  }
+  \savedanchor\rightsouthwest{%
+    \pgfmathsetlength\pgf@xa{\pgfkeysvalueof{/pgf/inner xsep}}%
+    \pgfmathsetlength\pgf@ya{\pgfkeysvalueof{/pgf/inner ysep}}%
+    \pgfmathsetlength\pgf@xb{\pgfkeysvalueof{/pgf/outer xsep}}%
+    \pgfmathsetlength\pgf@yb{\pgfkeysvalueof{/pgf/outer ysep}}%
+    \pgfmathsetlength\pgf@xc{\pgfkeysvalueof{/pgf/minimum width}}%
+    \pgfmathsetlength\pgf@yc{\pgfkeysvalueof{/pgf/minimum height}}%
+    \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners south west radius}}%
+    \pgfutil@tempdimb\wd\pgfnodeparttextbox
+    \advance\pgfutil@tempdimb2\pgf@xa
+    \ifdim\pgfutil@tempdimb>\pgf@xc
+      \pgf@xc\pgfutil@tempdimb
+    \fi
+    \pgfutil@tempdimb\ht\pgfnodeparttextbox
+    \advance\pgfutil@tempdimb\dp\pgfnodeparttextbox
+    \advance\pgfutil@tempdimb2\pgf@ya
+    \ifdim\pgfutil@tempdimb>\pgf@yc
+      \pgf@yc\pgfutil@tempdimb
+    \fi
+    %
+    \pgf@xc-.5\pgf@xc
+    \advance\pgf@xc.5\wd\pgfnodeparttextbox
+    \advance\pgf@xc-\pgf@xb
+    \advance\pgf@xc\pgfutil@tempdima
+    \pgf@x\pgf@xc
+    %
+    \pgf@yc-.5\pgf@yc
+    \advance\pgf@yc.5\ht\pgfnodeparttextbox
+    \advance\pgf@yc-.5\dp\pgfnodeparttextbox % Minus or Plus?
+    \advance\pgf@yc-\pgf@yb
+    %
+    \pgf@x\pgf@xc
+    \pgf@y\pgf@yc
+  }
+  \anchor{center}{\centerpoint}
+  \anchor{below north west}{\belownorthwest}
+  \anchor{left north east}{\leftnortheast}
+  \anchor{above south east}{\abovesoutheast}
+  \anchor{right south west}{\rightsouthwest}
+  \anchor{right north west}{%
+    \belownorthwest\pgf@xa\pgf@x\pgf@ya\pgf@y
+    \leftnortheast\pgf@xb\pgf@x
+    \advance\pgf@xa\pgf@y
+    \advance\pgf@xa-\pgf@ya
+    \pgf@x\pgf@xa
+  }
+  \anchor{below north east}{%
+    \leftnortheast\pgf@xa\pgf@x\pgf@ya\pgf@y
+    \abovesoutheast\pgf@yb\pgf@y
+    \advance\pgf@ya-\pgf@x
+    \advance\pgf@ya\pgf@xa
+    \pgf@y\pgf@ya
+  }
+  \anchor{left south east}{%
+    \abovesoutheast\pgf@xa\pgf@x\pgf@ya\pgf@y
+    \rightsouthwest\pgf@xb\pgf@x
+    \advance\pgf@xa\pgf@y
+    \advance\pgf@xa-\pgf@ya
+    \pgf@x\pgf@xa
+  }
+  \anchor{above south west}{%
+    \rightsouthwest\pgf@xa\pgf@x\pgf@ya\pgf@y
+    \belownorthwest\pgf@yb\pgf@y
+    \advance\pgf@ya-\pgf@x
+    \advance\pgf@ya\pgf@xa
+    \pgf@y\pgf@ya
+  }
+  \backgroundpath{%
+    \pgfmathsetlength\pgf@xb{\pgfkeysvalueof{/pgf/outer xsep}}%
+    \pgfmathsetlength\pgf@yb{\pgfkeysvalueof{/pgf/outer ysep}}%
+    \pgfpathmoveto{\pgfpointadd{\belownorthwest}{\pgfqpoint{\pgf@xb}{+0pt}}}%
+    \pgfpathlineto{\pgfpointadd{\pgf@sh@reanchor{rectangle with rounded corners}{above south west}}{\pgfqpoint{\pgf@xb}{+0pt}}}%
+    \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners south west radius}}%
+    \pgfpatharcto{\pgfutil@tempdima}{\pgfutil@tempdima}{0}{0}{1}{\pgfpointadd{\rightsouthwest}{\pgfqpoint{+0pt}{\pgf@yb}}}%
+    \pgfpathlineto{\pgfpointadd{\pgf@sh@reanchor{rectangle with rounded corners}{left south east}}{\pgfqpoint{+0pt}{\pgf@yb}}}%
+    \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners south east radius}}%
+    \pgfpatharcto{\pgfutil@tempdima}{\pgfutil@tempdima}{0}{0}{1}{\pgfpointadd{\abovesoutheast}{\pgfqpoint{-\pgf@xb}{+0pt}}}%
+    \pgfpathlineto{\pgfpointadd{\pgf@sh@reanchor{rectangle with rounded corners}{below north east}}{\pgfqpoint{-\pgf@xb}{+0pt}}}%
+    \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners north east radius}}%
+    \pgfpatharcto{\pgfutil@tempdima}{\pgfutil@tempdima}{0}{0}{1}{\pgfpointadd{\leftnortheast}{\pgfqpoint{+0pt}{-\pgf@yb}}}%
+    \pgfpathlineto{\pgfpointadd{\pgf@sh@reanchor{rectangle with rounded corners}{right north west}}{\pgfqpoint{+0pt}{-\pgf@yb}}}%
+    \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners north west radius}}%
+    \pgfpatharcto{\pgfutil@tempdima}{\pgfutil@tempdima}{0}{0}{1}{\pgfpointadd{\belownorthwest}{\pgfqpoint{\pgf@xb}{+0pt}}}%
+    \pgfpathclose
+  }
+}
+
+\endinput
