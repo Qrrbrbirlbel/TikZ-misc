@@ -18,25 +18,25 @@
 \pgfdeclaregenericanchor{corner south east}{%
   \pgf@sh@reanchor{#1}{south}%
   \pgf@ya\pgf@y
-  \pgf@sh@reanchor{#1}{east}%
+  \pgf@process{\pgf@sh@reanchor{#1}{east}}%
   \pgf@y\pgf@ya
 }
 \pgfdeclaregenericanchor{corner north east}{%
   \pgf@sh@reanchor{#1}{north}%
   \pgf@ya\pgf@y
-  \pgf@sh@reanchor{#1}{east}%
+  \pgf@process{\pgf@sh@reanchor{#1}{east}}%
   \pgf@y\pgf@ya
 }
 \pgfdeclaregenericanchor{corner south west}{%
   \pgf@sh@reanchor{#1}{south}%
   \pgf@ya\pgf@y
-  \pgf@sh@reanchor{#1}{west}%
+  \pgf@process{\pgf@sh@reanchor{#1}{west}}%
   \pgf@y\pgf@ya
 }
 \pgfdeclaregenericanchor{corner north west}{%
   \pgf@sh@reanchor{#1}{north}%
   \pgf@ya\pgf@y
-  \pgf@sh@reanchor{#1}{west}%
+  \pgf@process{\pgf@sh@reanchor{#1}{west}}%
   \pgf@y\pgf@ya
 }
 
