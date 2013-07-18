@@ -13,7 +13,7 @@
 % as a factor of 'node distance'
 % Inspired by http://tex.stackexchange.com/a/117610/16595
 
-\usetikzlibrary{positioning}
+\usetikzlibrary{positioning,fit}
 
 \pgfdeclaregenericanchor{corner south east}{%
   \pgf@sh@reanchor{#1}{south}%
@@ -124,3 +124,84 @@
   yshift*/.code=\qrr@xyshift@starred{#1}y\pgf@tempa,
   yshift*/.default=1
 }
+
+\def\pgfutil@firstofmany#1#2\pgf@stop{#1}
+\def\pgfutil@secondofmany#1#2\pgf@stop{#2}
+\def\tikz@lib@place@of@#1#2#3{%
+  \def\pgf@tempa{fit bounding box}%
+  \edef\pgf@temp{\expandafter\pgfutil@firstofmany#2\pgf@stop}
+  \if\pgf@temp(%
+    \tikz@lib@place@fit@scan{#2}{0}%
+  \else\if\pgf@temp|
+      \expandafter\tikz@lib@place@fit@scan\expandafter{\pgfutil@secondofmany#2\pgf@stop}{1}%
+    \else\ifx\pgf@temp\tikz@activebar
+        \expandafter\tikz@lib@place@fit@scan\expandafter{\pgfutil@secondofmany#2\pgf@stop}{1}%
+      \else\if\pgf@temp-
+          \expandafter\tikz@lib@place@fit@scan\expandafter{\pgfutil@secondofmany#2\pgf@stop}{2}%
+        \else\if\pgf@temp+
+            \expandafter\tikz@lib@place@fit@scan\expandafter{\pgfutil@secondofmany#2\pgf@stop}{3}%
+          \else
+            \def\pgf@tempa{#2}%
+          \fi
+        \fi
+      \fi
+    \fi
+  \fi
+  \expandafter\tikz@scan@one@point\expandafter\tikz@lib@place@remember\expandafter(\pgf@tempa)%
+  \iftikz@shapeborder%
+    % Ok, this is relative to a border.
+    \iftikz@lib@ignore@size%
+      \edef\tikz@node@at{\noexpand\pgfpointanchor{\tikz@shapeborder@name}{center}}%
+      \def\tikz@anchor{center}%
+    \else%
+      \edef\tikz@node@at{\noexpand\pgfpointanchor{\tikz@shapeborder@name}{#3}}%
+    \fi%
+  \fi%
+  \edef\tikz@lib@place@nums{#1}%
+}
+\def\tikz@lib@place@fit@scan#1#2{
+  \pgf@xb=-16000pt\relax%
+  \pgf@xa=16000pt\relax%
+  \pgf@yb=-16000pt\relax%
+  \pgf@ya=16000pt\relax%
+  \if\pgfutil@firstofmany#1\pgf@stop(%
+    \tikz@lib@fit@scan#1\pgf@stop%
+  \else
+    \tikz@lib@fit@scan(#1)\pgf@stop
+  \fi
+  \ifdim\pgf@xa>\pgf@xa
+    % shouldn't happen
+  \else
+     \expandafter\def\csname pgf@sh@ns@fit bounding box\endcsname{rectangle}%
+     \expandafter\edef\csname pgf@sh@np@fit bounding box\endcsname{%
+       \def\noexpand\southwest{\noexpand\pgfqpoint{\the\pgf@xa}{\the\pgf@ya}}%
+       \def\noexpand\northeast{\noexpand\pgfqpoint{\the\pgf@xb}{\the\pgf@yb}}%
+     }%
+     \expandafter\def\csname pgf@sh@nt@fit bounding box\endcsname{{1}{0}{0}{1}{0pt}{0pt}}%
+     \expandafter\def\csname pgf@sh@pi@fit bounding box\endcsname{\pgfpictureid}%
+     \ifcase#2\relax
+     \or % 1 = vertical
+       \pgf@y=\pgf@yb%
+       \advance\pgf@y by-\pgf@ya%
+       \edef\pgf@marshal{\noexpand\tikzset{minimum height={\the\pgf@y-2*(\noexpand\pgfkeysvalueof{/pgf/outer ysep})}}}%
+       \pgf@marshal
+     \or % 2 = horizontal
+       \pgf@x=\pgf@xb%
+       \advance\pgf@x by-\pgf@xa%
+       \edef\pgf@marshal{\noexpand\tikzset{minimum width={\the\pgf@x-2*(\noexpand\pgfkeysvalueof{/pgf/outer xsep})}}}%
+       \pgf@marshal
+     \or % 3 = both directions
+       \pgf@y=\pgf@yb%
+       \advance\pgf@y by-\pgf@ya%
+       \pgf@x=\pgf@xb%
+       \advance\pgf@x by-\pgf@xa%
+       \edef\pgf@marshal{\noexpand\tikzset{minimum height={\the\pgf@y-2*(\noexpand\pgfkeysvalueof{/pgf/outer ysep})},minimum width={\the\pgf@x-2*(\noexpand\pgfkeysvalueof{/pgf/outer xsep})}}}%
+       \pgf@marshal
+     \fi
+  \fi
+}
+\tikzset{
+  fit bounding box/.code={\tikz@lib@place@fit@scan{#1}{0}},
+  span vertical/.code={\tikz@lib@place@fit@scan{#1}{1}},
+  span horizontal/.code={\tikz@lib@place@fit@scan{#1}{2}},
+  span/.code={\tikz@lib@place@fit@scan{#1}{3}}}
