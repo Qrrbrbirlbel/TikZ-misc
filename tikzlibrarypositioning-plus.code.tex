@@ -13,7 +13,8 @@
 % as a factor of 'node distance'
 % Inspired by http://tex.stackexchange.com/a/117610/16595
 
-\usetikzlibrary{positioning,fit}
+\usetikzlibrary{positioning}
+\usetikzlibrary{fit}
 
 \pgfdeclaregenericanchor{corner south east}{%
   \pgf@sh@reanchor{#1}{south}%
@@ -69,11 +70,12 @@
   \pgfutil@in@{:}{#1}%
   \ifpgfutil@in@
     \tikz@lib@place@handle@qrr@#1\tikz@stop
-    \pgfmathsetmacro\pgf@tempa{\pgf@tempa*(#4)}%
-    \pgfmathsetmacro\pgf@tempb{\pgf@tempb*(#3)}%
-    \pgfmathparse{\pgf@tempa*(#6)}%
-    \edef\pgf@temp{\noexpand\tikz@lib@place@handle@{\pgf@temp}{#2}{\pgf@tempb}{\pgf@tempa}{#5}{\pgfmathresult}}%
-    \pgf@temp
+    \let\tikz@lib@temp\pgf@tempa
+    \pgfmathsetmacro\pgf@tempa{(\pgf@tempa)*#3}%
+    \pgfmathsetmacro\pgf@tempb{(\pgf@tempb)*#4}%
+    \pgfmathsetmacro\tikz@lib@temp{(\tikz@lib@temp)*#6}%
+    \edef\pgf@marshal{\noexpand\tikz@lib@place@handle@{\pgf@temp}{#2}{\pgf@tempa}{\pgf@tempb}{#5}{\tikz@lib@temp}}%
+    \pgf@marshal
   \else
     \def\tikz@anchor{#2}%
     \let\tikz@do@auto@anchor=\relax%
@@ -116,7 +118,7 @@
       \pgf@xa=\pgf@y
     \fi
   \fi
-  \pgfkeys{/tikz/#2shift=(#1)*\pgf@xa}
+  \pgfkeys{/tikz/#2shift/.expanded=(#1)*\the\pgf@xa}
 }
 \tikzset{
   xshift*/.code=\qrr@xyshift@starred{#1}x\pgf@tempb,
