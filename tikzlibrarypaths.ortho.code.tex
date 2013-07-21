@@ -8,20 +8,25 @@
 \patchcmd{\tikz@handle@more}{\tikz@decoration}{\tikz@d@char}{}{%                                    for du
 	\PackageError{qrr-tikz-hvvh}{Patching of \string\tikz@handle@more\space failed (II)}{}\endinput}
 
-\tikzset{
-  hvvh/@udlr/.style 2 args={% #1 = distance, #2 = lineto
-    /tikz/to path={
-      \pgfextra
-          \if\relax\detokenize{#1}\relax\else\expandafter\pgfmathsetlength\csname qrr@tikz@#2@distance\endcsname{#1}\fi
-      \endpgfextra
-       #2 (\tikztotarget) \tikztonodes}},%
-  hvvh/@hvvh/.style 2 args={% #1 = ratio, #2 = lineto
-    /tikz/to path={%
-      \pgfextra
-          \if\relax\detokenize{#1}\relax\else\pgfmathsetmacro\qrr@tikz@hvvh@ratio{#1}\fi
-      \endpgfextra
-       #2 (\tikztotarget) \tikztonodes}},%
-  |-|/.style={hvvh/@hvvh={#1}{|-|}},-|-/.style={hvvh/@hvvh={#1}{-|-}}%
+\tikzset{%
+  |-|/.style={%
+   /utils/exec=\pgfmathsetmacro\qrr@tikz@hvvh@ratio{#1},%
+   to path={|-| (\tikztotarget) \tikztonodes}},%
+  -|-/.style={%
+   /utils/exec=\pgfmathsetmacro\qrr@tikz@hvvh@ratio{#1},%
+   to path={-|- (\tikztotarget) \tikztonodes}},%
+  ud/.style={%
+    /utils/exec=\pgfmathsetlength\qrr@tikz@udlr@distance{#1},%
+    to path={ud (\tikztotarget) \tikztonodes}},%
+  du/.style={%
+    /utils/exec=\pgfmathsetlength\qrr@tikz@udlr@distance{#1},%
+    to path={du (\tikztotarget) \tikztonodes}},%
+  lr/.style={%
+    /utils/exec=\pgfmathsetlength\qrr@tikz@udlr@distance{#1},%
+    to path={lr (\tikztotarget) \tikztonodes}},%
+  rl/.style={%
+    /utils/exec=\pgfmathsetlength\qrr@tikz@udlr@distance{#1},%
+    to path={rl (\tikztotarget) \tikztonodes}}%
 }
 
 %BEGIN_FOLD Handler
