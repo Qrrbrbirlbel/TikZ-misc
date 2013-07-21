@@ -1,13 +1,14 @@
-\newlength\qrr@tikz@ud@distance\newlength\qrr@tikz@du@distance
-\newlength\qrr@tikz@lr@distance\newlength\qrr@tikz@rl@distance
+\newlength\qrr@tikz@udlr@distance
 \newlength\qrr@tikz@hvvh@distance
 \newif\ifqrr@tikz@hvvh@middle
 \newif\ifqrr@tikz@hvvh@fromcenter
 \tikzset{
-  hvvh/.style={hvvh/.cd,hvvh/.search also={/tikz/udlr},#1},
+  hvvh/.code={\pgfqkeys{/tikz/hvvh}{#1}},
+  hvvh/.search also=/tikz/udlr,
   hvvh/middle 0 to 1/.style={hvvh/spacing=0},
   hvvh/0 to 1/.style={hvvh/middle 0 to 1},
   hvvh/from center/.is if=qrr@tikz@hvvh@fromcenter,
+%  hvvh/from center/.code={\PackageError{tikz}{The 'from center' style is currently not supported.}},
   hvvh/spacing/.code=%
     \ifcase#1\relax
       \qrr@tikz@hvvh@middletrue
@@ -27,24 +28,22 @@
     \fi,
   hvvh/ratio/.code=\pgfmathsetmacro\qrr@tikz@hvvh@ratio{#1},
   hvvh/distance/.code=\pgfmathsetlength\qrr@tikz@hvvh@distance{#1}\let\qrr@tikz@hvvh@ratio\pgfutil@empty,
-  udlr/distance/.style={/tikz/ud distance=#1,/tikz/du distance=#1,/tikz/lr distance=#1,/tikz/rl distance=#1},
-  ud distance/.code=\pgfmathsetlength\qrr@tikz@ud@distance{#1},
-  du distance/.code=\pgfmathsetlength\qrr@tikz@du@distance{#1},
-  lr distance/.code=\pgfmathsetlength\qrr@tikz@lr@distance{#1},
-  rl distance/.code=\pgfmathsetlength\qrr@tikz@rl@distance{#1},
+  udlr/distance/.style={/tikz/udlr/ud distance={#1},/tikz/udlr/du distance={#1},/tikz/udlr/lr distance={#1},/tikz/udlr/rl distance={#1}},
+  udlr/ud distance/.initial=+.5cm,
+  udlr/du distance/.initial=+.5cm,
+  udlr/lr distance/.initial=+.5cm,
+  udlr/rl distance/.initial=+.5cm,
   ud/.style={hvvh/@udlr={#1}{ud}},du/.style={hvvh/@udlr={#1}{du}},rl/.style={hvvh/@udlr={#1}{rl}},lr/.style={hvvh/@udlr={#1}{lr}},
 }
-
 \tikzset{% default
-  hvvh/spacing=4,
-	hvvh/ratio=0.5,
-	udlr/distance=.5cm,
-	ud/.default=,
-	du/.default=,
-	rl/.default=,
-	lr/.default=,
-	|-|/.default=,
-	-|-/.default=
+	hvvh/ratio=.5,%
+	hvvh/spacing=4,%
+	ud/.default=\pgfkeysvalueof{/tikz/udlr/ud distance},%
+	du/.default=\pgfkeysvalueof{/tikz/udlr/du distance},%
+	rl/.default=\pgfkeysvalueof{/tikz/udlr/rl distance},%
+	lr/.default=\pgfkeysvalueof{/tikz/udlr/lr distance},%
+	|-|/.default=\qrr@tikz@hvvh@ratio,%
+	-|-/.default=\qrr@tikz@hvvh@ratio
 }
 
 
@@ -112,36 +111,65 @@
 \let\tikz@timer@udline\tikz@timer@vhvline
 %END_FOLD
 
+%\def\qtt@tikz@do@hvvh#1#2#3
+
+\let\tikz@hvvh@options\pgfutil@empty
+\def\tikz@collect@hvvh@options#1[#2]{\def\tikz@hvvh@options{#2}#1}
+%\def\tikz@hvvh@options@{%
+%  \begingroup
+%    \pgfqkeys{/tikz/hvvh}{/tikz/style/.expanded={\tikz@hvvh@options}}%
+%    \xdef\pgf@marshal{\noexpand\def\noexpand\qrr@tikz@hvvh@ratio{\qrr@tikz@hvvh@ratio}%
+%                   \noexpand\qrr@tikz@hvvh@distance\the\qrr@tikz@hvvh@distance}
+%  \endgroup
+%  \pgf@marshal
+%}
 %BEGIN_FOLD hvvh operator
 %% -|- operator
 \def\qrr@tikz@hvh@lineto{%
   \pgfutil@ifnextchar n
   {\tikz@collect@label@onpath\qrr@tikz@hvh@lineto}
   {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@hvh@lineto}%
-    {\tikz@scan@one@point{\qrr@tikz@@hvh@lineto}}}}
+    {\pgfutil@ifnextchar[{\tikz@collect@hvvh@options\qrr@tikz@hvh@lineto}
+      {\tikz@scan@one@point{\qrr@tikz@@hvh@lineto}}}}}
 
 \def\qrr@tikz@@hvh@lineto#1{%
   \edef\tikz@timer@start{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
   \pgf@xc=\tikz@lastx
+  \pgf@xb=\tikz@lastx % for "from center"
   \pgf@yc=\tikz@lasty
   \tikz@make@last@position{#1}%
   \tikz@flush@moveto@toward{\pgfqpoint{\tikz@lastx}{\pgf@yc}}\pgf@xc\pgf@yc
   \iftikz@shapeborder%
-    % ok, target is a shape. have to work now:
     {%
       \pgf@process{\pgfpointshapeborder{\tikz@shapeborder@name}{\pgfqpoint{\pgf@xc}{\tikz@lasty}}}%
+      \pgfutil@tempdimb=\tikz@lastx % for "from center"
       \tikz@make@last@position{\pgfqpoint{\pgf@x}{\pgf@y}}%
       \pgf@xa\pgf@xc
       \ifx\qrr@tikz@hvvh@ratio\pgfutil@empty
-        \ifdim\pgf@xa<\pgf@x
-          \advance\pgf@xa\qrr@tikz@hvvh@distance
+        \ifdim\qrr@tikz@hvvh@distance<\z@\relax
+          \pgf@xa\pgf@x
+          \ifdim\pgf@xa<\pgf@x
+            \advance\pgf@xa-\qrr@tikz@hvvh@distance
+          \else
+            \advance\pgf@xa\qrr@tikz@hvvh@distance
+          \fi
         \else
-          \advance\pgf@xa-\qrr@tikz@hvvh@distance
+          \ifdim\pgf@xa<\pgf@x
+            \advance\pgf@xa\qrr@tikz@hvvh@distance
+          \else
+            \advance\pgf@xa-\qrr@tikz@hvvh@distance
+          \fi
         \fi
       \else
-        \pgfutil@tempdima\pgf@x
-        \advance\pgfutil@tempdima-\pgf@xc
-        \pgf@xa\pgf@xc
+        \ifqrr@tikz@hvvh@fromcenter
+          \pgfutil@tempdima\pgfutil@tempdimb
+          \advance\pgfutil@tempdima-\pgf@xb
+          \pgf@xa\pgf@xb
+        \else
+          \pgfutil@tempdima\pgf@x
+          \advance\pgfutil@tempdima-\pgf@xc
+          \pgf@xa\pgf@xc
+        \fi
         \advance\pgf@xa\qrr@tikz@hvvh@ratio\pgfutil@tempdima
       \fi
       \tikz@path@lineto{\pgfqpoint{\pgf@xa}{\pgf@yc}}%
@@ -163,8 +191,13 @@
       \fi
     \else
       \pgfutil@tempdima\tikz@lastx
-      \advance\pgfutil@tempdima-\pgf@xc
-      \pgf@xa\pgf@xc
+      \ifqrr@tikz@hvvh@fromcenter
+        \advance\pgfutil@tempdima-\pgf@xb
+        \pgf@xa\pgf@xb
+      \else
+        \advance\pgfutil@tempdima-\pgf@xc
+        \pgf@xa\pgf@xc
+      \fi
       \advance\pgf@xa\qrr@tikz@hvvh@ratio\pgfutil@tempdima
     \fi
     \tikz@path@lineto{\pgfqpoint{\pgf@xa}{\pgf@yc}}%
@@ -181,11 +214,13 @@
   \pgfutil@ifnextchar n
   {\tikz@collect@label@onpath\qrr@tikz@vhv@lineto}
   {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@vhv@lineto}%
-    {\tikz@scan@one@point{\qrr@tikz@@vhv@lineto}}}}
+    {\pgfutil@ifnextchar[{\tikz@collect@hvvh@options\qrr@tikz@vhv@lineto}
+    {\tikz@scan@one@point{\qrr@tikz@@vhv@lineto}}}}}
 
 \def\qrr@tikz@@vhv@lineto#1{%
   \edef\tikz@timer@start{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
   \pgf@xc=\tikz@lastx
+  \pgf@yb=\tikz@lasty % for "from center"
   \pgf@yc=\tikz@lasty
   \tikz@make@last@position{#1}%
   \tikz@flush@moveto@toward{\pgfqpoint{\pgf@xc}{\tikz@lasty}}\pgf@xc\pgf@yc%
@@ -193,6 +228,7 @@
     % ok, target is a shape. have to work now:
     \begingroup
       \pgf@process{\pgfpointshapeborder{\tikz@shapeborder@name}{\pgfqpoint{\tikz@lastx}{\pgf@yc}}}%
+      \pgfutil@tempdimb=\tikz@lasty % for "from center"
       \tikz@make@last@position{\pgfqpoint{\pgf@x}{\pgf@y}}%
       \pgf@ya\pgf@yc
       \ifx\qrr@tikz@hvvh@ratio\pgfutil@empty
@@ -202,9 +238,15 @@
           \advance\pgf@ya-\qrr@tikz@hvvh@distance
         \fi
       \else
-        \pgfutil@tempdima\pgf@y
-        \advance\pgfutil@tempdima-\pgf@yc
-        \pgf@xa\pgf@yc
+        \ifqrr@tikz@hvvh@fromcenter
+          \pgfutil@tempdima\pgfutil@tempdimb
+          \advance\pgfutil@tempdima-\pgf@yb
+          \pgf@ya\pgf@yb
+        \else
+          \pgfutil@tempdima\pgf@y
+          \advance\pgfutil@tempdima-\pgf@yc
+          \pgf@xa\pgf@yc
+        \fi
         \advance\pgf@ya\qrr@tikz@hvvh@ratio\pgfutil@tempdima
       \fi
       \tikz@path@lineto{\pgfqpoint{\pgf@xc}{\pgf@ya}}%
@@ -225,9 +267,14 @@
         \advance\pgf@ya-\qrr@tikz@hvvh@distance
       \fi
     \else
-      \pgfutil@tempdima\pgf@y
-      \advance\pgfutil@tempdima-\pgf@yc
-      \pgf@xa\pgf@yc
+      \pgfutil@tempdima\tikz@lasty
+      \ifqrr@tikz@hvvh@fromcenter
+        \advance\pgfutil@tempdima-\pgf@yb
+        \pgf@ya\pgf@yb
+      \else
+        \advance\pgfutil@tempdima-\pgf@yc
+        \pgf@ya\pgf@yc
+      \fi
       \advance\pgf@ya\qrr@tikz@hvvh@ratio\pgfutil@tempdima
     \fi
     \tikz@path@lineto{\pgfqpoint{\pgf@xc}{\pgf@ya}}%
@@ -247,7 +294,8 @@
   \pgfutil@ifnextchar n
   {\tikz@collect@label@onpath\qrr@tikz@ud@lineto@next}
   {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@ud@lineto@next}%
-    {\tikz@scan@one@point\qrr@tikz@@ud@lineto}}}
+    {\pgfutil@ifnextchar[{\tikz@collect@hvvh@options\qrr@tikz@ud@lineto@next}
+    {\tikz@scan@one@point\qrr@tikz@@ud@lineto}}}}
 
 \def\qrr@tikz@@ud@lineto#1{%
   \edef\tikz@timer@start{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
@@ -261,7 +309,7 @@
       \advance\pgf@y1pt%
       \pgf@process{\pgfpointshapeborder{\tikz@shapeborder@name}{\pgfqpoint{\pgf@x}{\pgf@y}}}%
       \ifdim\pgf@yc<\pgf@y\pgf@yc=\pgf@y\fi
-      \advance\pgf@yc\qrr@tikz@ud@distance
+      \advance\pgf@yc\qrr@tikz@udlr@distance
       \tikz@make@last@position{\pgfqpoint{\pgf@x}{\pgf@y}}%
       \tikz@path@lineto{\pgfqpoint{\pgf@xc}{\pgf@yc}}%
       \tikz@path@lineto{\pgfqpoint{\tikz@lastx}{\pgf@yc}}%
@@ -274,7 +322,7 @@
     \edef\tikz@moveto@waiting{\tikz@shapeborder@name}% 
   \else
     \ifdim\pgf@yc<\tikz@lasty\pgf@yc\tikz@lasty\fi
-    \advance\pgf@yc\qrr@tikz@ud@distance
+    \advance\pgf@yc\qrr@tikz@udlr@distance
     \tikz@path@lineto{\pgfqpoint{\pgf@xc}{\pgf@yc}}%
     \tikz@path@lineto{\pgfqpoint{\tikz@lastx}{\pgf@yc}}%
     \tikz@path@lineto{\tikz@last@position}%
@@ -288,7 +336,8 @@
   \pgfutil@ifnextchar n
   {\tikz@collect@label@onpath\qrr@tikz@du@lineto@next}
   {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@du@lineto@next}%
-    {\tikz@scan@one@point\qrr@tikz@@du@lineto}}}
+    {\pgfutil@ifnextchar[{\tikz@collect@hvvh@options\qrr@tikz@du@lineto@next}
+    {\tikz@scan@one@point\qrr@tikz@@du@lineto}}}}
 
 \def\qrr@tikz@@du@lineto#1{%
   \edef\tikz@timer@start{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
@@ -302,7 +351,7 @@
       \advance\pgf@y-1pt%
       \pgf@process{\pgfpointshapeborder{\tikz@shapeborder@name}{\pgfqpoint{\pgf@x}{\pgf@y}}}%
       \ifdim\pgf@yc>\pgf@y\pgf@yc\pgf@y\fi
-      \advance\pgf@yc-\qrr@tikz@du@distance
+      \advance\pgf@yc-\qrr@tikz@udlr@distance
       \tikz@make@last@position{\pgfqpoint{\pgf@x}{\pgf@y}}%
       \tikz@path@lineto{\pgfqpoint{\pgf@xc}{\pgf@yc}}%
       \tikz@path@lineto{\pgfqpoint{\tikz@lastx}{\pgf@yc}}%
@@ -315,7 +364,7 @@
     \edef\tikz@moveto@waiting{\tikz@shapeborder@name}% 
   \else
     \ifdim\pgf@yc>\tikz@lasty\pgf@yc\tikz@lasty\fi
-    \advance\pgf@yc-\qrr@tikz@du@distance
+    \advance\pgf@yc-\qrr@tikz@udlr@distance
     \tikz@path@lineto{\pgfqpoint{\pgf@xc}{\pgf@yc}}%
     \tikz@path@lineto{\pgfqpoint{\tikz@lastx}{\pgf@yc}}%
     \tikz@path@lineto{\tikz@last@position}%
@@ -329,7 +378,8 @@
   \pgfutil@ifnextchar n
   {\tikz@collect@label@onpath\qrr@tikz@lr@lineto@next}
   {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@lr@lineto@next}%
-    {\tikz@scan@one@point\qrr@tikz@@lr@lineto}}}
+    {\pgfutil@ifnextchar[{\tikz@collect@hvvh@options\qrr@tikz@lr@lineto@next}
+    {\tikz@scan@one@point\qrr@tikz@@lr@lineto}}}}
     
 \def\qrr@tikz@@lr@lineto#1{%
   \edef\tikz@timer@start{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
@@ -343,7 +393,7 @@
       \advance\pgf@x-1pt%
       \pgf@process{\pgfpointshapeborder{\tikz@shapeborder@name}{\pgfqpoint{\pgf@x}{\pgf@y}}}%
       \ifdim\pgf@xc>\pgf@x\pgf@xc\pgf@x\fi
-      \advance\pgf@xc-\qrr@tikz@lr@distance
+      \advance\pgf@xc-\qrr@tikz@udlr@distance
       \tikz@make@last@position{\pgfqpoint{\pgf@x}{\pgf@y}}%
       \tikz@path@lineto{\pgfqpoint{\pgf@xc}{\pgf@yc}}%
       \tikz@path@lineto{\pgfqpoint{\pgf@xc}{\tikz@lasty}}%
@@ -356,7 +406,7 @@
     \edef\tikz@moveto@waiting{\tikz@shapeborder@name}% 
   \else
     \ifdim\pgf@xc>\tikz@lastx\pgf@xc\tikz@lastx\fi
-    \advance\pgf@xc-\qrr@tikz@lr@distance
+    \advance\pgf@xc-\qrr@tikz@udlr@distance
     \tikz@path@lineto{\pgfqpoint{\pgf@xc}{\pgf@yc}}%
     \tikz@path@lineto{\pgfqpoint{\pgf@xc}{\tikz@lasty}}%
     \tikz@path@lineto{\tikz@last@position}%
@@ -370,7 +420,9 @@
   \pgfutil@ifnextchar n
   {\tikz@collect@label@onpath\qrr@tikz@rl@lineto@next}
   {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@rl@lineto@next}%
-    {\tikz@scan@one@point\qrr@tikz@@rl@lineto}}}
+    {\pgfutil@ifnextchar[{\tikz@collect@hvvh@options\qrr@tikz@lr@lineto@next}
+    {\tikz@scan@one@point\qrr@tikz@@rl@lineto}}}}
+
 \def\qrr@tikz@@rl@lineto#1{%
   \edef\tikz@timer@start{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
   \pgf@xc\tikz@lastx
@@ -383,7 +435,7 @@
       \advance\pgf@x1pt%
       \pgf@process{\pgfpointshapeborder{\tikz@shapeborder@name}{\pgfqpoint{\pgf@x}{\pgf@y}}}%
       \ifdim\pgf@xc<\pgf@x\pgf@xc\pgf@x\fi
-      \advance\pgf@xc\qrr@tikz@rl@distance
+      \advance\pgf@xc\qrr@tikz@udlr@distance
       \tikz@make@last@position{\pgfqpoint{\pgf@x}{\pgf@y}}%
       \tikz@path@lineto{\pgfqpoint{\pgf@xc}{\pgf@yc}}%
       \tikz@path@lineto{\pgfqpoint{\pgf@xc}{\tikz@lasty}}%
@@ -396,7 +448,7 @@
     \edef\tikz@moveto@waiting{\tikz@shapeborder@name}% 
   \else
     \ifdim\pgf@xc<\tikz@lastx\pgf@xc\tikz@lastx\fi
-    \advance\pgf@xc\qrr@tikz@rl@distance
+    \advance\pgf@xc\qrr@tikz@udlr@distance
     \tikz@path@lineto{\pgfqpoint{\pgf@xc}{\pgf@yc}}%
     \tikz@path@lineto{\pgfqpoint{\pgf@xc}{\tikz@lasty}}%
     \tikz@path@lineto{\tikz@last@position}%
