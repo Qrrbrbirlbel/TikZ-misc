@@ -1,4 +1,5 @@
 \RequirePackage{etoolbox}
+\tracingpatches
 \patchcmd{\tikz@handle}{\tikz@rect}{\tikz@r@char}{}{%                                               for rl
 	\PackageError{qrr-tikz-hvvh}{Patching of \string\tikz@handle\space failed}{}\endinput}
 \patchcmd{\tikz@l@char}{\tikz@expand}{\pgfutil@ifnextchar r{\qrr@tikz@lr@lineto}{\tikz@expand}}{}{% for lr
@@ -33,35 +34,39 @@
 \def\tikz@d@char{\pgfutil@ifnextchar e\tikz@decoration\qrr@tikz@du@lineto}
 \def\tikz@r@char{\pgfutil@ifnextchar e\tikz@rect\qrr@tikz@rl@lineto}
 \def\qrr@tikz@handle@more{%
-	\ifx\@let@token u%
-	\let\@next\qrr@tikz@ud@lineto
-	\else
-	\let\@next\tikz@expand
-	\fi\@next}
+  \ifx\pgf@let@token u%
+    \let\@next\qrr@tikz@ud@lineto
+  \else\ifx\@let@token u
+      \let\@next\qrr@tikz@ud@lineto
+    \else
+      \let\@next\tikz@expand
+  \fi\fi\@next}
 
 \def\tikz@vh@lineto-{%
-	\pgfutil@ifnextchar |{\expandafter\qrr@tikz@vhv@lineto\pgfutil@gobble}\tikz@vh@lineto@next}
+  \pgfutil@ifnextchar |{\expandafter\qrr@tikz@vhv@lineto\pgfutil@gobble}\tikz@vh@lineto@next}
 
 \def\tikz@hv@lineto{%
-	\pgfutil@ifnextchar -{\expandafter\qrr@tikz@hvh@lineto\pgfutil@gobble}{%
-		\pgfutil@ifnextchar n
-		{\tikz@collect@label@onpath\tikz@hv@lineto}
-		{\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\tikz@hv@lineto}%
-			{\tikz@scan@one@point{\tikz@@hv@lineto}}}}}
+  \pgfutil@ifnextchar -{\expandafter\qrr@tikz@hvh@lineto\pgfutil@gobble}{%
+    \pgfutil@ifnextchar n
+    {\tikz@collect@label@onpath\tikz@hv@lineto}
+    {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\tikz@hv@lineto}%
+      {\tikz@scan@one@point{\tikz@@hv@lineto}}}}}
 %END_FOLD
 
 %BEGIN_FOLD Timer
 %END_FOLD
 
 %BEGIN_FOLD hvvh operator
+\def\qrr@tikz@vhv@lineto{\pgfutil@ifnextchar[{\qrr@tikz@collect@hvvh@options\qrr@tikz@vhv@lineto@next}{\qrr@tikz@collect@hvvh@options\qrr@tikz@vhv@lineto@next[]}}
+\def\qrr@tikz@hvh@lineto{\pgfutil@ifnextchar[{\qrr@tikz@collect@hvvh@options\qrr@tikz@hvh@lineto@next}{\qrr@tikz@collect@hvvh@options\qrr@tikz@hvh@lineto@next[]}}
 %END_FOLD
 
 %BEGIN_FOLD udlr operators
 %% ud style
-\def\qrr@tikz@rl@lineto l{\qrr@tikz@rl@lineto@next}
-\def\qrr@tikz@lr@lineto r{\qrr@tikz@lr@lineto@next}
-\def\qrr@tikz@du@lineto u{\qrr@tikz@du@lineto@next}
-\def\qrr@tikz@ud@lineto d{\qrr@tikz@ud@lineto@next}
+\def\qrr@tikz@rl@lineto l{\pgfutil@ifnextchar[{\qrr@tikz@collect@hvvh@options\qrr@tikz@rl@lineto@next}{\qrr@tikz@collect@hvvh@options\qrr@tikz@rl@lineto@next[]}}
+\def\qrr@tikz@lr@lineto r{\pgfutil@ifnextchar[{\qrr@tikz@collect@hvvh@options\qrr@tikz@lr@lineto@next}{\qrr@tikz@collect@hvvh@options\qrr@tikz@lr@lineto@next[]}}
+\def\qrr@tikz@du@lineto u{\pgfutil@ifnextchar[{\qrr@tikz@collect@hvvh@options\qrr@tikz@du@lineto@next}{\qrr@tikz@collect@hvvh@options\qrr@tikz@du@lineto@next[]}}
+\def\qrr@tikz@ud@lineto d{\pgfutil@ifnextchar[{\qrr@tikz@collect@hvvh@options\qrr@tikz@ud@lineto@next}{\qrr@tikz@collect@hvvh@options\qrr@tikz@ud@lineto@next[]}}
 %END_FOLD
 
 \input tikzlibrarypaths.ortho.tex
