@@ -73,8 +73,7 @@
     \let\tikz@lib@temp\pgf@tempa
     \pgfmathsetmacro\pgf@tempa{(\pgf@tempa)*#4}%
     \pgfmathsetmacro\pgf@tempb{(\pgf@tempb)*#3}%
-    \pgfmathsetmacro\tikz@lib@temp{(\tikz@lib@temp)*#6}%
-    \edef\pgf@marshal{\noexpand\tikz@lib@place@handle@{\pgf@temp}{#2}{\pgf@tempb}{\pgf@tempa}{#5}{\tikz@lib@temp}}%
+    \edef\pgf@marshal{\noexpand\tikz@lib@place@handle@{\pgf@temp}{#2}{\pgf@tempb}{\pgf@tempa}{#5}{#6}}%
     \pgf@marshal
   \else
     \def\tikz@anchor{#2}%
