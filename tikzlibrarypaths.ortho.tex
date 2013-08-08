@@ -5,11 +5,12 @@
 \tikzset{
   hvvh/.code={\pgfqkeys{/tikz/hvvh}{#1}},%
   hvvh/.search also=/tikz/udlr,%
-  udlr/.search also=/tikz/hvvh,% endless loop?
+%  udlr/.search also=/tikz/hvvh,% endless loop?
   hvvh/middle 0 to 1/.style={hvvh/spacing=0},%
   hvvh/0 to 1/.style={hvvh/middle 0 to 1},%
   hvvh/from center/.is if=qrr@tikz@hvvh@fromcenter,%
-%  hvvh/from center/.code={\PackageError{tikz}{The 'from center' style is currently not supported.}},
+  udle/from center/.style={/tikz/hvvh/from center={#1}},
+  udle/from center/.default=true,
   hvvh/spacing/.code=%
     \ifcase#1\relax
       \qrr@tikz@hvvh@middletrue
@@ -37,15 +38,8 @@
 }
 \tikzset{% default
 	hvvh/ratio=.5,%
-	hvvh/spacing=4,%
-	ud/.default=\pgfkeysvalueof{/tikz/udlr/ud distance},%
-	du/.default=\pgfkeysvalueof{/tikz/udlr/du distance},%
-	rl/.default=\pgfkeysvalueof{/tikz/udlr/rl distance},%
-	lr/.default=\pgfkeysvalueof{/tikz/udlr/lr distance},%
-	|-|/.default=\qrr@tikz@hvvh@ratio,%
-	-|-/.default=\qrr@tikz@hvvh@ratio
+	hvvh/spacing=4%
 }
-
 
 %BEGIN_FOLD Timer
 \def\tikz@timer@hvhline{%
@@ -105,10 +99,6 @@
         {\noexpand\pgfqpoint{\the\pgf@xa}{\the\pgf@y}}{\noexpand\tikz@timer@middle}}%
       \fi\fi\tikz@marshal}
 
-\let\tikz@timer@lrline\tikz@timer@hvhline
-\let\tikz@timer@rlline\tikz@timer@hvhline
-\let\tikz@timer@duline\tikz@timer@vhvline
-\let\tikz@timer@udline\tikz@timer@vhvline
 %END_FOLD
 \let\tikz@hvvh@currentoption\pgfutil@empty
 \def\qrr@tikz@collect@hvvh@options#1[#2]{\edef\tikz@hvvh@currentoption{#2}#1}
@@ -142,25 +132,7 @@
   {\tikz@collect@label@onpath\qrr@tikz@rl@lineto@next}
   {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@rl@lineto@next}
     {\tikz@scan@one@point\qrr@tikz@@rl@lineto}}}
-\def\tikz@do@hvvh#1#2#3#4#5{%
-% #1 = first kink
-% #2 = second kink
-% #3 = end
-% #4 = timer
-% #5 = tikz@shapeborder@name
-  \pgfpathlineto{#1}%
-  \pgfpathlineto{#2}%
-  \pgfpathlineto{#3}%
-  \def\tikz@timer@middle{#2}%
-  \def\tikz@timer@end{#3}%
-  \let\tikz@timer#4
-  \edef\pgf@temp{#5}%
-  \ifx\pgf@temp\pgfutil@empty
-    \let\tikz@moveto@waiting\relax
-  \else
-    \edef\tikz@moveto@waiting{#5}%
-  \fi
-}
+
 %BEGIN_FOLD hvvh operator
 %% -|- operator
 \def\qrr@tikz@@hvh@lineto#1{%
@@ -217,7 +189,7 @@
           \qrr@tikz@hvvh@distance-\qrr@tikz@hvvh@distance
         \fi
       \else
-        \qrr@tikz@hvvh@distance\tikz@lastxx
+        \qrr@tikz@hvvh@distance\tikz@lastx
         \advance\qrr@tikz@hvvh@distance-\pgf@xb
         \qrr@tikz@hvvh@distance\qrr@tikz@hvvh@ratio\qrr@tikz@hvvh@distance
       \fi
@@ -231,11 +203,9 @@
         {\expandafter\noexpand\pgf@tempa}%
         {\expandafter\noexpand\pgf@tempb}%
         {\expandafter\noexpand\pgf@temp}%
-        {\noexpand\tikz@timer@vhvline}{\tikz@shapeborder@name}}%
+        {\noexpand\tikz@timer@hvhline}{\tikz@shapeborder@name}}%
   \endgroup
-  \pgf@marshal
-  \tikz@scan@next@command%
-}
+  \pgf@marshal}
 
 %% |-| operator
 \def\qrr@tikz@@vhv@lineto#1{%
@@ -308,9 +278,7 @@
         {\expandafter\noexpand\pgf@temp}%
         {\noexpand\tikz@timer@vhvline}{\tikz@shapeborder@name}}%
   \endgroup
-  \pgf@marshal
-  \tikz@scan@next@command%
-}
+  \pgf@marshal}
 
 %% ud operator
 \def\qrr@tikz@@ud@lineto#1{%
@@ -393,8 +361,7 @@
         {\expandafter\noexpand\pgf@temp}%
         {\noexpand\tikz@timer@vhvline}{\tikz@shapeborder@name}}%
   \endgroup
-  \pgf@marshal
-  \tikz@scan@next@command}
+  \pgf@marshal}
 
 %% lr operator
 \def\qrr@tikz@@lr@lineto#1{%
@@ -433,10 +400,9 @@
         {\noexpand\pgfqpoint{\the\pgf@xc}{\the\pgf@yc}}%
         {\noexpand\pgfqpoint{\the\pgf@xc}{\the\tikz@lasty}}%
         {\expandafter\noexpand\pgf@temp}%
-        {\noexpand\tikz@timer@vhvline}{\tikz@shapeborder@name}}%
+        {\noexpand\tikz@timer@hvhline}{\tikz@shapeborder@name}}%
   \endgroup
-  \pgf@marshal
-  \tikz@scan@next@command}
+  \pgf@marshal}
 
 %% rl operator
 \def\qrr@tikz@@rl@lineto#1{%
@@ -475,9 +441,8 @@
         {\noexpand\pgfqpoint{\the\pgf@xc}{\the\pgf@yc}}%
         {\noexpand\pgfqpoint{\the\pgf@xc}{\the\tikz@lasty}}%
         {\expandafter\noexpand\pgf@temp}%
-        {\noexpand\tikz@timer@vhvline}{\tikz@shapeborder@name}}%
+        {\noexpand\tikz@timer@hvhline}{\tikz@shapeborder@name}}%
   \endgroup
-  \pgf@marshal
-  \tikz@scan@next@command}
+  \pgf@marshal}
 %END_FOLD
 \endinput
