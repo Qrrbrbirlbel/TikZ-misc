@@ -133,6 +133,26 @@
   {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@rl@lineto@next}
     {\tikz@scan@one@point\qrr@tikz@@rl@lineto}}}
 
+\def\tikz@do@hvvh#1#2#3#4#5{%
+% #1 = first kink
+% #2 = second kink
+% #3 = end
+% #4 = timer
+% #5 = tikz@shapeborder@name
+  \pgfpathlineto{#1}%
+  \pgfpathlineto{#2}%
+  \pgfpathlineto{#3}%
+  \def\tikz@timer@middle{#2}%
+  \def\tikz@timer@end{#3}%
+  \let\tikz@timer#4
+  \edef\pgf@temp{#5}%
+  \ifx\pgf@temp\pgfutil@empty
+    \let\tikz@moveto@waiting\relax
+  \else
+    \edef\tikz@moveto@waiting{#5}%
+  \fi
+  \tikz@scan@next@command%
+}
 %BEGIN_FOLD hvvh operator
 %% -|- operator
 \def\qrr@tikz@@hvh@lineto#1{%
@@ -189,7 +209,7 @@
           \qrr@tikz@hvvh@distance-\qrr@tikz@hvvh@distance
         \fi
       \else
-        \qrr@tikz@hvvh@distance\tikz@lastx
+        \qrr@tikz@hvvh@distance\tikz@lastxx
         \advance\qrr@tikz@hvvh@distance-\pgf@xb
         \qrr@tikz@hvvh@distance\qrr@tikz@hvvh@ratio\qrr@tikz@hvvh@distance
       \fi
@@ -319,8 +339,7 @@
         {\expandafter\noexpand\pgf@temp}%
         {\noexpand\tikz@timer@vhvline}{\tikz@shapeborder@name}}%
   \endgroup
-  \pgf@marshal
-  \tikz@scan@next@command}
+  \pgf@marshal}
 
 %% du operator
 \def\qrr@tikz@@du@lineto#1{%
