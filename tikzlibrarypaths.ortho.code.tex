@@ -17,16 +17,16 @@
    /utils/exec=\pgfmathsetmacro\qrr@tikz@hvvh@ratio{#1},%
    to path={-|- (\tikztotarget) \tikztonodes}},%
   ud/.style={%
-    /utils/exec=\pgfmathsetlength\qrr@tikz@udlr@distance{#1},%
+    udlr/ud distance/.expanded={#1},%
     to path={ud (\tikztotarget) \tikztonodes}},%
   du/.style={%
-    /utils/exec=\pgfmathsetlength\qrr@tikz@udlr@distance{#1},%
+    udlr/du distance/.expanded={#1},%
     to path={du (\tikztotarget) \tikztonodes}},%
   lr/.style={%
-    /utils/exec=\pgfmathsetlength\qrr@tikz@udlr@distance{#1},%
+    udlr/lr distance/.expanded={#1},%
     to path={lr (\tikztotarget) \tikztonodes}},%
   rl/.style={%
-    /utils/exec=\pgfmathsetlength\qrr@tikz@udlr@distance{#1},%
+    udlr/rl distance/.expanded={#1},%
     to path={rl (\tikztotarget) \tikztonodes}},%
 	ud/.default=\pgfkeysvalueof{/tikz/udlr/ud distance},%
 	du/.default=\pgfkeysvalueof{/tikz/udlr/du distance},%
@@ -42,11 +42,14 @@
 \def\qrr@tikz@handle@more{%
   \ifx\pgf@let@token u%
     \let\@next\qrr@tikz@ud@lineto
-  \else\ifx\@let@token u
+  \else
+    \ifx\@let@token u%
       \let\@next\qrr@tikz@ud@lineto
     \else
       \let\@next\tikz@expand
-  \fi\fi\@next}
+    \fi
+  \fi
+  \@next}
 
 \def\tikz@vh@lineto-{%
   \pgfutil@ifnextchar |{\expandafter\qrr@tikz@vhv@lineto\pgfutil@gobble}\tikz@vh@lineto@next}
@@ -58,27 +61,6 @@
     {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\tikz@hv@lineto}%
       {\tikz@scan@one@point{\tikz@@hv@lineto}}}}}
 %END_FOLD
-
-\def\tikz@do@hvvh#1#2#3#4#5{%
-% #1 = first kink
-% #2 = second kink
-% #3 = end
-% #4 = timer
-% #5 = tikz@shapeborder@name
-  \pgfpathlineto{#1}%
-  \pgfpathlineto{#2}%
-  \pgfpathlineto{#3}%
-  \def\tikz@timer@middle{#2}%
-  \def\tikz@timer@end{#3}%
-  \let\tikz@timer#4
-  \edef\pgf@temp{#5}%
-  \ifx\pgf@temp\pgfutil@empty
-    \let\tikz@moveto@waiting\relax
-  \else
-    \edef\tikz@moveto@waiting{#5}%
-  \fi
-  \tikz@scan@next@command%
-}
 
 %BEGIN_FOLD hvvh operator
 \def\qrr@tikz@vhv@lineto{\pgfutil@ifnextchar[{\qrr@tikz@collect@hvvh@options\qrr@tikz@vhv@lineto@next}{\qrr@tikz@collect@hvvh@options\qrr@tikz@vhv@lineto@next[]}}
