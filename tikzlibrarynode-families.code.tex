@@ -1,0 +1,147 @@
+\let\tikz@lib@nf@textheight\pgfutil@empty
+\let\tikz@lib@nf@textdepth\pgfutil@empty
+%\let\tikz@lib@nf@textwidth\pgfutil@empty
+\tikzset{
+  Minimum Width/.code={%
+    \pgfutil@ifundefined{\pgfpictureid @#1@width}{}{%
+      \tikzset{/tikz/minimum width/.expand twice=+\csname\pgfpictureid @#1@width\endcsname}%
+    }%
+    \tikz@addmode{\pgfmathsetlengthmacro\tikz@lib@nf@outerxsep{\pgfkeysvalueof{/pgf/outer xsep}}\global\let\tikz@lib@nf@outerxsep\tikz@lib@nf@outerxsep}%
+    \tikzset{
+      prefix after command={%
+        \pgfextra
+          \pgfinterruptpath
+            \pgfpointanchor{\tikzlastnode}{east}%
+            \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+            \pgfpointanchor{\tikzlastnode}{west}%
+            \advance\pgf@xa-\pgf@x
+            \advance\pgf@ya-\pgf@y
+            \pgfmathveclen@{\pgf@sys@tonumber\pgf@xa}{\pgf@sys@tonumber\pgf@ya}%
+            \pgf@x\pgfmathresult pt\relax
+            \advance\pgf@x-\tikz@lib@nf@outerxsep
+            \advance\pgf@x-\tikz@lib@nf@outerxsep
+            \pgfutil@ifundefined{\pgfpictureid @#1@width}{%
+              \expandafter\xdef\csname\pgfpictureid @#1@width\endcsname{\the\pgf@x}%
+            }{%
+              \expandafter\ifdim\csname\pgfpictureid @#1@width\endcsname<\pgf@x
+                \expandafter\xdef\csname\pgfpictureid @#1@width\endcsname{\the\pgf@x}%
+              \fi
+            }%
+            \expandafter\expandafter\expandafter\gdef\expandafter\expandafter\expandafter
+            \tikz@atend@picture\expandafter\expandafter\expandafter{\expandafter\tikz@atend@picture\expandafter\tikz@lib@nf@save\expandafter{\pgfpictureid}{#1}{width}}
+          \endpgfinterruptpath
+        \endpgfextra
+      }%
+    }%
+  },
+  Minimum Height/.code={%
+    \pgfutil@ifundefined{\pgfpictureid @#1@height}{}{%
+      \tikzset{/tikz/minimum height/.expand twice=+\csname\pgfpictureid @#1@height\endcsname}%
+    }%
+    \tikz@addmode{\pgfmathsetlengthmacro\tikz@lib@nf@outerysep{\pgfkeysvalueof{/pgf/outer ysep}}\global\let\tikz@lib@nf@outerysep\tikz@lib@nf@outerysep}%
+    \tikzset{
+      prefix after command={%
+        \pgfextra
+          \pgfinterruptpath
+            \pgfpointanchor{\tikzlastnode}{north}%
+            \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+            \pgfpointanchor{\tikzlastnode}{south}%
+            \advance\pgf@xa-\pgf@x
+            \advance\pgf@ya-\pgf@y
+            \pgfmathveclen@{\pgf@sys@tonumber\pgf@xa}{\pgf@sys@tonumber\pgf@ya}%
+            \pgf@x\pgfmathresult pt\relax
+            \advance\pgf@x-\tikz@lib@nf@outerysep
+            \advance\pgf@x-\tikz@lib@nf@outerysep
+            \pgfutil@ifundefined{\pgfpictureid @#1@height}{%
+              \expandafter\xdef\csname\pgfpictureid @#1@height\endcsname{\the\pgf@x}%
+            }{%
+              \expandafter\ifdim\csname\pgfpictureid @#1@height\endcsname<\pgf@x
+                \expandafter\xdef\csname\pgfpictureid @#1@height\endcsname{\the\pgf@x}%
+              \fi
+            }%
+            \expandafter\expandafter\expandafter\gdef\expandafter\expandafter\expandafter
+            \tikz@atend@picture\expandafter\expandafter\expandafter{\expandafter\tikz@atend@picture\expandafter\tikz@lib@nf@save\expandafter{\pgfpictureid}{#1}{height}}
+          \endpgfinterruptpath
+        \endpgfextra
+      }%
+    }%
+  },
+  Minimum Size/.style={
+    Minimum Height={#1},
+    Minimum Width={#1}},
+  Text Height/.code=\edef\tikz@lib@nf@textheight{#1},
+  Text Depth/.code= \edef\tikz@lib@nf@textdepth{#1},
+%  Text Width/.code= \edef\tikz@lib@nf@textwidth{#1},
+}
+
+\def\tikz@lib@nf@text@#1#2#3{%
+    \expandafter\ifx\csname tikz@lib@nf@#3\endcsname\pgfutil@empty\else
+      \pgfutil@ifundefined{\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3}{%
+        \expandafter\xdef\csname\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\endcsname{\the#1#2}%
+      }{%
+        \ifdim\csname\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\endcsname<#1#2
+          \expandafter\xdef\csname\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\endcsname{\the#1#2}%
+        \else
+          #1#2=\csname\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\endcsname\relax
+        \fi
+      }%
+      \edef\tikz@temp{\noexpand\tikz@lib@nf@save{\pgfpictureid}{\csname tikz@lib@nf@#3\endcsname}{#3}}%
+      \expandafter\expandafter\expandafter\gdef\expandafter\expandafter\expandafter
+      \tikz@atend@picture\expandafter\expandafter\expandafter{\expandafter\tikz@atend@picture\tikz@temp}%
+    \fi
+}
+%%% Redefinition!
+\def\tikz@fig@continue{%
+    \ifx\tikz@text@width\pgfutil@empty%
+    \else%
+      \pgfmathsetlength{\pgf@x}{\tikz@text@width}%
+      \wd\pgfnodeparttextbox=\pgf@x%
+    \fi%
+    \ifx\tikz@text@height\pgfutil@empty%
+    \else%
+      \pgfmathsetlength{\pgf@x}{\tikz@text@height}%
+      \ht\pgfnodeparttextbox=\pgf@x%
+    \fi%
+    \ifx\tikz@text@depth\pgfutil@empty%
+    \else%
+      \pgfmathsetlength{\pgf@x}{\tikz@text@depth}%
+      \dp\pgfnodeparttextbox=\pgf@x%
+    \fi%
+    %
+    %
+    %
+    \tikz@lib@nf@text@\ht\pgfnodeparttextbox{textheight}%
+    \tikz@lib@nf@text@\dp\pgfnodeparttextbox{textdepth}%
+%    \tikz@lib@nf@text@\wd\pgfnodeparttextbox{textwidth}%
+    %
+    % Node transformation
+    %
+    \tikz@node@transformations
+    %
+    \setbox\tikz@figbox=\hbox{%
+      \setbox\pgfutil@tempboxa=\copy\tikz@figbox%
+      \unhbox\pgfutil@tempboxa%
+      \hbox{{%
+          \pgfinterruptpath%
+            \pgfscope%
+              \tikz@options%
+              \setbox\tikz@figbox=\box\pgfutil@voidb@x%
+              \pgfmultipartnode{\tikz@shape}{\tikz@anchor}{\tikz@fig@name}{%
+                \pgfutil@tempdima=\pgflinewidth%
+                {\begingroup\tikz@finish}%
+                \global\pgflinewidth=\pgfutil@tempdima%
+              }%
+            \endpgfscope
+          \endpgfinterruptpath%
+      }}%
+    }%
+    %
+    \tikz@alias%
+    \tikz@node@finish%
+}
+\def\tikz@lib@nf@save#1#2#3{%
+  \pgfutil@ifundefined{#1@#2@#3@done}{%
+    \expandafter\let\csname#1@#2@#3@done\endcsname\pgfutil@empty%
+    \immediate\write\pgfutil@auxout{\noexpand\expandafter\noexpand\gdef\noexpand\csname#1@#2@#3\endcsname{\csname#1@#2@#3\endcsname}}
+  }{}%
+}
