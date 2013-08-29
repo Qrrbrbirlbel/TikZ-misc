@@ -11,6 +11,7 @@
       prefix after command={%
         \pgfextra
           \pgfinterruptpath
+            \pgfsettransform{\csname pgf@sh@nt@\tikzlastnode\endcsname}%
             \pgfpointanchor{\tikzlastnode}{east}%
             \pgf@xa=\pgf@x \pgf@ya=\pgf@y
             \pgfpointanchor{\tikzlastnode}{west}%
@@ -43,6 +44,7 @@
       prefix after command={%
         \pgfextra
           \pgfinterruptpath
+            \pgfsettransform{\csname pgf@sh@nt@\tikzlastnode\endcsname}%
             \pgfpointanchor{\tikzlastnode}{north}%
             \pgf@xa=\pgf@x \pgf@ya=\pgf@y
             \pgfpointanchor{\tikzlastnode}{south}%
@@ -90,7 +92,7 @@
       \tikz@atend@picture\expandafter\expandafter\expandafter{\expandafter\tikz@atend@picture\tikz@temp}%
     \fi
 }
-%%% Redefinition!
+%%% Redefinition
 \def\tikz@fig@continue{%
     \ifx\tikz@text@width\pgfutil@empty%
     \else%
