@@ -1,0 +1,92 @@
+\tikzset{
+  arc/ccw/.initial=1,
+  arc/large/.initial=0,
+  arc ccw/.style={/tikz/arc/ccw=1},
+  arc cw/.style={/tikz/arc/ccw=0},
+  arc large/.style={/tikz/arc/large=1},
+  arc small/.style={/tikz/arc/large=0},
+  arc rotation/.initial=0
+}
+\def\pgf@temp{2.10-cvs}
+\ifx\pgfversion\pgf@temp\else
+  \let\tikz@timer@arc\tikz@timer@line
+\fi
+\def\tikz@arcA rc{\pgfutil@ifnextchar t%
+  {\tikz@flush@moveto\expandafter\expandafter\expandafter\tikz@arcB@cont\expandafter\pgfutil@gobble\pgfutil@gobble}
+  {\tikz@flush@moveto\tikz@arc@cont}}
+\def\tikz@arcB@cont{%
+  \pgfutil@ifnextchar[\tikz@@do@arcB{
+    \advance\tikz@expandcount by -10\relax% go down quickly
+    \ifnum\tikz@expandcount<0\relax%
+      \def\@next{\tikz@@do@arcB[]}%
+    \else%
+      \def\@next{\expandafter\tikz@arcB@cont}%
+    \fi%
+    \@next}}%
+\def\tikz@@do@arcB[#1]{%
+  \def\tikz@arcB@options{#1}%
+  \tikz@do@@arcB}
+\def\tikz@do@@arcB{%
+  \pgfutil@ifnextchar n{\tikz@collect@label@onpath\tikz@do@@arcB}
+    {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\tikz@do@@arcB}
+      {\tikz@scan@one@point\tikz@do@arcB}}}
+
+\def\tikz@do@arcB#1{%
+  \edef\tikz@timer@start{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}
+  \tikz@make@last@position{#1}%
+  \edef\tikz@timer@end{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
+  \iftikz@shapeborder
+    \edef\tikz@moveto@waiting{\tikz@shapeborder@name}%
+  \fi
+  \begingroup
+    \tikzset{every arc/.try}%
+    \expandafter\tikzset\expandafter{\tikz@arcB@options}%
+    \pgfmathparse{\pgfkeysvalueof{/tikz/x radius}}%
+    \let\tikz@arc@x\pgfmathresult
+    \ifpgfmathunitsdeclared
+      \pgfmathparse{\pgfkeysvalueof{/tikz/y radius}}%
+      \let\tikz@arc@y\pgfmathresult
+      \ifpgfmathunitsdeclared
+        \edef\tikz@arc@x{\tikz@arc@x pt}%
+        \edef\tikz@arc@y{\tikz@arc@y pt}%
+        \pgfpatharcto{\tikz@arc@x}{\tikz@arc@y}
+                     {\pgfkeysvalueof{/tikz/arc rotation}}{\pgfkeysvalueof{/tikz/arc/large}}
+                     {\pgfkeysvalueof{/tikz/arc/ccw}}{#1}%
+      \else
+        \tikzerror{You cannot mix dimensions and dimension values in an arc}%
+      \fi
+    \else
+      \pgfmathparse{\pgfkeysvalueof{/tikz/y radius}}%
+      \let\tikz@arc@y\pgfmathresult
+      \ifpgfmathunitsdeclared
+        \tikzerror{You cannot mix dimensions and dimension values in an arc}%
+      \else
+        \pgf@process{\pgfpointxy{\tikz@arc@x}{0}}%
+        \pgfmathveclen@{\pgf@x}{\pgf@y}%
+        \edef\tikz@arc@x{\pgfmathresult pt}%
+        \pgf@process{\pgfpointxy{0}{\tikz@arc@y}}%
+        \pgfmathveclen@{\pgf@x}{\pgf@y}%
+        \edef\tikz@arc@y{\pgfmathresult pt}%
+        \pgfpatharcto{\tikz@arc@x}{\tikz@arc@y}
+                     {\pgfkeysvalueof{/tikz/arc rotation}}{\pgfkeysvalueof{/tikz/arc/large}}
+                     {\pgfkeysvalueof{/tikz/arc/ccw}}{#1}%
+      \fi
+    \fi
+  \endgroup
+  \edef\tikz@timer@start@angle{\expandafter\expandafter\expandafter\pgfutil@firstoffour\expandafter\pgfutil@gobble\pgf@marshal}%
+  \edef\tikz@timer@end@angle{\expandafter\expandafter\expandafter\pgfutil@secondoffour\expandafter\pgfutil@gobble\pgf@marshal}%
+  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\def
+  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\tikz@timer@zero@axis
+  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter{%
+  \expandafter\expandafter\expandafter\pgfutil@thirdoffour\expandafter\pgfutil@gobble\pgf@marshal}%
+  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\def
+  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\tikz@timer@ninety@axis
+  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter{%
+  \expandafter\expandafter\expandafter\pgfutil@fourthoffour\expandafter\pgfutil@gobble\pgf@marshal}%
+  \let\tikz@timer=\tikz@timer@arc
+  \tikz@scan@next@command
+}
+\def\pgfutil@firstoffour#1#2#3#4{#1}
+\def\pgfutil@secondoffour#1#2#3#4{#2}
+\def\pgfutil@thirdoffour#1#2#3#4{#3}
+\def\pgfutil@fourthoffour#1#2#3#4{#4}
