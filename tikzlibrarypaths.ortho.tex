@@ -2,6 +2,72 @@
 \newlength\qrr@tikz@hvvh@distance
 \newif\ifqrr@tikz@hvvh@middle
 \newif\ifqrr@tikz@hvvh@fromcenter
+\newif\iftikz@ortho@preflush
+\tikz@ortho@preflushtrue
+\let\tikz@origtotarget\pgfutil@empty
+
+%%% |-/-|
+\tikzset{
+  |-/.style={to path={|- (\tikztotarget) \tikztonodes}},
+  -|/.style={to path={-| (\tikztotarget) \tikztonodes}},
+  *|/.style={to path={%
+    \pgfextra
+      \iftikz@shapeborder
+        \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
+        \ifdim\pgf@y>\tikz@lasty\relax
+          \edef\tikztostart{\tikztostart.north}%
+        \else
+          \edef\tikztostart{\tikztostart.south}%
+        \fi
+      \fi
+    \endpgfextra
+    (\tikztostart-|\tikztotarget) -- (\tikztotarget) \tikztonodes
+  }},
+  *-/.style={to path={%
+    \pgfextra
+      \iftikz@shapeborder
+        \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
+        \ifdim\pgf@x>\tikz@lastx\relax
+          \edef\tikztostart{\tikztostart.east}%
+        \else
+          \edef\tikztostart{\tikztostart.west}%
+        \fi
+      \fi
+    \endpgfextra
+    (\tikztostart|-\tikztotarget) -- (\tikztotarget) \tikztonodes
+  }},
+  |*/.style={to path={%
+    \pgfextra
+      \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
+      \iftikz@shapeborder
+        \let\tikz@origtotarget\tikztotarget
+        \ifdim\pgf@y>\tikz@lasty\relax
+          \edef\tikztotarget{\tikztotarget.south}%
+        \else
+          \edef\tikztotarget{\tikztotarget.north}%
+        \fi
+      \fi
+    \endpgfextra
+    (\tikztostart) -- (\tikztostart|-\tikztotarget) \tikztonodes \ifx\tikz@origtotarget\pgfutil@empty\else\iftikz@ortho@preflush(\tikz@origtotarget)\fi\fi
+  }},
+  -*/.style={to path={%
+    \pgfextra
+      \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
+      \iftikz@shapeborder
+        \let\tikz@origtotarget\tikztotarget
+        \ifdim\pgf@x>\tikz@lastx\relax
+          \edef\tikztotarget{\tikztotarget.west}%
+        \else
+          \edef\tikztotarget{\tikztotarget.east}%
+        \fi
+      \fi
+    \endpgfextra
+    (\tikztostart) -- (\tikztostart-|\tikztotarget) \tikztonodes \ifx\tikz@origtotarget\pgfutil@empty\else\iftikz@ortho@preflush(\tikz@origtotarget)\fi\fi
+  }},
+  node as new start/.is if=tikz@ortho@preflush
+  }
+
+%%% HVVH/UDLR
 \tikzset{
   hvvh/.code={\pgfqkeys{/tikz/hvvh}{#1}},%
   hvvh/.search also=/tikz/udlr,%
