@@ -369,7 +369,7 @@
 %% ud operator
 \def\qrr@tikz@@ud@lineto#1{%
   \edef\tikz@timer@start{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
-  \pgf@xc\tikz@lasty
+  \pgf@xc\tikz@lastx
   \pgf@yb\tikz@lasty
   \advance\tikz@lasty1pt%
   \tikz@flush@moveto@toward{\pgfqpoint{\tikz@lastx}{\tikz@lasty}}\pgf@xc\pgf@yc
@@ -394,8 +394,9 @@
       \edef\pgf@temp{\noexpand\pgfqpoint{\the\pgf@x}{\the\pgf@y}}%
     \else
       \let\tikz@shapeborder@name\pgfutil@empty
-      \ifdim\pgf@yc<\tikz@lasty\pgf@yc\tikz@lasty\fi
-      \advance\pgf@yc\qrr@tikz@udlr@distance
+      \ifdim\pgf@yb<\tikz@lasty\pgf@yb\tikz@lasty\fi
+      \advance\pgf@yb\qrr@tikz@udlr@distance
+      \pgf@yc\pgf@yb
       \edef\pgf@temp{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
     \fi
     \xdef\pgf@marshal{%
@@ -410,7 +411,7 @@
 %% du operator
 \def\qrr@tikz@@du@lineto#1{%
   \edef\tikz@timer@start{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
-  \pgf@xc\tikz@lasty
+  \pgf@xc\tikz@lastx
   \pgf@yb\tikz@lasty
   \advance\tikz@lasty-1pt%
   \tikz@flush@moveto@toward{\pgfqpoint{\tikz@lastx}{\tikz@lasty}}\pgf@xc\pgf@yc
@@ -435,8 +436,9 @@
       \edef\pgf@temp{\noexpand\pgfqpoint{\the\pgf@x}{\the\pgf@y}}%
     \else
       \let\tikz@shapeborder@name\pgfutil@empty
-      \ifdim\pgf@yc>\tikz@lasty\pgf@yc\tikz@lasty\fi
-      \advance\pgf@yc\qrr@tikz@udlr@distance
+      \ifdim\pgf@yb>\tikz@lasty\pgf@yb\tikz@lasty\fi
+      \advance\pgf@yb-\qrr@tikz@udlr@distance
+      \pgf@yc\pgf@yb
       \edef\pgf@temp{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
     \fi
     \xdef\pgf@marshal{%
@@ -476,8 +478,9 @@
       \edef\pgf@temp{\noexpand\pgfqpoint{\the\pgf@x}{\the\pgf@y}}%
     \else
       \let\tikz@shapeborder@name\pgfutil@empty
-      \ifdim\pgf@xc>\tikz@lastx\pgf@xc\tikz@lastx\fi
-      \advance\pgf@xc-\qrr@tikz@udlr@distance
+      \ifdim\pgf@xb>\tikz@lastx\pgf@xb\tikz@lastx\fi
+      \advance\pgf@xb-\qrr@tikz@udlr@distance
+      \pgf@xc\pgf@xb
       \edef\pgf@temp{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
     \fi
     \xdef\pgf@marshal{%
@@ -517,8 +520,9 @@
       \edef\pgf@temp{\noexpand\pgfqpoint{\the\pgf@x}{\the\pgf@y}}%
     \else
       \let\tikz@shapeborder@name\pgfutil@empty
-      \ifdim\pgf@xc<\tikz@lastx\pgf@xc\tikz@lastx\fi
-      \advance\pgf@xc\qrr@tikz@udlr@distance
+      \ifdim\pgf@xb<\tikz@lastx\pgf@xb\tikz@lastx\fi
+      \advance\pgf@xb\qrr@tikz@udlr@distance
+      \pgf@xc\pgf@xb
       \edef\pgf@temp{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
     \fi
     \xdef\pgf@marshal{%
