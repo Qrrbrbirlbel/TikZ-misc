@@ -224,6 +224,7 @@
 \def\qrr@tikz@@hvh@lineto#1{%
   \edef\tikz@timer@start{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
   \pgf@xb=\tikz@lastx
+  \pgf@xc=\tikz@lastx
   \pgf@yc=\tikz@lasty
   \tikz@make@last@position{#1}%
   \tikz@flush@moveto@toward{\pgfqpoint{\tikz@lastx}{\pgf@yc}}\pgf@xc\pgf@yc
@@ -232,16 +233,14 @@
     \iftikz@shapeborder
       \pgf@process{\pgfpointshapeborder{\tikz@shapeborder@name}{\pgfqpoint{\pgf@xb}{\tikz@lasty}}}%
       \ifqrr@tikz@hvvh@fromcenter
-        \ifx\tikz@moveto@waiting\relax\else
-          \pgf@xb\pgf@xc
-        \fi
+        \pgf@xc\pgf@xb
       \fi
       \ifx\qrr@tikz@hvvh@ratio\pgfutil@empty
         \ifdim\qrr@tikz@hvvh@distance<0pt\relax
           \ifqrr@tikz@hvvh@fromcenter
-            \pgf@xb\tikz@lastx
+            \pgf@xc\tikz@lastx
           \else
-            \pgf@xb\pgf@x
+            \pgf@xc\pgf@x
           \fi
         \fi
         \ifdim\pgf@x>\tikz@lastx
@@ -253,35 +252,33 @@
         \else
           \qrr@tikz@hvvh@distance\pgf@x
         \fi
-        \advance\qrr@tikz@hvvh@distance-\pgf@xb
+        \advance\qrr@tikz@hvvh@distance-\pgf@xc
         \qrr@tikz@hvvh@distance\qrr@tikz@hvvh@ratio\qrr@tikz@hvvh@distance
       \fi
-      \advance\pgf@xb\qrr@tikz@hvvh@distance
-      \edef\pgf@tempa{\noexpand\pgfqpoint{\the\pgf@xb}{\the\pgf@yc}}%
-      \edef\pgf@tempb{\noexpand\pgfqpoint{\the\pgf@xb}{\the\tikz@lasty}}%
+      \advance\pgf@xc\qrr@tikz@hvvh@distance
+      \edef\pgf@tempa{\noexpand\pgfqpoint{\the\pgf@xc}{\the\pgf@yc}}%
+      \edef\pgf@tempb{\noexpand\pgfqpoint{\the\pgf@xc}{\the\tikz@lasty}}%
       \edef\pgf@temp{\pgfqpoint{\the\pgf@x}{\the\pgf@y}}%
     \else
       \let\tikz@shapeborder@name\pgfutil@empty
       \ifqrr@tikz@hvvh@fromcenter
-        \ifx\tikz@moveto@waiting\relax\else
-          \pgf@xb\pgf@xc
-        \fi
+        \pgf@xc\pgf@xb
       \fi
       \ifx\qrr@tikz@hvvh@ratio\pgfutil@empty
         \ifdim\qrr@tikz@hvvh@distance<0pt\relax
-          \pgf@xb\tikz@lastx
+          \pgf@xc\tikz@lastx
         \fi
         \ifdim\pgf@x>\tikz@lastx
           \qrr@tikz@hvvh@distance-\qrr@tikz@hvvh@distance
         \fi
       \else
         \qrr@tikz@hvvh@distance\tikz@lastx
-        \advance\qrr@tikz@hvvh@distance-\pgf@xb
+        \advance\qrr@tikz@hvvh@distance-\pgf@xc
         \qrr@tikz@hvvh@distance\qrr@tikz@hvvh@ratio\qrr@tikz@hvvh@distance
       \fi
-      \advance\pgf@xb\qrr@tikz@hvvh@distance
-      \edef\pgf@tempa{\noexpand\pgfqpoint{\the\pgf@xb}{\the\pgf@yc}}%
-      \edef\pgf@tempb{\noexpand\pgfqpoint{\the\pgf@xb}{\the\tikz@lasty}}%
+      \advance\pgf@xc\qrr@tikz@hvvh@distance
+      \edef\pgf@tempa{\noexpand\pgfqpoint{\the\pgf@xc}{\the\pgf@yc}}%
+      \edef\pgf@tempb{\noexpand\pgfqpoint{\the\pgf@xc}{\the\tikz@lasty}}%
       \edef\pgf@temp{\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
     \fi%
     \xdef\pgf@marshal{%
@@ -298,23 +295,22 @@
   \edef\tikz@timer@start{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
   \pgf@xc=\tikz@lastx
   \pgf@yb=\tikz@lasty
+  \pgf@yc=\tikz@lasty
   \tikz@make@last@position{#1}%
-  \tikz@flush@moveto@toward{\pgfqpoint{\pgf@xc}{\tikz@lastx}}\pgf@xc\pgf@yc
+  \tikz@flush@moveto@toward{\pgfqpoint{\pgf@xc}{\tikz@lasty}}\pgf@xc\pgf@yc
   \begingroup
     \pgfqkeys{/tikz/hvvh}{/tikz/style/.expand once=\tikz@hvvh@currentoption}%
     \iftikz@shapeborder
       \pgf@process{\pgfpointshapeborder{\tikz@shapeborder@name}{\pgfqpoint{\tikz@lastx}{\pgf@yb}}}%
       \ifqrr@tikz@hvvh@fromcenter
-        \ifx\tikz@moveto@waiting\relax\else
-          \pgf@yb\pgf@yc
-        \fi
+        \pgf@yc\pgf@yb
       \fi
       \ifx\qrr@tikz@hvvh@ratio\pgfutil@empty
         \ifdim\qrr@tikz@hvvh@distance<0pt\relax
           \ifqrr@tikz@hvvh@fromcenter
-            \pgf@yb\tikz@lasty
+            \pgf@yc\tikz@lasty
           \else
-            \pgf@yb\pgf@y
+            \pgf@yc\pgf@y
           \fi
         \fi
         \ifdim\pgf@y>\tikz@lasty
@@ -326,35 +322,33 @@
         \else
           \qrr@tikz@hvvh@distance\pgf@y
         \fi
-        \advance\qrr@tikz@hvvh@distance-\pgf@yb
+        \advance\qrr@tikz@hvvh@distance-\pgf@yc
         \qrr@tikz@hvvh@distance\qrr@tikz@hvvh@ratio\qrr@tikz@hvvh@distance
       \fi
-      \advance\pgf@yb\qrr@tikz@hvvh@distance
-      \edef\pgf@tempa{\noexpand\pgfqpoint{\the\pgf@xc}{\the\pgf@yb}}%
-      \edef\pgf@tempb{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\pgf@yb}}%
+      \advance\pgf@yc\qrr@tikz@hvvh@distance
+      \edef\pgf@tempa{\noexpand\pgfqpoint{\the\pgf@xc}{\the\pgf@yc}}%
+      \edef\pgf@tempb{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\pgf@yc}}%
       \edef\pgf@temp{\pgfqpoint{\the\pgf@x}{\the\pgf@y}}%
     \else
       \let\tikz@shapeborder@name\pgfutil@empty
       \ifqrr@tikz@hvvh@fromcenter
-        \ifx\tikz@moveto@waiting\relax\else
-          \pgf@yb\pgf@yc
-        \fi
+        \pgf@yc\pgf@yb
       \fi
       \ifx\qrr@tikz@hvvh@ratio\pgfutil@empty
         \ifdim\qrr@tikz@hvvh@distance<0pt\relax
-          \pgf@yb\tikz@lasty
+          \pgf@yc\tikz@lasty
         \fi
         \ifdim\pgf@y>\tikz@lasty
           \qrr@tikz@hvvh@distance-\qrr@tikz@hvvh@distance
         \fi
       \else
         \qrr@tikz@hvvh@distance\tikz@lasty
-        \advance\qrr@tikz@hvvh@distance-\pgf@yb
+        \advance\qrr@tikz@hvvh@distance-\pgf@yc
         \qrr@tikz@hvvh@distance\qrr@tikz@hvvh@ratio\qrr@tikz@hvvh@distance
       \fi
-      \advance\pgf@yb\qrr@tikz@hvvh@distance
-      \edef\pgf@tempa{\noexpand\pgfqpoint{\the\pgf@xc}{\the\pgf@yb}}%
-      \edef\pgf@tempb{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\pgf@yb}}%
+      \advance\pgf@yc\qrr@tikz@hvvh@distance
+      \edef\pgf@tempa{\noexpand\pgfqpoint{\the\pgf@xc}{\the\pgf@yc}}%
+      \edef\pgf@tempb{\noexpand\pgfqpoint{\the\tikz@lastx}{\the\pgf@yc}}%
       \edef\pgf@temp{\pgfqpoint{\the\tikz@lastx}{\the\tikz@lasty}}%
     \fi%
     \xdef\pgf@marshal{%
