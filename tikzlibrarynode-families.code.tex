@@ -1,6 +1,6 @@
-\let\tikz@lib@nf@textheight\pgfutil@empty
-\let\tikz@lib@nf@textdepth\pgfutil@empty
-\let\tikz@lib@nf@textwidth\pgfutil@empty
+\let\tikz@lib@nf@textheight\relax
+\let\tikz@lib@nf@textdepth\relax
+\let\tikz@lib@nf@textwidth\relax
 \tikzset{
   Minimum Width/.code={%
     \pgfutil@ifundefined{\pgfpictureid @#1@width}{}{%
@@ -29,7 +29,7 @@
               \fi
             }%
             \expandafter\expandafter\expandafter\gdef\expandafter\expandafter\expandafter
-            \tikz@atend@picture\expandafter\expandafter\expandafter{\expandafter\tikz@atend@picture\expandafter\tikz@lib@nf@save\expandafter{\pgfpictureid}{#1}{width}}
+            \tikz@atend@picture\expandafter\expandafter\expandafter{\expandafter\tikz@atend@picture\expandafter\tikz@lib@nf@save\expandafter{\pgfpictureid}{#1}{width}{width}}
           \endpgfinterruptpath
         \endpgfextra
       }%
@@ -62,7 +62,7 @@
               \fi
             }%
             \expandafter\expandafter\expandafter\gdef\expandafter\expandafter\expandafter
-            \tikz@atend@picture\expandafter\expandafter\expandafter{\expandafter\tikz@atend@picture\expandafter\tikz@lib@nf@save\expandafter{\pgfpictureid}{#1}{height}}
+            \tikz@atend@picture\expandafter\expandafter\expandafter{\expandafter\tikz@atend@picture\expandafter\tikz@lib@nf@save\expandafter{\pgfpictureid}{#1}{height}{height}}
           \endpgfinterruptpath
         \endpgfextra
       }%
@@ -81,22 +81,24 @@
 }
 
 \def\tikz@lib@nf@text@#1#2#3{%
-  \ifx#1\wd\def\tikz@temp{@}\else\let\tikz@temp\pgfutil@empty\fi
-  \expandafter\ifx\csname tikz@lib@nf@#3\tikz@temp\endcsname\pgfutil@empty\else
-    \pgfutil@ifundefined{\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\tikz@temp}{%
-      \expandafter\xdef\csname\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\tikz@temp\endcsname{\the#1#2}%
-    }{%
-      \ifdim\csname\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\tikz@temp\endcsname<#1#2
+  \expandafter\ifx\csname tikz@lib@nf@#3\endcsname\relax\else
+    \ifx#1\wd\def\tikz@temp{@}\else\let\tikz@temp\pgfutil@empty\fi
+    \expandafter\ifx\csname tikz@lib@nf@#3\tikz@temp\endcsname\pgfutil@empty\else
+      \pgfutil@ifundefined{\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\tikz@temp}{%
         \expandafter\xdef\csname\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\tikz@temp\endcsname{\the#1#2}%
-      \else
-        \ifx#1\wd\else
-          #1#2=\csname\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\endcsname\relax
+      }{%
+        \ifdim\csname\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\tikz@temp\endcsname<#1#2
+          \expandafter\xdef\csname\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\tikz@temp\endcsname{\the#1#2}%
+        \else
+          \ifx#1\wd\else
+            #1#2=\csname\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\endcsname\relax
+          \fi
         \fi
-      \fi
-    }%
-    \edef\tikz@temp{\noexpand\tikz@lib@nf@save{\pgfpictureid}{\csname tikz@lib@nf@#3\endcsname}{#3}{#3\tikz@temp}}%
-    \expandafter\expandafter\expandafter\gdef\expandafter\expandafter\expandafter
-    \tikz@atend@picture\expandafter\expandafter\expandafter{\expandafter\tikz@atend@picture\tikz@temp}%
+      }%
+      \edef\tikz@temp{\noexpand\tikz@lib@nf@save{\pgfpictureid}{\csname tikz@lib@nf@#3\endcsname}{#3}{#3\tikz@temp}}%
+      \expandafter\expandafter\expandafter\gdef\expandafter\expandafter\expandafter
+      \tikz@atend@picture\expandafter\expandafter\expandafter{\expandafter\tikz@atend@picture\tikz@temp}%
+    \fi
   \fi
 }
 %%% Redefinition
