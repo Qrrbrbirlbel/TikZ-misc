@@ -1,0 +1,46 @@
+\def\pgftransformxmirror#1{
+  \pgfmathparse{#1}%
+  \ifpgfmathunitsdeclared
+    \pgf@xa\pgfmathresult pt\relax
+    \advance\pgf@xa2\relax
+    \pgftransformcm{-1}{0}{0}{1}{\pgfqpoint{+\the\pgf@xa}{+0pt}}%
+  \else
+    \pgftransformmirror{\pgfqpointxy{\pgfmathresult}{0}}{\pgfpointadd{\pgfqpointxy{\pgfmathresult}{0}}{\pgfqpointxy{0}{1}}}%
+  \fi
+}
+\def\pgftransformymirror#1{
+  \pgfmathparse{#1}%
+  \ifpgfmathunitsdeclared
+    \pgf@ya\pgfmathresult pt\relax
+    \advance\pgf@ya2\relax
+    \pgftransformcm{1}{0}{0}{-1}{\pgfqpoint{+0pt}{+\the\pgf@ya}}%
+  \else
+    \edef\pgf@marshal{\noexpand\pgftransformmirror{\noexpand\pgfqpointxy{0}{\pgfmathresult}}%
+                                                  {\noexpand\pgfpointadd{\noexpand\pgfqpointxy{0}{\pgfmathresult}}{\noexpand\pgfqpointxy{1}{0}}}}%
+    \pgf@marshal
+  \fi}
+\def\pgftransformmirror#1#2{%
+  \pgfextract@process\pgf@tempa{#1}%
+  \pgfpointnormalised{\pgfpointdiff{\pgf@tempa}{#2}}%
+  \pgf@xa=\pgf@sys@tonumber\pgf@y\pgf@x
+  \pgf@xb=\pgf@sys@tonumber\pgf@x\pgf@x
+  \pgf@yb=\pgf@sys@tonumber\pgf@y\pgf@y
+  \multiply\pgf@xa2\relax
+  \pgf@xc=-\pgf@yb\advance\pgf@xc\pgf@xb
+  \pgf@yc=-\pgf@xb\advance\pgf@yc\pgf@yb
+  \edef\pgf@temp{{\the\pgf@xc}{+\the\pgf@xa}{+\the\pgf@xa}{+\the\pgf@yc}}%
+  \expandafter\pgf@transformcm\pgf@temp{\pgf@tempa}%
+  \pgftransformshift{\pgfpointscale{-1}{\pgf@tempa}}%
+}
+\def\pgfqtransformmirror#1{%
+  \pgfpointnormalised{#1}%
+  \pgf@xa=\pgf@sys@tonumber\pgf@y\pgf@x
+  \pgf@xb=\pgf@sys@tonumber\pgf@x\pgf@x
+  \pgf@yb=\pgf@sys@tonumber\pgf@y\pgf@y
+  \multiply\pgf@xa2\relax
+  \pgf@xc=-\pgf@yb\advance\pgf@xc\pgf@xb
+  \pgf@yc=-\pgf@xb\advance\pgf@yc\pgf@yb
+  \edef\pgf@temp{{\the\pgf@xc}{+\the\pgf@xa}{+\the\pgf@xa}{+\the\pgf@yc}}%
+  \expandafter\pgf@transformcm\pgf@temp{\pgfpointorigin}%
+}
+\endinput
