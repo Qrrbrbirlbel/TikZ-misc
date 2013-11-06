@@ -206,3 +206,31 @@
   span vertical/.code={\tikz@lib@place@fit@scan{#1}{1}},
   span horizontal/.code={\tikz@lib@place@fit@scan{#1}{2}},
   span/.code={\tikz@lib@place@fit@scan{#1}{3}}}
+
+\pgfmathdeclarefunction{x_node_dist}{0}{%
+  \begingroup
+    \edef\pgfmath@temp{\noexpand\pgfutil@in@{and}{\tikz@node@distance}}%
+    \pgfmath@temp\ifpgfutil@in@
+      \expandafter\tikz@lib@place@handle@qrr@@\tikz@node@distance\tikz@stop
+    \else
+      \edef\pgfmath@temp{\tikz@node@distance and\tikz@node@distance}%
+      \expandafter\tikz@lib@place@handle@qrr@@\pgfmath@temp\tikz@stop
+    \fi
+    \pgfmathparse{\pgf@tempb}%
+    \pgfmath@smuggleone\pgfmathresult
+  \endgroup
+}
+\pgfmathdeclarefunction{y_node_dist}{0}{%
+  \begingroup
+    \edef\pgfmath@temp{\noexpand\pgfutil@in@{and}{\tikz@node@distance}}%
+    \pgfmath@temp\ifpgfutil@in@
+      \expandafter\tikz@lib@place@handle@qrr@@\tikz@node@distance\tikz@stop
+    \else
+      \edef\pgfmath@temp{\tikz@node@distance and\tikz@node@distance}%
+      \expandafter\tikz@lib@place@handle@qrr@@\pgfmath@temp\tikz@stop
+    \fi
+    \pgfmathparse{\pgf@tempa}%
+    \pgfmath@smuggleone\pgfmathresult
+  \endgroup
+}
+\endinput
