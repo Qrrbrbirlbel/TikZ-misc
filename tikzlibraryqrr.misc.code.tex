@@ -1,0 +1,86 @@
+%% full arc
+\pgfset{full arc/.code=%
+  \def\pgf@temp{#1}%
+  \ifx\pgfutil@empty\pgf@temp
+    \let\pgfmath@fullarc@factor\pgfutil@empty
+  \else
+    \pgfmathsetmacro\pgfmath@fullarc@factor{360/(#1)}%
+  \fi}
+\pgfmathdeclareoperator{R}{full arc}{1}{postfix}{950}
+\pgfmathdeclarefunction{full arc}{1}{%
+  \begingroup
+    \pgfmath@x=#1pt\relax
+    \ifx\pgfmath@fullarc@factor\pgfutil@empty\else
+      \pgfmath@x\pgfmath@fullarc@factor\pgfmath@x
+    \fi
+    \pgfmath@returnone\pgfmath@x
+  \endgroup}
+
+%% foreach
+\newif\ifqrr@pgf@foreach@no@list
+\pgfqkeys{/pgf/foreach}{
+  @use/.code args={#1to#2}{%
+    \qrr@pgf@foreach@no@listtrue
+    \qrr@pgf@foreach@no@list@use\foreachStart{#1}%
+    \pgfutil@in@{step}{#2}
+    \ifpgfutil@in@
+      \qrr@pgf@foreach@no@list@parse@step#2\pgffor@stop
+    \else
+      \qrr@pgf@foreach@no@list@parse@step#2step1\pgffor@stop
+    \fi
+    \edef\qrr@pgf@foreach@no@list@list{\foreachStart,\foreachSecond,...,\foreachEnd}},
+  use int/.code={%
+    \let\qrr@pgf@foreach@no@list@use\pgfmathtruncatemacro
+    \pgfkeysalso{/pgf/foreach/@use={#1}}},
+  use float/.code={%
+    \let\qrr@pgf@foreach@no@list@use\pgfmathsetmacro
+    \pgfkeysalso{/pgf/foreach/@use={#1}}}}
+\def\qrr@pgf@foreach@no@list@parse@step#1step#2\pgffor@stop{%
+  \qrr@pgf@foreach@no@list@use\foreachEnd{#1}%
+  \qrr@pgf@foreach@no@list@use\foreachSecond{\foreachStart+#2}}
+\def\pgffor@vars{% manually extended, better etoolbox
+  \pgfutil@ifnextchar i{\pgffor@@vars@end}{%
+    \pgfutil@ifnextchar[{\pgffor@@vars@opt}{%]
+      \pgfutil@ifnextchar/{\pgffor@@vars@slash@gobble}{%
+         \ifqrr@pgf@foreach@no@list\expandafter\pgfutil@firstoftwo\else
+           \expandafter\pgfutil@secondoftwo\fi
+         {\qrr@pgf@foreach@no@listfalse\pgffor@macro@list\qrr@pgf@foreach@no@list@list}
+         {\pgffor@@vars}}}}}%
+
+%% Handlers
+\pgfkeys{/handlers/.pgfmath/.code=\pgfmathparse{#1}\expandafter\pgfkeys@exp@call\expandafter{\pgfmathresult}}
+\pgfkeys{/handlers/.pgfmath int/.code=\pgfmathparse{int(#1)}\expandafter\pgfkeys@exp@call\expandafter{\pgfmathresult}}
+\pgfkeys{/handlers/.pgfmath strcat/.code=\pgfmathparse{strcat(#1)}\expandafter\pgfkeys@exp@call\expandafter{\pgfmathresult}}
+\pgfkeys{/handlers/.List/.code={%
+    \let\pgfkeys@global@temp\pgfutil@empty
+    \foreach \pgfkeys@temp in{#1}{
+      \ifx\pgfkeys@global@temp\pgfutil@empty
+        \global\let\pgfkeys@global@temp\pgfkeys@temp
+      \else
+        \expandafter\pgfutil@g@addto@macro\expandafter\pgfkeys@global@temp\expandafter
+          {\pgfkeys@temp}%
+      \fi}%
+    \expandafter\pgfkeys@exp@call\expandafter{\pgfkeys@global@temp}}}
+
+%% PGFmath
+\pgfmathdeclarefunction{strrepeat}{2}{%
+  \begingroup\pgfmathint{#2}\pgfmath@count\pgfmathresult
+    \let\pgfmathresult\pgfutil@empty
+    \pgfutil@loop\ifnum\pgfmath@count>0\relax
+      \expandafter\def\expandafter\pgfmathresult\expandafter{\pgfmathresult#1}%
+      \advance\pgfmath@count-1\relax
+    \pgfutil@repeat\pgfmath@smuggleone\pgfmathresult\endgroup}
+
+\pgfmathdeclarefunction{strcat}{...}{%
+  \begingroup
+    \let\pgfmathresult\pgfutil@empty
+    \pgfmathstrcat@@#1\pgfmath@stop}
+\def\pgfmathstrcat@@#1{%
+  \ifx\pgfmath@stop#1%
+    \let\pgfmath@next\pgfmathstrcat@@@
+  \else
+    \expandafter\def\expandafter\pgfmathresult\expandafter{\pgfmathresult#1}%
+    \let\pgfmath@next\pgfmathstrcat@@
+  \fi
+  \pgfmath@next}
+\def\pgfmathstrcat@@@{\pgfmath@smuggleone\pgfmathresult\endgroup}
