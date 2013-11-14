@@ -71,6 +71,10 @@
       \advance\pgfmath@count-1\relax
     \pgfutil@repeat\pgfmath@smuggleone\pgfmathresult\endgroup}
 
+\pgfmathdeclarefunction{instr}{2}{%
+  \pgfutil@in@{#1}{#2}%
+  \ifpgfutil@in@\def\pgfmathresult{1}\else\def\pgfmathresult{0}\fi}
+
 \pgfmathdeclarefunction{strcat}{...}{%
   \begingroup
     \let\pgfmathresult\pgfutil@empty
