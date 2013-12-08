@@ -128,10 +128,16 @@
 
 %% http://tex.stackexchange.com/a/132939/16595
 \tikzset{
+  @edges through/.code={{{% three braces to protect \pgfeov
+    \pgfutil@ifnextchar[{\pgfkeysvalueof{/tikz/@@edges through/.@cmd}}
+                        {\pgfkeysvalueof{/tikz/@@edges through/.@cmd}[]}#1\pgfeov}}},
+  @@edges through/.style args={[#1]#2}{/tikz/insert path={edge[#1] (#2) (#2)}},
+  edges through/.style={/tikz/@edges through/.list={#1}}}
+\tikzset{
   @edges to/.code={{{% three braces to protect \pgfeov
     \pgfutil@ifnextchar[{\pgfkeysvalueof{/tikz/@@edges to/.@cmd}}
                         {\pgfkeysvalueof{/tikz/@@edges to/.@cmd}[]}#1\pgfeov}}},
-  @@edges to/.style args={[#1]#2}{/tikz/insert path={edge[#1] (#2) (#2)}},
+  @@edges to/.style args={[#1]#2}{/tikz/insert path={edge[#1] (#2)}},
   edges to/.style={/tikz/@edges to/.list={#1}}}
 \tikzset{
   @tos to/.code={{{% three braces to protect \pgfeov
@@ -139,4 +145,3 @@
                         {\pgfkeysvalueof{/tikz/@@tos to/.@cmd}[]}#1\pgfeov}}},
   @@tos to/.style args={[#1]#2}{/tikz/insert path={to[#1] (#2)}},
   tos to/.style={/tikz/@tos to/.list={#1}}}
-\endinput
