@@ -5,7 +5,7 @@
     \let\pgfmath@fullarc@factor\pgfutil@empty
   \else
     \pgfmathsetmacro\pgfmath@fullarc@factor{360/(#1)}%
-  \fi}
+  \fi,full arc=}
 \pgfmathdeclareoperator{R}{full arc}{1}{postfix}{950}
 \pgfmathdeclarefunction{full arc}{1}{%
   \begingroup
@@ -17,6 +17,9 @@
   \endgroup}
 
 %% foreach
+% http://tex.stackexchange.com/a/126418/16595
+\def\pgffor@scanround(#1)#2,{\def\pgffor@value{(#1)#2}\pgffor@scanned}
+% http://tex.stackexchange.com/a/126418/16595
 \newif\ifqrr@pgf@foreach@no@list
 \pgfqkeys{/pgf/foreach}{
   @use/.code args={#1to#2}{%
@@ -51,6 +54,8 @@
 \pgfkeys{/handlers/.pgfmath/.code=\pgfmathparse{#1}\expandafter\pgfkeys@exp@call\expandafter{\pgfmathresult}}
 \pgfkeys{/handlers/.pgfmath int/.code=\pgfmathparse{int(#1)}\expandafter\pgfkeys@exp@call\expandafter{\pgfmathresult}}
 \pgfkeys{/handlers/.pgfmath strcat/.code=\pgfmathparse{strcat(#1)}\expandafter\pgfkeys@exp@call\expandafter{\pgfmathresult}}
+
+% http://tex.stackexchange.com/a/144187/16595
 \pgfkeys{/handlers/.List/.code={%
     \let\pgfkeys@global@temp\pgfutil@empty
     \foreach \pgfkeys@temp in{#1}{
@@ -88,3 +93,50 @@
   \fi
   \pgfmath@next}
 \def\pgfmathstrcat@@@{\pgfmath@smuggleone\pgfmathresult\endgroup}
+
+
+% the CVS version swaps the arguments so I define new atan
+% functions that have the order of arguments in their name
+\csname pgfmathatan2@\endcsname{0}{1}
+\ifdim\pgfmathresult pt=0pt % atan2(y, x)
+  \pgfmathdeclarefunction{atanXY}{2}{\csname pgfmathatan2@\endcsname{#2}{#1}}
+  \pgfmathdeclarefunction{atanYX}{2}{\csname pgfmathatan2@\endcsname{#1}{#2}}
+\else                       % atan2(x, y)
+  \pgfmathdeclarefunction{atanXY}{2}{\csname pgfmathatan2@\endcsname{#1}{#2}}
+  \pgfmathdeclarefunction{atanYX}{2}{\csname pgfmathatan2@\endcsname{#2}{#1}}
+\fi
+
+%% http://tex.stackexchange.com/a/141333/16595
+\let\tikz@auto@anchor@orig      \tikz@auto@anchor
+\let\tikz@auto@anchor@prime@orig\tikz@auto@anchor@prime
+\tikzset{
+  Auto/.code=\pgfkeysalso{/tikz/auto=#1}%
+    \let\tikz@auto@anchor      \tikz@Auto@anchor
+    \let\tikz@auto@anchor@prime\tikz@Auto@anchor@prime,
+  auto/.prefix code=\let\tikz@auto@anchor      \tikz@auto@anchor@orig
+                    \let\tikz@auto@anchor@prime\tikz@auto@anchor@prime@orig}
+\def\tikz@Auto@anchor{%
+  \pgfmathatanXY@{\pgf@sys@tonumber\pgf@x}{\pgf@sys@tonumber\pgf@y}%
+  \pgfutil@tempdima=\pgfmathresult pt\relax
+  \advance\pgfutil@tempdima-90pt\relax
+  \edef\tikz@anchor{\pgf@sys@tonumber\pgfutil@tempdima}}
+\def\tikz@Auto@anchor@prime{%
+  \pgfmathatanXY@{\pgf@sys@tonumber\pgf@x}{\pgf@sys@tonumber\pgf@y}%
+  \pgfutil@tempdima=\pgfmathresult pt\relax
+  \advance\pgfutil@tempdima90pt\relax
+  \edef\tikz@anchor{\pgf@sys@tonumber\pgfutil@tempdima}}
+
+%% http://tex.stackexchange.com/a/132939/16595
+\tikzset{
+  @edges to/.code={{{% three braces to protect \pgfeov
+    \pgfutil@ifnextchar[{\pgfkeysvalueof{/tikz/@@edges to/.@cmd}}
+                        {\pgfkeysvalueof{/tikz/@@edges to/.@cmd}[]}#1\pgfeov}}},
+  @@edges to/.style args={[#1]#2}{/tikz/insert path={edge[#1] (#2) (#2)}},
+  edges to/.style={/tikz/@edges to/.list={#1}}}
+\tikzset{
+  @tos to/.code={{{% three braces to protect \pgfeov
+    \pgfutil@ifnextchar[{\pgfkeysvalueof{/tikz/@@tos to/.@cmd}}
+                        {\pgfkeysvalueof{/tikz/@@tos to/.@cmd}[]}#1\pgfeov}}},
+  @@tos to/.style args={[#1]#2}{/tikz/insert path={to[#1] (#2)}},
+  tos to/.style={/tikz/@tos to/.list={#1}}}
+\endinput
