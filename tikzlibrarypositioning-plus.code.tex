@@ -66,11 +66,35 @@
 \tikzset{east above/.code =\tikz@lib@place@handle@{#1}{south east}{0}{1}{north east}{1}}
 \tikzset{east below/.code=\tikz@lib@place@handle@{#1}{north east}{0}{-1}{south east}{1}}
 
+\newif\ifqrr@tikz@lib@place@postransform
+\tikzset{node distance transformation/.is if=qrr@tikz@lib@place@postransform}
+\def\tikz@lib@place@handle@@#1#2#3#4{%
+  \pgfutil@in@{of }{#1}%
+  \ifpgfutil@in@%
+    \tikz@lib@place@of#1\tikz@stop{#4}%
+  \else%
+    \edef\tikz@lib@place@nums{#1}%
+  \fi%
+  \ifx\tikz@lib@place@nums\pgfutil@empty%
+    % Ok, nothing to do, we have set the anchor and we are happy...
+  \else%
+    \expandafter\tikz@lib@place@parse@nums\expandafter{\tikz@lib@place@nums}%
+    \pgf@x=#2\pgf@x%
+    \pgf@y=#3\pgf@y%
+    \ifqrr@tikz@lib@place@postransform
+      \pgf@pos@transform{\pgf@x}{\pgf@y}% change from original
+    \fi
+    \edef\tikz@lib@pos@call{\noexpand\pgftransformshift{\noexpand\pgfqpoint{\the\pgf@x}{\the\pgf@y}}}%
+  \fi%
+}
+
 \def\tikz@lib@place@handle@#1#2#3#4#5#6{%
   \pgfutil@in@{:}{#1}%
   \ifpgfutil@in@
     \tikz@lib@place@handle@qrr@#1\tikz@stop
-    \let\tikz@lib@temp\pgf@tempa
+    \ifx\pgf@temp\pgfutil@empty
+      \let\pgf@temp\tikz@node@distance
+    \fi
     \pgfmathsetmacro\pgf@tempa{(\pgf@tempa)*#4}%
     \pgfmathsetmacro\pgf@tempb{(\pgf@tempb)*#3}%
     \edef\pgf@marshal{\noexpand\tikz@lib@place@handle@{\pgf@temp}{#2}{\pgf@tempb}{\pgf@tempa}{#5}{#6}}%
@@ -97,8 +121,8 @@
   \def\pgf@tempb{#2}%
 }
 \def\qrr@xyshift@starred#1#2#3{
-  \edef\pgf@temp{\noexpand\pgfutil@in@{and}{\tikz@node@distance}}%
-  \pgf@temp
+  \edef\tikz@marshal{\noexpand\pgfutil@in@{and}{\tikz@node@distance}}%
+  \tikz@marshal
   \ifpgfutil@in@
     \expandafter\tikz@lib@place@handle@qrr@@\tikz@node@distance\tikz@stop
   \else
@@ -106,24 +130,22 @@
   \fi
   \pgfmathparse{#3}%
   \ifpgfmathunitsdeclared
-    \pgf@xa=\pgfmathresult pt%
-  \else
-    \let\tikz@lib@temp=\pgfmathresult
-    \ifx#2x
-      \pgf@process{\pgfpointxy{\tikz@lib@temp}{0}}%
-      \pgf@xa=\pgf@x
+    \if#2x%
+      \pgftransformshift{\pgfqpoint{\pgfmathresult pt}{0pt}}%
     \else
-      \pgf@process{\pgfpointxy{0}{\tikz@lib@temp}}%
-      \pgf@xa=\pgf@y
+      \pgftransformshift{\pgfqpoint{0pt}{\pgfmathresult pt}}%
     \fi
-  \fi
-  \pgfkeys{/tikz/#2shift/.expanded=(#1)*\the\pgf@xa}
-}
+  \else
+    \ifx#2x
+      \pgf@process{\pgfqpointxy{\pgfmathresult}{0}}%
+    \else
+      \pgf@process{\pgfqpointxy{0}{\pgfmathresult}}%
+    \fi
+    \pgftransformshift{\pgfqpoint{\pgf@x}{\pgf@y}}%
+  \fi}
 \tikzset{
   xshift*/.code=\qrr@xyshift@starred{#1}x\pgf@tempb,
-  xshift*/.default=1,
   yshift*/.code=\qrr@xyshift@starred{#1}y\pgf@tempa,
-  yshift*/.default=1
 }
 
 \def\pgfutil@firstofmany#1#2\pgf@stop{#1}
@@ -233,4 +255,10 @@
     \pgfmath@smuggleone\pgfmathresult
   \endgroup
 }
+%\tikzdeclarecoordinatesystem{node distance}{%
+%  \tikz@cs@nd#1\tikz@stop}
+%\def\tikz@cs@nd#1,#2\tikz@stop{%
+%  \def\qrr@xyshift@starred@action##1{\pgftransformshift{##1}}%
+%  \qrr@xyshift@starred{#1}x\pgf@tempb
+%  \qrr@xyshift@starred{#2}y\pgf@tempa}
 \endinput
