@@ -128,7 +128,7 @@
   \else
     \let#3\tikz@node@distance
   \fi
-  \pgfmathparse{#3}%
+  \pgfmathparse{(#1)*#3}%
   \ifpgfmathunitsdeclared
     \if#2x%
       \pgftransformshift{\pgfqpoint{\pgfmathresult pt}{0pt}}%
