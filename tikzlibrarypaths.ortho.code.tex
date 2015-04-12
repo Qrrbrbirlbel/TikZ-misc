@@ -27,22 +27,22 @@
    to path={-|- (\tikztotarget) \tikztonodes}},%
   ud/.style={%
     udlr/ud distance/.expanded={#1},%
-    to path={ud (\tikztotarget) \tikztonodes}},%
+    to path={r-ud (\tikztotarget) \tikztonodes}},%
   du/.style={%
     udlr/du distance/.expanded={#1},%
-    to path={du (\tikztotarget) \tikztonodes}},%
+    to path={r-du (\tikztotarget) \tikztonodes}},%
   lr/.style={%
     udlr/lr distance/.expanded={#1},%
-    to path={lr (\tikztotarget) \tikztonodes}},%
+    to path={r-lr (\tikztotarget) \tikztonodes}},%
   rl/.style={%
     udlr/rl distance/.expanded={#1},%
-    to path={rl (\tikztotarget) \tikztonodes}},%
-	ud/.default=\pgfkeysvalueof{/tikz/udlr/ud distance},%
-	du/.default=\pgfkeysvalueof{/tikz/udlr/du distance},%
-	rl/.default=\pgfkeysvalueof{/tikz/udlr/rl distance},%
-	lr/.default=\pgfkeysvalueof{/tikz/udlr/lr distance},%
-	|-|/.default=\qrr@tikz@hvvh@ratio,%
-	-|-/.default=\qrr@tikz@hvvh@ratio
+    to path={r-rl (\tikztotarget) \tikztonodes}},%
+  ud/.default=\pgfkeysvalueof{/tikz/udlr/ud distance},%
+  du/.default=\pgfkeysvalueof{/tikz/udlr/du distance},%
+  rl/.default=\pgfkeysvalueof{/tikz/udlr/rl distance},%
+  lr/.default=\pgfkeysvalueof{/tikz/udlr/lr distance},%
+  |-|/.default=\qrr@tikz@hvvh@ratio,%
+  -|-/.default=\qrr@tikz@hvvh@ratio
 }
 
 %BEGIN_FOLD hvvh operator
