@@ -75,8 +75,8 @@
   hvvh/middle 0 to 1/.style={hvvh/spacing=0},%
   hvvh/0 to 1/.style={hvvh/middle 0 to 1},%
   hvvh/from center/.is if=qrr@tikz@hvvh@fromcenter,%
-  udle/from center/.style={/tikz/hvvh/from center={#1}},
-  udle/from center/.default=true,
+  udlr/from center/.style={/tikz/hvvh/from center={#1}},
+  udlr/from center/.default=true,
   hvvh/spacing/.code=%
     \ifcase#1\relax
       \qrr@tikz@hvvh@middletrue
@@ -169,35 +169,29 @@
 \let\tikz@hvvh@currentoption\pgfutil@empty
 \def\qrr@tikz@collect@hvvh@options#1[#2]{\edef\tikz@hvvh@currentoption{#2}#1}
 \def\qrr@tikz@hvh@lineto@next{%
-  \pgfutil@ifnextchar n
-  {\tikz@collect@label@onpath\qrr@tikz@hvh@lineto@next}
-  {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@hvh@lineto@next}%
-      {\tikz@scan@one@point\qrr@tikz@@hvh@lineto}}}
+  \pgfutil@ifnextchar n{\tikz@collect@label@onpath\qrr@tikz@hvh@lineto@next}
+    {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@hvh@lineto@next}%
+      {\pgfutil@ifnextchar p{\tikz@collect@pic@onpath\qrr@tikz@hvh@lineto@next}{\tikz@scan@one@point\qrr@tikz@@hvh@lineto}}}}
 \def\qrr@tikz@vhv@lineto@next{%
-  \pgfutil@ifnextchar n
-  {\tikz@collect@label@onpath\qrr@tikz@vhv@lineto@next}
-  {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@vhv@lineto@next}%
-      {\tikz@scan@one@point\qrr@tikz@@vhv@lineto}}}
+  \pgfutil@ifnextchar n{\tikz@collect@label@onpath\qrr@tikz@vhv@lineto@next}
+    {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@vhv@lineto@next}%
+      {\pgfutil@ifnextchar p{\tikz@collect@pic@onpath\qrr@tikz@vhv@lineto@next}{\tikz@scan@one@point\qrr@tikz@@vhv@lineto}}}}
 \def\qrr@tikz@ud@lineto@next{%
-  \pgfutil@ifnextchar n
-  {\tikz@collect@label@onpath\qrr@tikz@ud@lineto@next}
-  {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@ud@lineto@next}
-    {\tikz@scan@one@point\qrr@tikz@@ud@lineto}}}
+  \pgfutil@ifnextchar n{\tikz@collect@label@onpath\qrr@tikz@ud@lineto@next}
+    {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@ud@lineto@next}
+      {\pgfutil@ifnextchar p{\tikz@collect@pic@onpath\qrr@tikz@ud@lineto@next}{\tikz@scan@one@point\qrr@tikz@@ud@lineto}}}}
 \def\qrr@tikz@du@lineto@next{%
-  \pgfutil@ifnextchar n
-  {\tikz@collect@label@onpath\qrr@tikz@du@lineto@next}
-  {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@du@lineto@next}
-    {\tikz@scan@one@point\qrr@tikz@@du@lineto}}}
+  \pgfutil@ifnextchar n{\tikz@collect@label@onpath\qrr@tikz@du@lineto@next}
+    {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@du@lineto@next}
+      {\pgfutil@ifnextchar p{\tikz@collect@pic@onpath\qrr@tikz@du@lineto@next}{\tikz@scan@one@point\qrr@tikz@@du@lineto}}}}
 \def\qrr@tikz@lr@lineto@next{%
-  \pgfutil@ifnextchar n
-  {\tikz@collect@label@onpath\qrr@tikz@lr@lineto@next}
-  {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@lr@lineto@next}
-    {\tikz@scan@one@point\qrr@tikz@@lr@lineto}}}
+  \pgfutil@ifnextchar n{\tikz@collect@label@onpath\qrr@tikz@lr@lineto@next}
+    {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@lr@lineto@next}
+      {\pgfutil@ifnextchar p{\tikz@collect@pic@onpath\qrr@tikz@lr@lineto@next}{\tikz@scan@one@point\qrr@tikz@@lr@lineto}}}}
 \def\qrr@tikz@rl@lineto@next{%
-  \pgfutil@ifnextchar n
-  {\tikz@collect@label@onpath\qrr@tikz@rl@lineto@next}
-  {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@rl@lineto@next}
-    {\tikz@scan@one@point\qrr@tikz@@rl@lineto}}}
+  \pgfutil@ifnextchar n{\tikz@collect@label@onpath\qrr@tikz@rl@lineto@next}
+    {\pgfutil@ifnextchar c{\tikz@collect@coordinate@onpath\qrr@tikz@rl@lineto@next}
+      {\pgfutil@ifnextchar p{\tikz@collect@pic@onpath\qrr@tikz@rl@lineto@next}{\tikz@scan@one@point\qrr@tikz@@rl@lineto}}}}
 
 \def\tikz@do@hvvh#1#2#3#4#5{%
 % #1 = first kink
@@ -366,6 +360,7 @@
   \pgf@xc\tikz@lastx
   \pgf@yb\tikz@lasty
   \advance\tikz@lasty1pt%
+  \let\pgf@temp\tikz@moveto@waiting
   \tikz@flush@moveto@toward{\pgfqpoint{\tikz@lastx}{\tikz@lasty}}\pgf@xc\pgf@yc
   \tikz@make@last@position{#1}%
   \begingroup
@@ -388,6 +383,11 @@
       \edef\pgf@temp{\noexpand\pgfqpoint{\the\pgf@x}{\the\pgf@y}}%
     \else
       \let\tikz@shapeborder@name\pgfutil@empty
+      \ifx\pgf@temp\relax\else
+        \ifqrr@tikz@hvvh@fromcenter\else
+          \pgf@yb\pgf@yc
+        \fi
+      \fi
       \ifdim\pgf@yb<\tikz@lasty\pgf@yb\tikz@lasty\fi
       \advance\pgf@yb\qrr@tikz@udlr@distance
       \pgf@yc\pgf@yb
@@ -408,6 +408,7 @@
   \pgf@xc\tikz@lastx
   \pgf@yb\tikz@lasty
   \advance\tikz@lasty-1pt%
+  \let\pgf@temp\tikz@moveto@waiting
   \tikz@flush@moveto@toward{\pgfqpoint{\tikz@lastx}{\tikz@lasty}}\pgf@xc\pgf@yc
   \tikz@make@last@position{#1}%
   \begingroup
@@ -430,6 +431,11 @@
       \edef\pgf@temp{\noexpand\pgfqpoint{\the\pgf@x}{\the\pgf@y}}%
     \else
       \let\tikz@shapeborder@name\pgfutil@empty
+      \ifx\pgf@temp\relax\else
+        \ifqrr@tikz@hvvh@fromcenter\else
+          \pgf@yb\pgf@yc
+        \fi
+      \fi
       \ifdim\pgf@yb>\tikz@lasty\pgf@yb\tikz@lasty\fi
       \advance\pgf@yb-\qrr@tikz@udlr@distance
       \pgf@yc\pgf@yb
@@ -450,6 +456,7 @@
   \pgf@xb\tikz@lastx
   \pgf@yc\tikz@lasty
   \advance\tikz@lastx-1pt%
+  \let\pgf@temp\tikz@moveto@waiting
   \tikz@flush@moveto@toward{\pgfqpoint{\tikz@lastx}{\tikz@lasty}}\pgf@xc\pgf@yc
   \tikz@make@last@position{#1}%
   \begingroup
@@ -472,6 +479,11 @@
       \edef\pgf@temp{\noexpand\pgfqpoint{\the\pgf@x}{\the\pgf@y}}%
     \else
       \let\tikz@shapeborder@name\pgfutil@empty
+      \ifx\pgf@temp\relax\else
+        \ifqrr@tikz@hvvh@fromcenter\else
+          \pgf@xb\pgf@xc
+        \fi
+      \fi
       \ifdim\pgf@xb>\tikz@lastx\pgf@xb\tikz@lastx\fi
       \advance\pgf@xb-\qrr@tikz@udlr@distance
       \pgf@xc\pgf@xb
@@ -492,12 +504,13 @@
   \pgf@xb\tikz@lastx
   \pgf@yc\tikz@lasty
   \advance\tikz@lastx1pt%
+  \let\pgf@temp\tikz@moveto@waiting
   \tikz@flush@moveto@toward{\pgfqpoint{\tikz@lastx}{\tikz@lasty}}\pgf@xc\pgf@yc
   \tikz@make@last@position{#1}%
   \begingroup
     \pgfqkeys{/tikz/udlr}{/tikz/style/.expand once=\tikz@hvvh@currentoption}%
     \pgfmathsetlength\qrr@tikz@udlr@distance{\pgfkeysvalueof{/tikz/udlr/rl distance}}%
-    \iftikz@shapeborder
+    \iftikz@shapeborder%
       \advance\pgf@x1pt%
       \pgf@process{\pgfpointshapeborder{\tikz@shapeborder@name}{\pgfqpoint{\pgf@x}{\pgf@y}}}%
       \ifqrr@tikz@hvvh@fromcenter
@@ -513,7 +526,12 @@
       \advance\pgf@xc\qrr@tikz@udlr@distance
       \edef\pgf@temp{\noexpand\pgfqpoint{\the\pgf@x}{\the\pgf@y}}%
     \else
-      \let\tikz@shapeborder@name\pgfutil@empty
+      \let\tikz@shapeborder@name\pgfutil@empty%
+      \ifx\pgf@temp\relax\else
+        \ifqrr@tikz@hvvh@fromcenter\else
+          \pgf@xb\pgf@xc
+        \fi
+      \fi
       \ifdim\pgf@xb<\tikz@lastx\pgf@xb\tikz@lastx\fi
       \advance\pgf@xb\qrr@tikz@udlr@distance
       \pgf@xc\pgf@xb
