@@ -12,9 +12,6 @@
 %    This style switches the positions between 0 and 1 with those
 %    between 1 and 2.
 
-\RequirePackage{etoolbox}
-\patchcmd{\tikz@rectB}{\tikz@timer@line}{\qrr@tikz@timer@rect}{}{}
-
 \def\qrr@tikz@timer@rect@origline{%
   \ifdim\tikz@time pt>1pt
     \pgfutil@tempdima\tikz@time pt
@@ -50,7 +47,7 @@
   \fi
 }
 \tikzset{
-  rectangle original timer/.code=\let\qrr@tikz@timer@rect\qrr@tikz@timer@rect@origline,
-  rectangle new timer/.code=\let\qrr@tikz@timer@rect\qrr@tikz@timer@rect@lineafterone,
+  rectangle original timer/.code=\let\tikz@timer@line\qrr@tikz@timer@rect@origline,
+  rectangle new timer/.code=\let\tikz@timer@line\qrr@tikz@timer@rect@lineafterone,
   rectangle original timer
 }
