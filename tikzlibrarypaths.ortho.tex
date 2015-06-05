@@ -21,7 +21,8 @@
         \fi
       \fi
     \endpgfextra
-    (\tikztostart-|\tikztotarget) -- (\tikztotarget) \tikztonodes
+    (perpendicular cs: horizontal line through={(\tikztostart)},
+                       vertical line through={(\tikztotarget)}) -- (\tikztotarget) \tikztonodes
   }},
   *-/.style={to path={%
     \pgfextra
@@ -34,7 +35,8 @@
         \fi
       \fi
     \endpgfextra
-    (\tikztostart|-\tikztotarget) -- (\tikztotarget) \tikztonodes
+    (perpendicular cs: vertical line through={(\tikztostart)},
+                     horizontal line through={(\tikztotarget)}) -- (\tikztotarget) \tikztonodes
   }},
   |*/.style={to path={%
     \pgfextra
@@ -48,7 +50,9 @@
         \fi
       \fi
     \endpgfextra
-    (\tikztostart) -- (\tikztostart|-\tikztotarget) \tikztonodes \ifx\tikz@origtotarget\pgfutil@empty\else\iftikz@ortho@preflush(\tikz@origtotarget)\fi\fi
+    (\tikztostart) -- (perpendicular cs: vertical line through={(\tikztostart)},
+                                         horizontal line through={(\tikztotarget)})
+    \tikztonodes \ifx\tikz@origtotarget\pgfutil@empty\else\iftikz@ortho@preflush(\tikz@origtotarget)\fi\fi
   }},
   -*/.style={to path={%
     \pgfextra
@@ -62,16 +66,19 @@
         \fi
       \fi
     \endpgfextra
-    (\tikztostart) -- (\tikztostart-|\tikztotarget) \tikztonodes \ifx\tikz@origtotarget\pgfutil@empty\else\iftikz@ortho@preflush(\tikz@origtotarget)\fi\fi
+    (\tikztostart) -- (perpendicular cs: horizontal line through={(\tikztostart)},
+                                         vertical line through={(\tikztotarget)})
+    \tikztonodes \ifx\tikz@origtotarget\pgfutil@empty\else\iftikz@ortho@preflush(\tikz@origtotarget)\fi\fi
   }},
   node as new start/.is if=tikz@ortho@preflush
-  }
+}
 
 %%% HVVH/UDLR
 \tikzset{
   hvvh/.code={\pgfqkeys{/tikz/hvvh}{#1}},%
-  hvvh/.search also=/tikz/udlr,%
-%  udlr/.search also=/tikz/hvvh,% endless loop?
+  udlr/.code={\pgfqkeys{/tikz/udlr}{#1}},%
+%  hvvh/.search also=/tikz/udlr,%
+  udlr/.search also=/tikz/hvvh,% endless loop?
   hvvh/middle 0 to 1/.style={hvvh/spacing=0},%
   hvvh/0 to 1/.style={hvvh/middle 0 to 1},%
   hvvh/from center/.is if=qrr@tikz@hvvh@fromcenter,%
@@ -103,8 +110,8 @@
   udlr/rl distance/.initial=+.5cm%
 }
 \tikzset{% default
-	hvvh/ratio=.5,%
-	hvvh/spacing=4%
+  hvvh/ratio=.5,%
+  hvvh/spacing=4%
 }
 
 %BEGIN_FOLD Timer
@@ -371,6 +378,9 @@
       \pgf@process{\pgfpointshapeborder{\tikz@shapeborder@name}{\pgfqpoint{\pgf@x}{\pgf@y}}}%
       \ifqrr@tikz@hvvh@fromcenter
         \pgf@yc\pgf@yb
+      \else\ifx\pgf@temp\relax
+          \pgf@yc\pgf@yb
+        \fi
       \fi
       \ifdim\pgf@yc<\pgf@y
         \ifqrr@tikz@hvvh@fromcenter
@@ -419,6 +429,9 @@
       \pgf@process{\pgfpointshapeborder{\tikz@shapeborder@name}{\pgfqpoint{\pgf@x}{\pgf@y}}}%
       \ifqrr@tikz@hvvh@fromcenter
         \pgf@yc\pgf@yb
+      \else\ifx\pgf@temp\relax
+          \pgf@yc\pgf@yb
+        \fi
       \fi
       \ifdim\pgf@yc>\pgf@y
         \ifqrr@tikz@hvvh@fromcenter
@@ -467,6 +480,9 @@
       \pgf@process{\pgfpointshapeborder{\tikz@shapeborder@name}{\pgfqpoint{\pgf@x}{\pgf@y}}}%
       \ifqrr@tikz@hvvh@fromcenter
         \pgf@xc\pgf@xb
+      \else\ifx\pgf@temp\relax
+          \pgf@xc\pgf@xb
+        \fi
       \fi
       \ifdim\pgf@xc>\pgf@x
         \ifqrr@tikz@hvvh@fromcenter
@@ -515,6 +531,9 @@
       \pgf@process{\pgfpointshapeborder{\tikz@shapeborder@name}{\pgfqpoint{\pgf@x}{\pgf@y}}}%
       \ifqrr@tikz@hvvh@fromcenter
         \pgf@xc\pgf@xb
+      \else\ifx\pgf@temp\relax
+          \pgf@xc\pgf@xb
+        \fi
       \fi
       \ifdim\pgf@xc<\pgf@x
         \ifqrr@tikz@hvvh@fromcenter
