@@ -67,6 +67,9 @@ This library provides two classes of path operatores, names
     * `r-rl` (right, vertical and left)
     * `r-lr` (left, vertical and right)
 
+**Caveat:** The library defines the keys `|-|`, `|-`, `-|`, `-|-`, `*-` and `-*` which might be used as arrow specification in TikZ.
+The current workaround is to use `arrows=|-|`, `arrows=|-` and so on.
+
 ## [Example][92]
 **tikzpicture:**
 
