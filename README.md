@@ -1,6 +1,6 @@
 # License
 
-As per #1 all files are dual-licensed with
+As per [#1](https://github.com/Qrrbrbirlbel/pgf/issues/1) all files are dual-licensed with
 
 * GNU Public License, version 2.
 * LaTeX Project Public License, version 1.3c.
