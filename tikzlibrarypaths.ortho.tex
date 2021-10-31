@@ -70,8 +70,9 @@
                                          vertical line through={(\tikztotarget)})
     \tikztonodes \ifx\tikz@origtotarget\pgfutil@empty\else\iftikz@ortho@preflush(\tikz@origtotarget)\fi\fi
   }},
-  node as new start/.is if=tikz@ortho@preflush
-}
+  node as new start/.is if=tikz@ortho@preflush,
+  qrr@pathsortho@disabledash/.style={#1/.style={arrows={#1}}},
+  paths.ortho no dash/.style={qrr@pathsortho@disabledash/.list={|-|,-|-,|-,-|,*-,-*}}}
 
 %%% HVVH/UDLR
 \tikzset{
