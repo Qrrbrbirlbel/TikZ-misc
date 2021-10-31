@@ -77,7 +77,7 @@ This library provides two classes of path operatores, names
     * `r-rl` (right, vertical and left)
     * `r-lr` (left, vertical and right)
 
-**Caveat:** The library defines the keys `|-|`, `|-`, `-|`, `-|-`, `*-` and `-*` which might be used as arrow specification in TikZ.
+**Caveat:** The library defines the keys `|-|`, `|-`, `-|`, `-|-`, `*-` and `-*` which might be used as arrow specification in TikZ.[^arrow]
 The current workaround is to use `arrows=|-|`, `arrows=|-` and so on *or* the option `paths.ortho no dash`.
 
 ## [Example][92]
@@ -182,3 +182,4 @@ The library adds the key `rectangle timer` with two options
 [91]: https://tex.stackexchange.com/search?q=user%3A16595+node-families
 [92]: https://tex.stackexchange.com/search?q=user%3A16595+paths.ortho
 [^lineto]: TikZ uses the same timer `\tikz@timer@line` that's used for `--` also for `rectangle`. Without patching `\tikz@rect@B` this can't be changed.
+[^arrow]: See [TeX.sx question](https://tex.stackexchange.com/q/315739/16595).
