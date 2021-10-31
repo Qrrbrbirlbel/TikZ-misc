@@ -2,16 +2,17 @@
 % Load with \usetikzlibrary{paths.rectangle}
 %
 % This small library extends the node placing algorithm (a.k.a. timer)
-% so that nodes can be placed on the path of an rectangle.
+% so that nodes can be placed on the path of a rectangle operation.
 %
 % Styles are:
-%  - rectangle original timer
+%  - rectangle timer=original
 %    The original placement between position 0 and 1 are not changed.
 %    The rectangle's path can be accessed by positions between 1 and 2.
-%  - rectangle new timer
+%  - rectangle timer=improved
 %    This style switches the positions between 0 and 1 with those
 %    between 1 and 2.
 
+\let\qrr@tikz@timer@line@orig\tikz@timer@line
 \def\qrr@tikz@timer@rect@origline{%
   \ifdim\tikz@time pt>1pt
     \pgfutil@tempdima\tikz@time pt
@@ -26,8 +27,7 @@
     \multiply\pgfutil@tempdima2
     \edef\tikz@time{\strip@pt\pgfutil@tempdima}%
     \expandafter\tikz@timer@vhline
-  \else\expandafter\tikz@timer@line\fi
-}
+  \else\expandafter\qrr@tikz@timer@line@orig\fi}
 \def\qrr@tikz@timer@rect@lineafterone{%
   \pgfutil@tempdima\tikz@time pt
   \ifdim\pgfutil@tempdima<1pt
@@ -43,11 +43,10 @@
   \else
     \advance\pgfutil@tempdima-1pt
     \edef\tikz@time{\strip@pt\pgfutil@tempdima}%
-    \expandafter\tikz@timer@line
-  \fi
-}
+    \expandafter\qrr@tikz@timer@line@orig
+  \fi}
 \tikzset{
-  rectangle original timer/.code=\let\tikz@timer@line\qrr@tikz@timer@rect@origline,
-  rectangle new timer/.code=\let\tikz@timer@line\qrr@tikz@timer@rect@lineafterone,
-  rectangle original timer
-}
+  rectangle timer/.is choice,
+  rectangle timer/original/.code=\let\tikz@timer@line\qrr@tikz@timer@rect@origline,
+  rectangle timer/improved/.code=\let\tikz@timer@line\qrr@tikz@timer@rect@lineafterone,
+  rectangle timer=original}
