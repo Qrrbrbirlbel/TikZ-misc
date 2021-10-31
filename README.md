@@ -1,3 +1,12 @@
+# License
+
+As per #1 all files are dual-licensed with
+
+* GNU Public License, version 2.
+* LaTeX Project Public License, version 1.3c.
+
+(Please improve the code.)
+
 # TikZ library `node-families`
 
 **Load with:**
@@ -99,6 +108,7 @@ This example uses mostley the `to path`s that are also provided by the library.
     \end{document}
 
 **Output:**
+
 ![An example of paths.ortho applications][8]
 
 [1]: tikzlibrarynode-families.code.tex
