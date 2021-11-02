@@ -1,0 +1,80 @@
+%% For the operators r-lr, r-rl, r-ud and r-du we need to check after TikZ found r
+\let\tikz@orig@rect\tikz@rect
+\def\tikz@rect{\pgfutil@ifnextchar e\tikz@orig@rect\qrr@tikz@r}
+\def\qrr@tikz@r -{%
+  \pgfutil@ifnextchar l\qrr@tikz@lr@lineto{%
+    \pgfutil@ifnextchar r\qrr@tikz@rl@lineto{%
+      \pgfutil@ifnextchar u\qrr@tikz@ud@lineto{%
+        \pgfutil@ifnextchar d\qrr@tikz@du@lineto\tikz@expand
+      }%
+    }%
+  }%
+}
+%% For the operator |-| we need to check after TikZ found |-
+\let\tikz@orig@vh@lineto@next\tikz@vh@lineto@next
+\def\tikz@vh@lineto@next{%
+  \pgfutil@ifnextchar|{\expandafter\qrr@tikz@vhv@lineto\pgfutil@gobble}%
+    {\pgfutil@ifnextchar\tikz@activebar{\expandafter\qrr@tikz@vhv@lineto\pgfutil@gobble}%
+      {\tikz@orig@vh@lineto@next}}}
+%% For the operator -|- we need to check after TikZ found -|
+\let\tikz@orig@hv@lineto\tikz@hv@lineto
+\def\tikz@hv@lineto{%
+  \pgfutil@ifnextchar-{\expandafter\qrr@tikz@hvh@lineto\pgfutil@gobble}%
+    {\tikz@orig@hv@lineto}}
+
+%% |-|[<opts>] and -|-[<opts>] are allowed
+\def\qrr@tikz@vhv@lineto{\pgfutil@ifnextchar[{\qrr@tikz@collect@hvvh@options\qrr@tikz@vhv@lineto@next}{\qrr@tikz@collect@hvvh@options\qrr@tikz@vhv@lineto@next[]}}
+\def\qrr@tikz@hvh@lineto{\pgfutil@ifnextchar[{\qrr@tikz@collect@hvvh@options\qrr@tikz@hvh@lineto@next}{\qrr@tikz@collect@hvvh@options\qrr@tikz@hvh@lineto@next[]}}
+
+%% r-rl[<opts>], r-lr[<opts>], etc.
+\def\qrr@tikz@rl@lineto rl{\pgfutil@ifnextchar[{\qrr@tikz@collect@hvvh@options\qrr@tikz@rl@lineto@next}{\qrr@tikz@collect@hvvh@options\qrr@tikz@rl@lineto@next[]}}
+\def\qrr@tikz@lr@lineto lr{\pgfutil@ifnextchar[{\qrr@tikz@collect@hvvh@options\qrr@tikz@lr@lineto@next}{\qrr@tikz@collect@hvvh@options\qrr@tikz@lr@lineto@next[]}}
+\def\qrr@tikz@du@lineto du{\pgfutil@ifnextchar[{\qrr@tikz@collect@hvvh@options\qrr@tikz@du@lineto@next}{\qrr@tikz@collect@hvvh@options\qrr@tikz@du@lineto@next[]}}
+\def\qrr@tikz@ud@lineto ud{\pgfutil@ifnextchar[{\qrr@tikz@collect@hvvh@options\qrr@tikz@ud@lineto@next}{\qrr@tikz@collect@hvvh@options\qrr@tikz@ud@lineto@next[]}}
+
+%% TikZ intersections are done, the rest is independent:
+\input tikzlibraryqrr.paths.ortho.tex
+
+%% a few nice to haves, use with to or edge operator
+\let\tikz@origtotarget\pgfutil@empty
+\tikzset{
+  node as new start/.is if=tikz@ortho@preflush,
+  node as new start,
+  only vertical second/.style={to path={
+    (perpendicular cs: horizontal line through={(\tikztostart)},
+                       vertical line through={(\tikztotarget)}) -- (\tikztotarget) \tikztonodes}},
+  only horizontal second/.style={to path={
+    (perpendicular cs: vertical line through={(\tikztostart)},
+                     horizontal line through={(\tikztotarget)}) -- (\tikztotarget) \tikztonodes}},
+  only vertical first/.style={to path={
+      \pgfextra
+    %  \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
+    %  \iftikz@shapeborder
+        \let\tikz@origtotarget\tikztotarget
+    %    \ifdim\pgf@y>\tikz@lasty\relax
+    %      \edef\tikztotarget{\tikztotarget.south}%
+    %    \else
+    %      \edef\tikztotarget{\tikztotarget.north}%
+    %    \fi
+    %  \fi
+      \endpgfextra
+    (\tikztostart) -- (perpendicular cs: vertical line through={(\tikztostart)},
+                                         horizontal line through={(\tikztotarget)})
+    \tikztonodes \ifx\tikz@origtotarget\pgfutil@empty\else\iftikz@ortho@preflush(\tikz@origtotarget)\fi\fi}},
+  only horizontal first/.style={to path={
+      \pgfextra
+    %  \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
+    %  \iftikz@shapeborder
+        \let\tikz@origtotarget\tikztotarget
+    %    \ifdim\pgf@x>\tikz@lastx\relax
+    %      \edef\tikztotarget{\tikztotarget.west}%
+    %    \else
+    %      \edef\tikztotarget{\tikztotarget.east}%
+    %    \fi
+    %  \fi
+      \endpgfextra
+    (\tikztostart) -- (perpendicular cs: horizontal line through={(\tikztostart)},
+                                         vertical line through={(\tikztotarget)})
+    \tikztonodes \ifx\tikz@origtotarget\pgfutil@empty\else\iftikz@ortho@preflush(\tikz@origtotarget)\fi\fi}}
+}
+\endinput
