@@ -13,7 +13,7 @@ As per [#1](https://github.com/Qrrbrbirlbel/pgf/issues/1) all files are dual-lic
 
     \usetikzlibrary{node-families}
 
-**Files:**
+**File:**
 
 * [`tikzlibrarynode-families.code.tex`][1]
 
@@ -88,7 +88,7 @@ This library provides two classes of path operatores. These are
 
     \usetikzlibrary{qrr.paths.timer}
    
-**Files:**
+**File:**
 * [`tikzlibraryqrr.paths.timer.code.tex`][9]
 
 **Inspiration:**
@@ -117,6 +117,19 @@ This library extends the node placing algorithm (a.k.a. timer) for the path oper
 \end{tikzpicture}
 ```
 
+# TikZ library `patterns.images`
+**Load with:**
+
+   \usetikzlibrary{patterns.images}
+
+**File:**
+ * [`tikzlibrarypatterns.images.code.tex`][12]
+
+**Inspiration:**
+ * [Define pattern with reference to external picture][13]
+
+## [Example][14]
+
 [1]: tikzlibrarynode-families.code.tex
 [2]: http://tex.stackexchange.com/q/107227/16595
 [3]: https://i.stack.imgur.com/9fb2y.png
@@ -128,6 +141,9 @@ This library extends the node placing algorithm (a.k.a. timer) for the path oper
 [9]: tikzlibraryqrr.paths.timer.code.tex
 [10]: https://tex.stackexchange.com/q/106558/16595
 [11]: https://tex.stackexchange.com/a/543268/16595
+[12]: tikzlibrarypatterns.images.code.tex
+[13]: https://tex.stackexchange.com/q/103980/16595
+[14]: https://tex.stackexchange.com/a/107144/16595
 [91]: https://tex.stackexchange.com/search?q=user%3A16595+node-families
 [92]: https://tex.stackexchange.com/search?q=user%3A16595+paths.ortho
 [^lineto]: TikZ uses the same timer `\tikz@timer@line` that's used for `--` also for `rectangle`. Without patching `\tikz@rect@B` this can't be changed.
