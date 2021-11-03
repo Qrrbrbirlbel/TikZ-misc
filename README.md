@@ -65,11 +65,16 @@ More [TeX.sx answers][91] where I used this library can be found with the search
 **Inspiration:**
 * [Vertical and horizontal lines in pgf-tikz][6]
 * [How to draw a return arrow from node-3 to node-1][7]
+* [Vertikale Verbindung zwischen zwei ungleich großen Elementen][15]
 
 This library provides two classes of path operatores. These are
 
 1. `-|-` and  `|-|` as well as
 2. `r-ud` (up, horizontal and down), `r-du` (down, horizontal and up), `r-rl` (right, vertical and left) and `r-lr` (left, vertical and right).
+
+The first two (`-|-` and `|-|`) are also provides for use in `to` or `edge` operators as `horizontal vertical horizontal` and `vertical horizontal vertical`.
+
+There are a set of `only horizontal|vertical first|second` ones that are used in the last inspiration and they can be used to connect nodes orthogonally when they're not ligned up directly.
 
 ## Example
 ```latex
@@ -144,6 +149,7 @@ This library extends the node placing algorithm (a.k.a. timer) for the path oper
 [12]: tikzlibrarypatterns.images.code.tex
 [13]: https://tex.stackexchange.com/q/103980/16595
 [14]: https://tex.stackexchange.com/a/107144/16595
+[15]: https://texwelt.de/fragen/1289
 [91]: https://tex.stackexchange.com/search?q=user%3A16595+node-families
 [92]: https://tex.stackexchange.com/search?q=user%3A16595+paths.ortho
 [^lineto]: TikZ uses the same timer `\tikz@timer@line` that's used for `--` also for `rectangle`. Without patching `\tikz@rect@B` this can't be changed.
