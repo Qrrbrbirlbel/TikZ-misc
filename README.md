@@ -34,7 +34,7 @@ This works on a per-picture basis and uses the `.aux` file so it will need at le
 
 **Caveat:** Nodes will only grow. The sizes are never reset unless the document is compiled without the specific node-family applied.
 
-[**Example:**][nf-ex-out] (→ [more Examples at TeX.sx][nf-more-examples])
+[**Example**][nf-ex-out] (→ [more Examples at TeX.sx][nf-more-examples]):
 ```latex
 \begin{tikzpicture}[% http://tex.stackexchange.com/q/134983/16595
    nodes={circle, draw=black, Minimum Size=test, Text Height=test, Text Depth=test}]
@@ -66,7 +66,7 @@ The first two (`-|-` and `|-|`) are also provides for use in `to` or `edge` oper
 
 There are a set of `only horizontal|vertical first|second` ones that are used in the third inspiration and they can be used to connect nodes orthogonally when they're not ligned up directly.
 
-**Example:** (→ [more examples at TeX.sx][po-ex]
+**Example** (→ [more examples at TeX.sx][po-ex]):
 ```latex
 \begin{tikzpicture}[small node/.style={font=\small,inner sep=+1pt,above,sloped}]
     \draw[help lines] (-.5,-1.25) grid (5.25,5.5);
@@ -118,7 +118,62 @@ This library extends the node placing algorithm (a.k.a. timer) for the path oper
 
 **File:** [`tikzlibrarypatterns.images.code.tex`][pi-code]
 
-**Inspiration:** [Define pattern with reference to external picture][pi-inps]
+**Inspiration:** [Define pattern with reference to external picture][pi-insp]
+
+**Example:** For an example, take a look at the [inspiration][pi-insp].
+
+## (PGF/)TikZ library `qrr.trans`
+**Load with:**
+
+    \usetikzlibrary{qrr.trans}
+    
+**Files:**
+1. [`pgflibraryqrr.trans.code.tex`](pgfibraryqrr.trans.code.tex)
+2. [`tikzlibraryqrr.trans.code.tex`](tikzlibraryqrr.trans.code.tex)
+
+**Inspiration:**
+1. [Is there a way in TikZ to reflect regular polygons of an arbitrary number of edges?](https://tex.stackexchange.com/a/149509/16595)
+2. [What is the simplest way to draw this triangle exactly?](https://tex.stackexchange.com/a/142585/16595)
+
+This TikZ library provides the key `mirror=(<p1>)--(<p2>)` that applies a transformation that mirrors at the line through `<p1>` and `<p2>`.
+See the inspirations for examples.
+
+## TikZ library `qrr.norm`
+**Load with:**
+
+    \usetikzlibrary{qrr.norm}
+    
+**File:** [`tikzlibraryqrr.norm.code.tex`](tikzlibraryqrr.norm.code.tex)
+
+**Inspiration:** [How to normalize a vector in pgf/tikz?](https://tex.stackexchange.com/a/109926/16595)
+
+This library provides a `norm cs` and two keys `norm` and `Norm`.
+
+### Keys
+ - `norm` is a `to path` that uses the `norm cs` to create an normalized vector.
+ - `Norm` can be used to change the length of the normalized vector.
+
+  The default is `1` in the current coordinate system. This has the advantage that any change in the coordinate system (the `x` and `y` keys can be used to change the coordinate system) the normalized vector is still of the length of `1` (and not `1cm` in the paper plane which is used with in other answers).
+
+ The key, though, can also be used to set a fixed length (in the paper plane) which is used then.
+
+### `norm cs`
+The `norm cs` accepts as parameter any TikZ `<coordinate>` and an optional `from <another coordinate>` (the `<another coordinate>` is by default `(0,0)`, the origin). This will result in the normalized (according to `Norm` setting) vector.
+
+Note that this does not draw any lines in any relation to the current point on the path.
+
+    \draw (1,2) -- (norm cs: 3,0);
+will result in a line from `(1,2)` to `(1,0)` and not `(2,2)` nor the point that is `1cm` from `(1,2)` to `(3,0)`. The `norm cs` will most likely be used with relative coordinates. The following will draw a line from `(1,2)` to `(2,2)`:
+
+    \draw (1,2) -- ++(norm cs: 3,0);
+
+If one wants to specify the point that is `1cm` from `(1,2)` to `(3,0)` one needs to use the `from` parameter
+
+    \draw (1,2) -- ++(norm cs: 3,0 from 1,2);
+
+or the `norm` `to path`:
+
+    \draw (1,2) to[norm] (3,0);
 
 ## Shapes
 ### PGF/TikZ library `qrr.shapes.openrectangle`
