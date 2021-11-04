@@ -215,8 +215,8 @@ or the `norm` `to path`:
 
 **Files:**
 
- * [`pgflibraryqrr.shapes.roundedrectangle.code.tex`](pgflibraryqrr.shapes.roundedrectangle.code.tex)
- * [`tikzlibraryqrr.shapes.roundedrectangle.code.tex`](tikzlibraryqrr.shapes.roundedrectangle.code.tex)
+ 1. [`pgflibraryqrr.shapes.roundedrectangle.code.tex`](pgflibraryqrr.shapes.roundedrectangle.code.tex)
+ 2. [`tikzlibraryqrr.shapes.roundedrectangle.code.tex`](tikzlibraryqrr.shapes.roundedrectangle.code.tex)
 
 **Inspiration:** [Wie kann ich mit TikZ Node-Formen zeichnen, die entgegengesetzt abgerundet sind?][sh-roundedrectangle-insp]
 
@@ -243,6 +243,36 @@ or the `norm` `to path`:
 \end{tikzpicture}
 \end{document}
 ```
+
+### (PGF/)TikZ library `qrr.shapes.heat`
+**Load with:**
+
+    \usetikzlibrary{qrr.shapes.heat}
+ 
+**Files:**
+
+ 1. [`pgflibraryqrr.shapes.heat.code.tex`](pgflibraryqrr.shapes.heat.code.tex)
+ 2. [`tikzlibraryqrr.shapes.heat.code.tex`](tikzlibraryqrr.shapes.heat.code.tex)
+
+**Inspiration:** [Heatmap over country like Google Map](https://tex.stackexchange.com/a/113004/16595)
+
+[**Example:**](https://i.stack.imgur.com/8h4Xn.png)
+```latex
+\tikz[heat options={
+	heat ring 1/.append style={green},
+	heat arc 1/.append style={blue},
+	heat arc 2-2/.append style={yellow!70!black}}
+] {
+\node[heat, fill=red] (n) {100};
+\fill (n.west) circle[]
+      (n.east) circle[]
+      (n.north) circle[]
+      (n.south) circle[];
+\useasboundingbox ([yshift=-2mm]n.south) ([xshift=-2mm]n.west) ([yshift=2mm]n.north) ([xshift=2mm]n.east);
+}
+```
+
+
 [nf-code]: tikzlibrarynode-families.code.tex
 [nf-insp]: http://tex.stackexchange.com/q/107227/16595
 [nf-ex-out]: https://i.stack.imgur.com/9fb2y.png
