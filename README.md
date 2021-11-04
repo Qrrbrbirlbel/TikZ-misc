@@ -34,7 +34,7 @@ This works on a per-picture basis and uses the `.aux` file so it will need at le
 
 **Caveat:** Nodes will only grow. The sizes are never reset unless the document is compiled without the specific node-family applied.
 
-### [Example][nf-ex-out] (→ [More Examples at TeX.sx][nf-more-examples])
+[**Example:**][nf-ex-out] (→ [more Examples at TeX.sx][nf-more-examples])
 ```latex
 \begin{tikzpicture}[% http://tex.stackexchange.com/q/134983/16595
    nodes={circle, draw=black, Minimum Size=test, Text Height=test, Text Depth=test}]
@@ -66,7 +66,7 @@ The first two (`-|-` and `|-|`) are also provides for use in `to` or `edge` oper
 
 There are a set of `only horizontal|vertical first|second` ones that are used in the third inspiration and they can be used to connect nodes orthogonally when they're not ligned up directly.
 
-### Example (→ [more examples at TeX.sx][po-ex]
+**Example:** (→ [more examples at TeX.sx][po-ex]
 ```latex
 \begin{tikzpicture}[small node/.style={font=\small,inner sep=+1pt,above,sloped}]
     \draw[help lines] (-.5,-1.25) grid (5.25,5.5);
@@ -94,7 +94,7 @@ This library extends the node placing algorithm (a.k.a. timer) for the path oper
 * `rectangle` where the corners are at `0` (south west), `0.25` (north west), `0.5` (north east), `0.75` (south east) and
 * `parabola` where the bend is at `0.5`.
 
-### Example
+**Example:**
 ```latex
 \begin{tikzpicture}
     \draw[help lines]  (-2.25,-1.25) grid (2.25,3.25);
@@ -134,7 +134,7 @@ This library extends the node placing algorithm (a.k.a. timer) for the path oper
 
 **Inspiration:** [Tikz shape similar to rectangle with selective drawing of borders][sh-openrectangle-insp]
 
-#### [Example][sh-openrectangle-ex-out]
+[**Example:**][sh-openrectangle-ex-out]
 ```latex
 \documentclass[tikz]{standalone}
 \usetikzlibrary{chains} \usetikzlibrary{qrr.shapes.openrectangle}
@@ -165,7 +165,7 @@ This library extends the node placing algorithm (a.k.a. timer) for the path oper
 
 **Inspiration:** [Wie kann ich mit TikZ Node-Formen zeichnen, die entgegengesetzt abgerundet sind?][sh-roundedrectangle-insp]
 
-#### [Example][sh-roundedrectangle-ex-out]
+[**Example:**][sh-roundedrectangle-ex-out]
 ```latex
 \documentclass[tikz]{standalone}
 \usetikzlibrary{qrr.shapes.roundedrectangle}
