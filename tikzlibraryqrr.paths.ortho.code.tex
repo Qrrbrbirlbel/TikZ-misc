@@ -42,8 +42,8 @@
   node as new start,
   horizontal vertical/.style={to path={-| (\tikztotarget) \tikztonodes}},
   vertical horizontal/.style={to path={|- (\tikztotarget) \tikztonodes}},
-  horizontal vertical horizontal={to path={-|- (\tikztotarget) \tikztnodes}},
-  vertical horizontal vertical={to path={|-| (\tikztotarget) \tikztonodes}},
+  horizontal vertical horizontal/.style={to path={-|- (\tikztotarget) \tikztnodes}},
+  vertical horizontal vertical/.style={to path={|-| (\tikztotarget) \tikztonodes}},
   only vertical second/.style={to path={
     \pgfextra
       \iftikz@shapeborder
