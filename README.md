@@ -220,26 +220,38 @@ or the `norm` `to path`:
 
 **Inspiration:** [Wie kann ich mit TikZ Node-Formen zeichnen, die entgegengesetzt abgerundet sind?][sh-roundedrectangle-insp]
 
-[**Example:**][sh-roundedrectangle-ex-out]
+**Example:** ([1st output][sh-roundedrectangle-ex-out-2], [2nd output][sh-roundedrectangle-ex-out])
 ```latex
-\documentclass[tikz]{standalone}
-\usetikzlibrary{qrr.shapes.roundedrectangle}
-\tikzset{shape example/.style={
-  color=black!30,draw,fill=yellow!30,line width=.1cm,inner xsep=2.5cm,inner ysep=0.5cm}}
+\documentclass[tikz,convert=false]{standalone}
+\usetikzlibrary{shapes.qrr.roundedrectangle}
+\tikzset{shape example/.style={color=black!30,draw,fill=yellow!30,line width=.5cm,inner xsep=2.5cm,inner ysep=0.5cm}}
 \begin{document}
-\begin{tikzpicture}[
-  rectangle with rounded corners mode={o,i,h,v},
-  rectangle with rounded corners radius={40pt,10pt,20pt,30pt}
-  ]\Huge
-  \node[shape example,rectangle with rounded corners,name=s]{Rectangle\vrule width 1pt height 2cm};
-  \foreach \anchor/\placement in {north west/above left, north/above, north east/above right,
-                                  west/left, center/above, east/right,
-                                  mid west/right, mid/above, mid east/left,
-                                  base west/left, base/below, base east/right,
-                                  south west/below left, south/below, south east/below right,
-                                  text/left, 10/right, 130/above%
-                                 }
-  \draw[shift=(s.\anchor)] plot[mark=x] coordinates{(0,0)} node[\placement] {\scriptsize\texttt{(s.\anchor)}};
+
+\begin{tikzpicture}
+\node[draw, split rectangle with rounded corners, rectangle with rounded corners radius=5pt, line cap=round, minimum size=1cm]
+      (n) {$\alpha\beta$ \nodepart{lower} dq};
+\foreach \Angle in {0,2.5,...,359} \draw (\Angle:1) -- (n);
+\end{tikzpicture}
+\begin{tikzpicture}\Huge
+  \node[draw,split rectangle with rounded corners,shape example,rectangle with rounded corners radius=50pt] (n) {\TeX t \nodepart{lower} more \TeX t};
+  \foreach \Pos/\Anchor/\Text in {left/below north west,above right/right north west,
+                                  above left/left north east,right/below north east,
+                                  right/above south east,below left/left south east,
+                                  below right/right south west,left/above south west}
+    \draw[thin] plot[mark=x,only marks] coordinates {
+    (n.\Anchor)} node[\Pos,text depth=+0pt,text height=+3pt] {\tiny\ttfamily\Text};
+
+  \foreach \Pos/\Anchor/\Text in {above/center,above/north,left/west,right/east,below/south,
+                                  above left/north west,below left/south west,
+                                  below right/south east,above right/north east}
+    \draw[thin] plot[mark=x,only marks] coordinates {
+      (n.\Anchor)} node[\Pos,text depth=+0pt,text height=+3pt] {\tiny\ttfamily\Text};
+
+  \foreach \Pos/\Anchor/\Text in {above left/mid west,above right/mid east,above/mid,
+                                  left/base west,right/base east,
+                                  below/base,below/text,below/lower}
+    \draw[thin] plot[mark=x,only marks] coordinates {
+      (n.\Anchor)} node[\Pos,text depth=+0pt,text height=+3pt] {\tiny\ttfamily\Text};
 \end{tikzpicture}
 \end{document}
 ```
@@ -291,6 +303,7 @@ or the `norm` `to path`:
 [sh-openrectangle-insp]: https://tex.stackexchange.com/q/140842/16595
 [sh-openrectangle-ex-out]: https://i.stack.imgur.com/V8oS6.png
 [sh-roundedrectangle-insp]: https://texwelt.de/fragen/1180
-[sh-roundedrectangle-ex-out]: https://texwelt.de/upfiles/de1180-0_1.png
+[sh-roundedrectangle-ex-out]: https://i.stack.imgur.com/M1RMk.png
+[sh-roundedrectangle-ex-out-2]: https://i.stack.imgur.com/lSydR.png
 
 [^lineto]: TikZ uses the same timer `\tikz@timer@line` that's used for `--` also for `rectangle`. Without patching `\tikz@rect@B` this can't be changed.
