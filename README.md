@@ -47,7 +47,7 @@ This works on a per-picture basis and uses the `.aux` file so it will need at le
 **Load with:**
 
     \usetikzlibrary{qrr.paths.ortho}
-   
+
 **Files:**
 1. [`tikzlibraryqrr.paths.ortho.code.tex`][po-code1]
 2. [`tikzlibraryqrr.paths.ortho.tex`][po-code2]
@@ -82,7 +82,7 @@ There are a set of `only horizontal|vertical first|second` ones that are used in
 **Load with:**
 
     \usetikzlibrary{qrr.paths.timer}
-   
+
 **File:** [`tikzlibraryqrr.paths.timer.code.tex`][timer-code]
 
 **Inspiration:**
@@ -126,7 +126,7 @@ This library extends the node placing algorithm (a.k.a. timer) for the path oper
 **Load with:**
 
     \usetikzlibrary{qrr.trans}
-    
+
 **Files:**
 1. [`pgflibraryqrr.trans.code.tex`](pgfibraryqrr.trans.code.tex)
 2. [`tikzlibraryqrr.trans.code.tex`](tikzlibraryqrr.trans.code.tex)
@@ -142,7 +142,7 @@ See the inspirations for examples.
 **Load with:**
 
     \usetikzlibrary{qrr.norm}
-    
+
 **File:** [`tikzlibraryqrr.norm.code.tex`](tikzlibraryqrr.norm.code.tex)
 
 **Inspiration:** [How to normalize a vector in pgf/tikz?](https://tex.stackexchange.com/a/109926/16595)
@@ -256,11 +256,47 @@ or the `norm` `to path`:
 \end{document}
 ```
 
+### PGF/TikZ library `qrr.shapes.roundedrectangle2`
+**Load with** either:
+
+    \usepgflibrary{qrr.shapes.roundedrectangle2}
+    \usetikzlibrary{qrr.shapes.roundedrectangle2}
+
+**Files:**
+
+ 1. [`pgflibraryqrr.shapes.roundedrectangle2.code.tex`](pgflibraryqrr.shapes.roundedrectangle2.code.tex)
+ 2. [`tikzlibraryqrr.shapes.roundedrectangle2.code.tex`](tikzlibraryqrr.shapes.roundedrectangle2.code.tex)
+
+**Inspiration:** [Wie kann ich mit TikZ Node-Formen zeichnen, die entgegengesetzt abgerundet sind?][sh-roundedrectangle2-insp]
+
+[**Example:**][sh-roundedrectangle2-ex-out]
+```latex
+\documentclass[tikz,convert=false]{standalone}
+\usetikzlibrary{qrr.shapes.roundedrectangle2}
+\tikzset{shape example/.style={color=black!30,draw,fill=yellow!30,line width=.1cm,inner xsep=2.5cm,inner ysep=0.5cm}}
+\begin{document}
+\begin{tikzpicture}[
+  rectangle with rounded corners mode={o,i,h,v},
+  rectangle with rounded corners radius={40pt,10pt,20pt,30pt}
+  ]\Huge
+  \node[shape example,rectangle with rounded corners,name=s]{Rectangle\vrule width 1pt height 2cm};
+  \foreach \anchor/\placement in {north west/above left, north/above, north east/above right,
+                                  west/left, center/above, east/right,
+                                  mid west/right, mid/above, mid east/left,
+                                  base west/left, base/below, base east/right,
+                                  south west/below left, south/below, south east/below right,
+                                  text/left, 10/right, 130/above%
+                                 }
+  \draw[shift=(s.\anchor)] plot[mark=x] coordinates{(0,0)} node[\placement] {\scriptsize\texttt{(s.\anchor)}};
+\end{tikzpicture}
+\end{document}
+```
+
 ### (PGF/)TikZ library `qrr.shapes.heat`
 **Load with:**
 
     \usetikzlibrary{qrr.shapes.heat}
- 
+
 **Files:**
 
  1. [`pgflibraryqrr.shapes.heat.code.tex`](pgflibraryqrr.shapes.heat.code.tex)
@@ -302,8 +338,10 @@ or the `norm` `to path`:
 [pi-insp]: https://tex.stackexchange.com/q/103980/16595
 [sh-openrectangle-insp]: https://tex.stackexchange.com/q/140842/16595
 [sh-openrectangle-ex-out]: https://i.stack.imgur.com/V8oS6.png
-[sh-roundedrectangle-insp]: https://texwelt.de/fragen/1180
+[sh-roundedrectangle-insp]: https://tex.stackexchange.com/q/122273/16595
 [sh-roundedrectangle-ex-out]: https://i.stack.imgur.com/M1RMk.png
 [sh-roundedrectangle-ex-out-2]: https://i.stack.imgur.com/lSydR.png
+[sh-roundedrectangle2-insp]: https://texwelt.de/fragen/1180
+[sh-roundedrectangle2-ex-out]: http://texwelt.de/wissen/upfiles/de1180-0_1.png
 
 [^lineto]: TikZ uses the same timer `\tikz@timer@line` that's used for `--` also for `rectangle`. Without patching `\tikz@rect@B` this can't be changed.

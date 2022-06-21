@@ -1,0 +1,260 @@
+\pgfset{
+  rectangle with rounded corners radius/.initial=4pt,
+  rectangle with rounded corners mode/.initial={i}
+}
+\def\pgf@lib@sh@rwrc@options@#1#2#3#4#5#6#7{%
+  \edef\pgf@lib@sh@rwrc@options@R{\csname rwrcpR#1\endcsname}%
+  \edef\pgf@lib@sh@rwrc@options@M{\csname rwrcpM#1\endcsname}%
+  \def\pgf@lib@sh@rwrc@options@A{\pgfpointadd{\csname pgf@anchor@rectangle with rounded corners@#2\endcsname}{\pgfpoint{#4\outerxsep}{#5\outerysep}}}%
+  \def\pgf@lib@sh@rwrc@options@B{\pgfpointadd{\csname pgf@anchor@rectangle with rounded corners@#3\endcsname}{\pgfpoint{#6\outerxsep}{#7\outerysep}}}%
+}
+\def\pgf@lib@sh@rwrc@options#1{%
+  \expandafter\pgf@lib@sh@rwrc@options@
+  \ifcase#1??????\or{ne}{north east}{north}--{0*}-\or
+           {nw}{north west}{west}+-+{0*}\or
+           {sw}{south west}{south}++{0*}+\or
+           {se}{south east}{east}-+-{0*}\or
+           ??????\fi}
+
+\def\pgfutil@firstofmany#1#2\pgf@stop{#1}
+
+\def\pgf@lib@sh@rwrc@r#1,#2,#3,#4,#5\pgf@stop{%
+  \pgfmathsetlengthmacro\rwrcpRne{#1}%
+  \edef\pgf@temp{#2}%
+  \ifx\pgf@temp\pgfutil@empty
+    \let\rwrcpRnw\rwrcpRne
+  \else
+    \pgfmathsetlengthmacro\rwrcpRnw{#2}%
+  \fi
+  \edef\pgf@temp{#3}%
+  \ifx\pgf@temp\pgfutil@empty
+    \let\rwrcpRsw\rwrcpRnw
+  \else
+    \pgfmathsetlengthmacro\rwrcpRsw{#3}%
+  \fi
+  \edef\pgf@temp{#4}%
+  \ifx\pgf@temp\pgfutil@empty
+    \let\rwrcpRse\rwrcpRsw
+  \else
+    \pgfmathsetlengthmacro\rwrcpRse{#4}%
+  \fi
+}
+\def\pgf@lib@sh@rwrc@m#1,#2,#3,#4,#5\pgf@stop{%
+  \edef\rwrcpMne{#1}%
+  \edef\pgf@temp{#2}%
+  \ifx\pgf@temp\pgfutil@empty
+    \let\rwrcpMnw\rwrcpMne
+  \else
+    \let\rwrcpMnw\pgf@temp
+  \fi
+  \edef\pgf@temp{#3}%
+  \ifx\pgf@temp\pgfutil@empty
+    \let\rwrcpMsw\rwrcpMnw
+  \else
+    \let\rwrcpMsw\pgf@temp
+  \fi
+  \edef\pgf@temp{#4}%
+  \ifx\pgf@temp\pgfutil@empty
+    \let\rwrcpMse\rwrcpMsw
+  \else
+    \let\rwrcpMse\pgf@temp%
+  \fi
+}
+\pgfdeclareshape{rectangle with rounded corners}{%
+  \savedmacro\rectangleWithRoundedCornersParameters{
+    \pgfkeysgetvalue{/pgf/rectangle with rounded corners radius}\pgf@temp
+    \expandafter\pgf@lib@sh@rwrc@r\pgf@temp,,,,\pgf@stop
+    \pgfkeysgetvalue{/pgf/rectangle with rounded corners mode}\pgf@temp
+    \expandafter\pgf@lib@sh@rwrc@m\pgf@temp,,,,\pgf@stop
+    %
+    \addtosavedmacro\rwrcpRne
+    \addtosavedmacro\rwrcpRnw
+    \addtosavedmacro\rwrcpRsw
+    \addtosavedmacro\rwrcpRse
+    \addtosavedmacro\rwrcpMne
+    \addtosavedmacro\rwrcpMnw
+    \addtosavedmacro\rwrcpMsw
+    \addtosavedmacro\rwrcpMse
+    %
+    \pgfutil@tempdima.5\pgflinewidth
+    \edef\halflinewidth{\the\pgfutil@tempdima}%
+    \addtosavedmacro\halflinewidth
+    %
+    \pgf@x=\wd\pgfnodeparttextbox%
+    \pgfmathsetlength\pgf@xc{\pgfkeysvalueof{/pgf/inner xsep}}%
+    \advance\pgf@x by 2\pgf@xc%
+    \pgfmathsetlength\pgf@xb{\pgfkeysvalueof{/pgf/minimum width}}%
+    \ifdim\pgf@x>\pgf@xb%
+      \pgf@xb=\pgf@x%
+    \fi%
+    %
+    \pgf@y=\ht\pgfnodeparttextbox%
+    \advance\pgf@y by\dp\pgfnodeparttextbox%
+    \pgfmathsetlength\pgf@yc{\pgfkeysvalueof{/pgf/inner ysep}}%
+    \advance\pgf@y by 2\pgf@yc%
+    \pgfmathsetlength\pgf@yb{\pgfkeysvalueof{/pgf/minimum height}}%
+    \ifdim\pgf@y>\pgf@yb%
+    \pgf@yb=\pgf@y%
+    \fi%
+    %
+    \pgfextract@process\northeast{%
+      \pgf@y\pgf@yb
+      \pgf@x\pgf@xb
+      %
+      \pgf@x=.5\pgf@x%
+      \advance\pgf@x by.5\wd\pgfnodeparttextbox%
+      \pgfmathsetlength\pgf@xa{\pgfkeysvalueof{/pgf/outer xsep}}%
+      \advance\pgf@x by\pgf@xa%
+      %
+      \pgf@y=.5\pgf@y%
+      \advance\pgf@y by-.5\dp\pgfnodeparttextbox%
+      \advance\pgf@y by.5\ht\pgfnodeparttextbox%
+      \pgfmathsetlength\pgf@ya{\pgfkeysvalueof{/pgf/outer ysep}}%
+      \advance\pgf@y by\pgf@ya%
+    }
+    \addtosavedmacro\northeast
+    %
+    \pgfextract@process\southwest{%
+      \pgf@y\pgf@yb
+      \pgf@x\pgf@xb
+      %
+      \pgf@x=-.5\pgf@x%
+      \advance\pgf@x by.5\wd\pgfnodeparttextbox%
+      \pgfmathsetlength\pgf@xa{\pgfkeysvalueof{/pgf/outer xsep}}%
+      \advance\pgf@x by-\pgf@xa%
+      %
+      \pgf@y=-.5\pgf@y%
+      \advance\pgf@y by-.5\dp\pgfnodeparttextbox%
+      \advance\pgf@y by.5\ht\pgfnodeparttextbox%
+      \pgfmathsetlength\pgf@ya{\pgfkeysvalueof{/pgf/outer ysep}}%
+      \advance\pgf@y by-\pgf@ya%
+    }
+    \addtosavedmacro\southwest
+  }
+  \anchor{center}{
+    \rectangleWithRoundedCornersParameters
+    \pgf@process{\northeast}%
+    \pgf@xa=.5\pgf@x%
+    \pgf@ya=.5\pgf@y%
+    \pgf@process{\southwest}%
+    \pgf@x=.5\pgf@x%
+    \pgf@y=.5\pgf@y%
+    \advance\pgf@x by \pgf@xa%
+    \advance\pgf@y by \pgf@ya%
+  }
+  \anchor{mid}{\csname pgf@anchor@rectangle with rounded corners@center\endcsname\pgfmathsetlength\pgf@y{.5ex}}
+  \anchor{base}{\csname pgf@anchor@rectangle with rounded corners@center\endcsname\pgf@y=0pt}
+  \anchor{north}{
+    \rectangleWithRoundedCornersParameters
+    \pgf@process{\southwest}%
+    \pgf@xa=.5\pgf@x%
+    \pgf@process{\northeast}%
+    \pgf@x=.5\pgf@x%
+    \advance\pgf@x by \pgf@xa%
+  }
+  \anchor{south}{
+    \rectangleWithRoundedCornersParameters
+    \pgf@process{\northeast}%
+    \pgf@xa=.5\pgf@x%
+    \pgf@process{\southwest}%
+    \pgf@x=.5\pgf@x%
+    \advance\pgf@x by \pgf@xa%
+  }
+  \anchor{west}{
+    \rectangleWithRoundedCornersParameters
+    \pgf@process{\northeast}%
+    \pgf@ya=.5\pgf@y%
+    \pgf@process{\southwest}%
+    \pgf@y=.5\pgf@y%
+    \advance\pgf@y by \pgf@ya%
+  }
+  \anchor{mid west}{\rectangleWithRoundedCornersParameters\southwest\pgfmathsetlength\pgf@y{.5ex}}
+  \anchor{base west}{\rectangleWithRoundedCornersParameters\southwest\pgf@y=0pt}
+  \anchor{north west}{
+    \rectangleWithRoundedCornersParameters
+    \southwest
+    \pgf@xa=\pgf@x
+    \northeast
+    \pgf@x=\pgf@xa}
+  \anchor{south west}{\rectangleWithRoundedCornersParameters\southwest}
+  \anchor{east}{%
+    \rectangleWithRoundedCornersParameters
+    \pgf@process{\southwest}%
+    \pgf@ya=.5\pgf@y%
+    \pgf@process{\northeast}%
+    \pgf@y=.5\pgf@y%
+    \advance\pgf@y by \pgf@ya%
+  }
+  \anchor{mid east}{\rectangleWithRoundedCornersParameters\northeast\pgfmathsetlength\pgf@y{.5ex}}
+  \anchor{base east}{\rectangleWithRoundedCornersParameters\northeast\pgf@y=0pt}
+  \anchor{north east}{\rectangleWithRoundedCornersParameters\northeast}
+  \anchor{south east}{
+    \rectangleWithRoundedCornersParameters
+    \northeast
+    \pgf@xa=\pgf@x
+    \southwest
+    \pgf@x=\pgf@xa
+  }
+  \backgroundpath{%
+    \rectangleWithRoundedCornersParameters
+    \pgfmathsetlengthmacro\outerxsep{\pgfkeysvalueof{/pgf/outer xsep}}%
+    \pgfmathsetlengthmacro\outerysep{\pgfkeysvalueof{/pgf/outer ysep}}%
+    \pgfpathmoveto{\pgfpointadd{\csname pgf@anchor@rectangle with rounded corners@east\endcsname}{\pgfqpoint{-\outerxsep}{0pt}}}%
+    \pgfmathloop
+      \ifnum\pgfmathcounter>4\relax
+        \pgfpathclose
+      \else
+        \pgf@lib@sh@rwrc@options\pgfmathcounter%
+        \pgfsetcornersarced{\pgfqpoint{\pgf@lib@sh@rwrc@options@R}{\pgf@lib@sh@rwrc@options@R}}%
+        \if o\pgf@lib@sh@rwrc@options@M
+          \pgfsetcornersarced{\pgfqpoint{-\pgf@lib@sh@rwrc@options@R}{-\pgf@lib@sh@rwrc@options@R}}%
+          \edef\pgf@lib@sh@rwrc@options@R{-\pgf@lib@sh@rwrc@options@R}%
+          \def\pgf@lib@sh@rwrc@options@M{i}%
+        \fi % 
+        \if i\pgf@lib@sh@rwrc@options@M
+          \pgfpathlineto{\pgf@lib@sh@rwrc@options@A}%
+        \else\if h\pgf@lib@sh@rwrc@options@M
+            \ifcase\pgfmathcounter
+            \or % ne
+              \pgfpathlineto{\pgf@lib@sh@rwrc@options@A}%
+              \pgfpathlineto{\pgfpointadd{\pgf@lib@sh@rwrc@options@A}{\pgfqpoint{\pgf@lib@sh@rwrc@options@R}{0pt}}}
+            \or % nw
+              \pgfpathlineto{\pgfpointadd{\pgf@lib@sh@rwrc@options@A}{\pgfqpoint{-\pgf@lib@sh@rwrc@options@R}{0pt}}}
+              \pgfpathlineto{\pgf@lib@sh@rwrc@options@A}%
+            \or % sw
+              \pgfpathlineto{\pgf@lib@sh@rwrc@options@A}%
+              \pgfpathlineto{\pgfpointadd{\pgf@lib@sh@rwrc@options@A}{\pgfqpoint{-\pgf@lib@sh@rwrc@options@R}{0pt}}}
+            \or % se
+              \pgfpathlineto{\pgfpointadd{\pgf@lib@sh@rwrc@options@A}{\pgfqpoint{\pgf@lib@sh@rwrc@options@R}{0pt}}}
+              \pgfpathlineto{\pgf@lib@sh@rwrc@options@A}%
+            \fi
+          \else\if v\pgf@lib@sh@rwrc@options@M
+              \ifcase\pgfmathcounter
+              \or % ne
+                \pgfpathlineto{\pgfpointadd{\pgf@lib@sh@rwrc@options@A}{\pgfqpoint{0pt}{\pgf@lib@sh@rwrc@options@R}}}
+                \pgfpathlineto{\pgf@lib@sh@rwrc@options@A}%
+              \or % nw
+                \pgfpathlineto{\pgf@lib@sh@rwrc@options@A}%
+                \pgfpathlineto{\pgfpointadd{\pgf@lib@sh@rwrc@options@A}{\pgfqpoint{0pt}{\pgf@lib@sh@rwrc@options@R}}}
+              \or % sw
+                \pgfpathlineto{\pgfpointadd{\pgf@lib@sh@rwrc@options@A}{\pgfqpoint{0pt}{-\pgf@lib@sh@rwrc@options@R}}}
+                \pgfpathlineto{\pgf@lib@sh@rwrc@options@A}%
+              \or % se
+                \pgfpathlineto{\pgf@lib@sh@rwrc@options@A}%
+                \pgfpathlineto{\pgfpointadd{\pgf@lib@sh@rwrc@options@A}{\pgfqpoint{0pt}{-\pgf@lib@sh@rwrc@options@R}}}
+              \fi
+            \else
+              \pgfsetcornersarced{\pgfpointorigin}%
+              \pgfpathlineto{\pgf@lib@sh@rwrc@options@A}%
+            \fi
+          \fi
+        \fi
+        %
+        \pgfpathlineto{\pgf@lib@sh@rwrc@options@B}%
+    \repeatpgfmathloop
+  }
+}
+\begingroup
+  \expandafter\def\expandafter\pgf@temp\expandafter{\expandafter\gdef\csname pgf@anchor@rectangle with rounded corners@border\endcsname##1}
+  \expandafter\pgf@temp\expandafter{\expandafter\rectangleWithRoundedCornersParameters\pgf@anchor@rectangle@border{#1}}
+\endgroup
