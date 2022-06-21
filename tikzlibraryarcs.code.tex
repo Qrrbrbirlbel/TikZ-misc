@@ -1,0 +1,52 @@
+\let\tikz@arc@moveto\relax
+\let\tikz@arc@center\pgfutil@empty
+\let\tikz@arc@from\pgfutil@empty
+\let\tikz@arc@to\pgfutil@empty
+\def\tikz@arc@movetolineto#1{%
+  \def\tikz@arc@moveto{\tikz@@@parse@polar{\tikz@arc@@movetolineto#1}(\tikz@s:\pgfkeysvalueof{/tikz/x radius} and \pgfkeysvalueof{/tikz/y radius})}}
+\def\tikz@arc@@movetolineto#1#2{#1{\pgfpointadd{#2}{\tikz@last@position@saved}}}
+\tikzset{%
+  move to start/.code=\tikz@arc@movetolineto\pgfpathmoveto,%
+  line to start/.code=\tikz@arc@movetolineto\pgfpathlineto,
+  arc center/.style={
+    move to start,
+    /utils/exec=\edef\tikz@arc@center{#1}},
+  arc from/.code=\def\tikz@arc@from{#1},
+  arc to/.code=\def\tikz@arc@to{#1},
+}
+
+\def\tikz@arc@opt[#1]{% over-write!
+  {%
+    \tikzset{every arc/.try,#1}%
+    \pgfkeysgetvalue{/tikz/start angle}\tikz@s
+    \pgfkeysgetvalue{/tikz/end angle}\tikz@e
+    \pgfkeysgetvalue{/tikz/delta angle}\tikz@d
+    \ifx\tikz@arc@center\pgfutil@empty
+      \ifx\tikz@arc@from\pgfutil@empty
+        \ifx\tikz@arc@to\pgfutil@empty
+          % okay
+        \else % \tikz@last@position@saved
+           \tikz@scan@one@point\pgfutil@firstofone(\tikz@arc@to)\relax
+%          \tikz@scan@one@point{\pgfpointdiff{\tikz@last@position@saved}}(\tikz@arc@to)
+%          \csname pgfmathatan2\endcsname{-\pgf@x}{-\pgf@y}%
+%          \let\tikz@e\pgfmathresult
+        \fi
+      \else
+      \fi
+    \else
+    \fi
+    %
+    \ifx\tikz@s\pgfutil@empty%
+      \pgfmathsetmacro\tikz@s{\tikz@e-\tikz@d}
+    \else
+      \ifx\tikz@e\pgfutil@empty%
+        \pgfmathsetmacro\tikz@e{\tikz@s+\tikz@d}
+      \fi%
+    \fi
+    \tikz@arc@moveto
+    \tikz@do@arc{\tikz@s}{\tikz@e}
+      {\pgfkeysvalueof{/tikz/x radius}}
+      {\pgfkeysvalueof{/tikz/y radius}}
+  }%
+  \tikz@arcfinal%
+}

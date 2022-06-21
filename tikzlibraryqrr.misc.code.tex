@@ -18,7 +18,9 @@
 
 %% foreach
 % http://tex.stackexchange.com/a/126418/16595
-\def\pgffor@scanround(#1)#2,{\def\pgffor@value{(#1)#2}\pgffor@scanned}
+%\def\pgffor@scanround(#1)#2,{\def\pgffor@value{(#1)#2}\pgffor@scanned}
+% fixed in 3.0.0
+
 % http://tex.stackexchange.com/a/126418/16595
 \newif\ifqrr@pgf@foreach@no@list
 \pgfqkeys{/pgf/foreach}{
@@ -76,10 +78,12 @@
       \advance\pgfmath@count-1\relax
     \pgfutil@repeat\pgfmath@smuggleone\pgfmathresult\endgroup}
 
+\ifdefined\pgfmathinstr\else
 \pgfmathdeclarefunction{instr}{2}{%
   \pgfutil@in@{#1}{#2}%
   \ifpgfutil@in@\def\pgfmathresult{1}\else\def\pgfmathresult{0}\fi}
-
+\fi
+\ifdefined\pgfmathstrcat\else
 \pgfmathdeclarefunction{strcat}{...}{%
   \begingroup
     \let\pgfmathresult\pgfutil@empty
@@ -93,19 +97,21 @@
   \fi
   \pgfmath@next}
 \def\pgfmathstrcat@@@{\pgfmath@smuggleone\pgfmathresult\endgroup}
-
+\fi
 
 % the CVS version swaps the arguments so I define new atan
 % functions that have the order of arguments in their name
-\csname pgfmathatan2@\endcsname{0}{1}
-\ifdim\pgfmathresult pt=0pt % atan2(y, x)
-  \pgfmathdeclarefunction{atanXY}{2}{\csname pgfmathatan2@\endcsname{#2}{#1}}
-  \pgfmathdeclarefunction{atanYX}{2}{\csname pgfmathatan2@\endcsname{#1}{#2}}
-\else                       % atan2(x, y)
-  \pgfmathdeclarefunction{atanXY}{2}{\csname pgfmathatan2@\endcsname{#1}{#2}}
-  \pgfmathdeclarefunction{atanYX}{2}{\csname pgfmathatan2@\endcsname{#2}{#1}}
-\fi
-
+%\csname pgfmathatan2@\endcsname{0}{1}
+%\ifdim\pgfmathresult pt=0pt % atan2(y, x)
+%  \pgfmathdeclarefunction{atanXY}{2}{\csname pgfmathatan2@\endcsname{#2}{#1}}
+%  \pgfmathdeclarefunction{atanYX}{2}{\csname pgfmathatan2@\endcsname{#1}{#2}}
+%\else                       % atan2(x, y)
+%  \pgfmathdeclarefunction{atanXY}{2}{\csname pgfmathatan2@\endcsname{#1}{#2}}
+%  \pgfmathdeclarefunction{atanYX}{2}{\csname pgfmathatan2@\endcsname{#2}{#1}}
+%\fi
+% http://tex.stackexchange.com/questions/244569/bounding-lines-around-tax-nodes/244619#244619
+\pgfmathdeclarefunction{atanXY}{2}{\pgfmathatantwo@{#2}{#1}}
+\pgfmathdeclarefunction{atanYX}{2}{\pgfmathatantwo@{#1}{#2}}
 %% http://tex.stackexchange.com/a/141333/16595
 \let\tikz@auto@anchor@orig      \tikz@auto@anchor
 \let\tikz@auto@anchor@prime@orig\tikz@auto@anchor@prime
@@ -145,3 +151,58 @@
                         {\pgfkeysvalueof{/tikz/@@tos to/.@cmd}[]}#1\pgfeov}}},
   @@tos to/.style args={[#1]#2}{/tikz/insert path={to[#1] (#2)}},
   tos to/.style={/tikz/@tos to/.list={#1}}}
+
+
+%\pgfmathdeclarefunction{pgfveclen}{2}{%
+%  \begingroup
+%    \pgfpointdiff{#1}{#2}%
+%    \edef\pgfmath@temp{{\pgf@sys@tonumber\pgf@x}{\pgf@sys@tonumber\pgf@y}}%
+%    \expandafter\pgfmathveclen@\pgfmath@temp
+%    \pgfmath@smuggleone\pgfmathresult
+%  \endgroup}
+\pgfmathdeclarefunction{pgfVeclen}{2}{% only coordinates/nodes
+  \begingroup
+    \pgfpointdiff{\pgfpointanchor{#1}{center}}{\pgfpointanchor{#2}{center}}%
+    \edef\pgfmath@temp{{\pgf@sys@tonumber\pgf@x}{\pgf@sys@tonumber\pgf@y}}%
+    \expandafter\pgfmathveclen@\pgfmath@temp
+    \pgfmath@smuggleone\pgfmathresult
+  \endgroup}
+\pgfmathdeclarefunction{tikzveclen}{2}{% for coordinates
+  \begingroup
+    \pgfpointdiff{\tikz@scan@one@point\pgfutil@firstofone(#1)}
+                 {\tikz@scan@one@point\pgfutil@firstofone(#2)}%
+    \edef\pgfmath@temp{{\pgf@sys@tonumber\pgf@x}{\pgf@sys@tonumber\pgf@y}}%
+    \expandafter\pgfmathveclen@\pgfmath@temp
+    \pgfmath@smuggleone\pgfmathresult
+  \endgroup}
+\pgfmathdeclarefunction{tikzVeclen}{2}{\pgfmathpgfVeclen@{#1}{#2}}
+
+\pgfmathdeclarefunction{pgfAtan}{1}{%
+  \pgfmathanglebetweenpoints{\pgfpointorigin}{\pgfpointanchor{#1}{center}}}
+\pgfmathdeclarefunction{tikzAtan}{1}{\pgfmathpgfAtan@{#1}}
+
+\pgfmathdeclarefunction{pgfAngleBetween}{2}{%
+  \pgfmathanglebetweenpoints{\pgfpointanchor{#1}{center}}{\pgfpointanchor{#2}{center}}}
+\pgfmathdeclarefunction{tikzAngleBetween}{2}{%
+  \pgfmathpgfAngleBetween@{#1}{#2}}
+
+\pgfmathdeclarefunction{isEmpty}{1}{%
+  \begingroup
+    \def\pgfmathresult{0}%
+    \edef\pgfmath@temp{#1}%
+    \ifx\pgfmath@temp\pgfmath@empty
+      \def\pgfmathresult{1}%
+    \fi
+    \pgfmath@smuggleone\pgfmathresult
+  \endgroup}
+
+\tikzset{
+  if/.code n args=3{%
+    \pgfmathparse{#1}%
+    \ifnum\pgfmathresult=0\relax
+      \expandafter\pgfutil@firstoftwo
+    \else
+      \expandafter\pgfutil@secondoftwo
+    \fi
+    {\pgfkeysalso{#3}}%
+    {\pgfkeysalso{#2}}}}

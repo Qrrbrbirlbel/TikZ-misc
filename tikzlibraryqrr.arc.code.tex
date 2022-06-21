@@ -73,16 +73,16 @@
       \fi
     \fi
   \endgroup
-  \edef\tikz@timer@start@angle{\expandafter\expandafter\expandafter\pgfutil@firstoffour\expandafter\pgfutil@gobble\pgf@marshal}%
-  \edef\tikz@timer@end@angle{\expandafter\expandafter\expandafter\pgfutil@secondoffour\expandafter\pgfutil@gobble\pgf@marshal}%
-  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\def
-  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\tikz@timer@zero@axis
-  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter{%
-  \expandafter\expandafter\expandafter\pgfutil@thirdoffour\expandafter\pgfutil@gobble\pgf@marshal}%
-  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\def
-  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\tikz@timer@ninety@axis
-  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter{%
-  \expandafter\expandafter\expandafter\pgfutil@fourthoffour\expandafter\pgfutil@gobble\pgf@marshal}%
+%  \edef\tikz@timer@start@angle{\expandafter\expandafter\expandafter\pgfutil@firstoffour\expandafter\pgfutil@gobble\pgf@marshal}%
+%  \edef\tikz@timer@end@angle{\expandafter\expandafter\expandafter\pgfutil@secondoffour\expandafter\pgfutil@gobble\pgf@marshal}%
+%  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\def
+%  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\tikz@timer@zero@axis
+%  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter{%
+%  \expandafter\expandafter\expandafter\pgfutil@thirdoffour\expandafter\pgfutil@gobble\pgf@marshal}%
+%  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\def
+%  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\tikz@timer@ninety@axis
+%  \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter{%
+%  \expandafter\expandafter\expandafter\pgfutil@fourthoffour\expandafter\pgfutil@gobble\pgf@marshal}%
   \let\tikz@timer=\tikz@timer@arc
   \tikz@scan@next@command
 }
@@ -90,3 +90,4 @@
 \def\pgfutil@secondoffour#1#2#3#4{#2}
 \def\pgfutil@thirdoffour#1#2#3#4{#3}
 \def\pgfutil@fourthoffour#1#2#3#4{#4}
+\endinput

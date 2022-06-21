@@ -2,9 +2,17 @@
 \let\tikz@lib@nf@textdepth\relax
 \let\tikz@lib@nf@textwidth\relax
 \tikzset{
+  nf picture id/.code={%
+    \edef\tikz@tempa{#1}%
+    \ifx\tikz@tempa\pgfutil@empty
+      \def\tikz@lib@nf@pictureid{\pgfpictureid}%
+    \else
+      \let\tikz@lib@nf@pictureid\tikz@tempa
+    \fi},
+  nf picture id=,
   Minimum Width/.code={%
-    \pgfutil@ifundefined{\pgfpictureid @#1@width}{}{%
-      \tikzset{/tikz/minimum width/.expand twice=+\csname\pgfpictureid @#1@width\endcsname}%
+    \pgfutil@ifundefined{\tikz@lib@nf@pictureid @#1@width}{}{%
+      \tikzset{/tikz/minimum width/.expand twice=+\csname\tikz@lib@nf@pictureid @#1@width\endcsname}%
     }%
     \tikz@addmode{\pgfmathsetlengthmacro\tikz@lib@nf@outerxsep{\pgfkeysvalueof{/pgf/outer xsep}}\global\let\tikz@lib@nf@outerxsep\tikz@lib@nf@outerxsep}%
     \tikzset{
@@ -21,23 +29,23 @@
             \pgf@x\pgfmathresult pt\relax
             \advance\pgf@x-\tikz@lib@nf@outerxsep
             \advance\pgf@x-\tikz@lib@nf@outerxsep
-            \pgfutil@ifundefined{\pgfpictureid @#1@width}{%
-              \expandafter\xdef\csname\pgfpictureid @#1@width\endcsname{\the\pgf@x}%
+            \pgfutil@ifundefined{\tikz@lib@nf@pictureid @#1@width}{%
+              \expandafter\xdef\csname\tikz@lib@nf@pictureid @#1@width\endcsname{\the\pgf@x}%
             }{%
-              \expandafter\ifdim\csname\pgfpictureid @#1@width\endcsname<\pgf@x
-                \expandafter\xdef\csname\pgfpictureid @#1@width\endcsname{\the\pgf@x}%
+              \expandafter\ifdim\csname\tikz@lib@nf@pictureid @#1@width\endcsname<\pgf@x
+                \expandafter\xdef\csname\tikz@lib@nf@pictureid @#1@width\endcsname{\the\pgf@x}%
               \fi
             }%
             \expandafter\expandafter\expandafter\gdef\expandafter\expandafter\expandafter
-            \tikz@atend@picture\expandafter\expandafter\expandafter{\expandafter\tikz@atend@picture\expandafter\tikz@lib@nf@save\expandafter{\pgfpictureid}{#1}{width}{width}}
+            \tikz@atend@picture\expandafter\expandafter\expandafter{\expandafter\tikz@atend@picture\expandafter\tikz@lib@nf@save\expandafter{\tikz@lib@nf@pictureid}{#1}{width}{width}}
           \endpgfinterruptpath
         \endpgfextra
       }%
     }%
   },
   Minimum Height/.code={%
-    \pgfutil@ifundefined{\pgfpictureid @#1@height}{}{%
-      \tikzset{/tikz/minimum height/.expand twice=+\csname\pgfpictureid @#1@height\endcsname}%
+    \pgfutil@ifundefined{\tikz@lib@nf@pictureid @#1@height}{}{%
+      \tikzset{/tikz/minimum height/.expand twice=+\csname\tikz@lib@nf@pictureid @#1@height\endcsname}%
     }%
     \tikz@addmode{\pgfmathsetlengthmacro\tikz@lib@nf@outerysep{\pgfkeysvalueof{/pgf/outer ysep}}\global\let\tikz@lib@nf@outerysep\tikz@lib@nf@outerysep}%
     \tikzset{
@@ -54,15 +62,15 @@
             \pgf@x\pgfmathresult pt\relax
             \advance\pgf@x-\tikz@lib@nf@outerysep
             \advance\pgf@x-\tikz@lib@nf@outerysep
-            \pgfutil@ifundefined{\pgfpictureid @#1@height}{%
-              \expandafter\xdef\csname\pgfpictureid @#1@height\endcsname{\the\pgf@x}%
+            \pgfutil@ifundefined{\tikz@lib@nf@pictureid @#1@height}{%
+              \expandafter\xdef\csname\tikz@lib@nf@pictureid @#1@height\endcsname{\the\pgf@x}%
             }{%
-              \expandafter\ifdim\csname\pgfpictureid @#1@height\endcsname<\pgf@x
-                \expandafter\xdef\csname\pgfpictureid @#1@height\endcsname{\the\pgf@x}%
+              \expandafter\ifdim\csname\tikz@lib@nf@pictureid @#1@height\endcsname<\pgf@x
+                \expandafter\xdef\csname\tikz@lib@nf@pictureid @#1@height\endcsname{\the\pgf@x}%
               \fi
             }%
             \expandafter\expandafter\expandafter\gdef\expandafter\expandafter\expandafter
-            \tikz@atend@picture\expandafter\expandafter\expandafter{\expandafter\tikz@atend@picture\expandafter\tikz@lib@nf@save\expandafter{\pgfpictureid}{#1}{height}{height}}
+            \tikz@atend@picture\expandafter\expandafter\expandafter{\expandafter\tikz@atend@picture\expandafter\tikz@lib@nf@save\expandafter{\tikz@lib@nf@pictureid}{#1}{height}{height}}
           \endpgfinterruptpath
         \endpgfextra
       }%
@@ -73,29 +81,33 @@
     Minimum Width={#1}},
   Text Height/.code=\edef\tikz@lib@nf@textheight{#1},
   Text Depth/.code= \edef\tikz@lib@nf@textdepth{#1},
+%  Text Width final/.is if=tikz@lib@nf@textwidth@final,
   Text Width/.code=%
     \edef\tikz@lib@nf@textwidth{#1}%
-    \pgfutil@ifundefined{\pgfpictureid @#1@textwidth}{}{%
-      \tikzset{text width/.expand twice=+\csname\pgfpictureid @#1@textwidth\endcsname}%
+    \pgfutil@ifundefined{\tikz@lib@nf@pictureid @#1@textwidth}{%
+      \pgfkeyssetvalue{/tikz/node halign header}{}%
+      \tikzset{node halign header/.style=}%
+    }{%
+        \tikzset{text width/.expand twice=+\csname\tikz@lib@nf@pictureid @#1@textwidth\endcsname}%
     }%
 }
-
+%\newif\iftikz@lib@nf@textwidth@final
 \def\tikz@lib@nf@text@#1#2#3{%
   \expandafter\ifx\csname tikz@lib@nf@#3\endcsname\relax\else
     \ifx#1\wd\def\tikz@temp{@}\else\let\tikz@temp\pgfutil@empty\fi
     \expandafter\ifx\csname tikz@lib@nf@#3\tikz@temp\endcsname\pgfutil@empty\else
-      \pgfutil@ifundefined{\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\tikz@temp}{%
-        \expandafter\xdef\csname\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\tikz@temp\endcsname{\the#1#2}%
+      \pgfutil@ifundefined{\tikz@lib@nf@pictureid @\csname tikz@lib@nf@#3\endcsname @#3\tikz@temp}{%
+        \expandafter\xdef\csname\tikz@lib@nf@pictureid @\csname tikz@lib@nf@#3\endcsname @#3\tikz@temp\endcsname{\the#1#2}%
       }{%
-        \ifdim\csname\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\tikz@temp\endcsname<#1#2
-          \expandafter\xdef\csname\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\tikz@temp\endcsname{\the#1#2}%
+        \ifdim\csname\tikz@lib@nf@pictureid @\csname tikz@lib@nf@#3\endcsname @#3\tikz@temp\endcsname<#1#2
+          \expandafter\xdef\csname\tikz@lib@nf@pictureid @\csname tikz@lib@nf@#3\endcsname @#3\tikz@temp\endcsname{\the#1#2}%
         \else
           \ifx#1\wd\else
-            #1#2=\csname\pgfpictureid @\csname tikz@lib@nf@#3\endcsname @#3\endcsname\relax
+            #1#2=\csname\tikz@lib@nf@pictureid @\csname tikz@lib@nf@#3\endcsname @#3\endcsname\relax
           \fi
         \fi
       }%
-      \edef\tikz@temp{\noexpand\tikz@lib@nf@save{\pgfpictureid}{\csname tikz@lib@nf@#3\endcsname}{#3}{#3\tikz@temp}}%
+      \edef\tikz@temp{\noexpand\tikz@lib@nf@save{\tikz@lib@nf@pictureid}{\csname tikz@lib@nf@#3\endcsname}{#3}{#3\tikz@temp}}%
       \expandafter\expandafter\expandafter\gdef\expandafter\expandafter\expandafter
       \tikz@atend@picture\expandafter\expandafter\expandafter{\expandafter\tikz@atend@picture\tikz@temp}%
     \fi
@@ -127,16 +139,17 @@
     %
     % Node transformation
     %
-    \tikz@node@transformations
-    %
-    \setbox\tikz@figbox=\hbox{%
-      \setbox\pgfutil@tempboxa=\copy\tikz@figbox%
-      \unhbox\pgfutil@tempboxa%
+    \tikz@node@transformations%
+    \tikz@nlt%
+    % 
+    \setbox\tikz@whichbox=\hbox{%
+      \unhbox\tikz@whichbox%
       \hbox{{%
           \pgfinterruptpath%
             \pgfscope%
               \tikz@options%
               \setbox\tikz@figbox=\box\pgfutil@voidb@x%
+              \setbox\tikz@figbox@bg=\box\pgfutil@voidb@x%
               \pgfmultipartnode{\tikz@shape}{\tikz@anchor}{\tikz@fig@name}{%
                 \pgfutil@tempdima=\pgflinewidth%
                 {\begingroup\tikz@finish}%
@@ -152,8 +165,24 @@
 }
 \def\tikz@lib@nf@save#1#2#3#4{%
   \pgfutil@ifundefined{#1@#2@#3@done}{%
-    \expandafter\let\csname#1@#2@#3@done\endcsname\pgfutil@empty%
+    \expandafter\global\expandafter\let\csname#1@#2@#3@done\endcsname\pgfutil@empty%
     \immediate\write\pgfutil@auxout{\noexpand\expandafter\noexpand\gdef\noexpand\csname#1@#2@#3\endcsname{\csname#1@#2@#4\endcsname}}
   }{}%
 }
+
+\pgfmathdeclarefunction{minimum_width}{1}{%
+  \begingroup
+    \def\pgfmath@temp{#1}%
+    \ifx\pgfmath@temp\pgfmath@empty
+      \pgfmathparse{\pgfkeysvalueof{/pgf/minimum width}}%
+    \else
+      \pgfutil@ifundefined{\tikz@lib@nf@pictureid @#1@width}{%
+        \def\pgfmathresult{0}}{%
+%        \edef\pgfmathresult{\csname\tikz@lib@nf@pictureid @#1@width\endcsname}}%
+%        \edef\pgfmathresult{%
+%          \expandafter\expandafter\expandafter\Pgf@geT\csname\tikz@lib@nf@pictureid @#1@width\endcsname}}% weird what's up with pt?
+        \pgfmathparse{+\csname\tikz@lib@nf@pictureid @#1@width\endcsname}}%
+    \fi
+    \pgfmath@smuggleone\pgfmathresult
+  \endgroup}
 \endinput
