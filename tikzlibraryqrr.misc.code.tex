@@ -1,4 +1,14 @@
 %% full arc
+%% https://tex.stackexchange.com/a/144297/16595
+%% The postfix operator R is added to PGFmath,
+%% it allows the use of angular segments.
+%% full arc = 10 makes it so that
+%%   1R =  36°
+%%   2R =  72°
+%%   …
+%%  10R = 360°
+%% Calling the full arc key with an empty value 
+%% makes 1R = 1°
 \pgfset{full arc/.code=%
   \def\pgf@temp{#1}%
   \ifx\pgfutil@empty\pgf@temp
@@ -17,11 +27,11 @@
   \endgroup}
 
 %% foreach
-% http://tex.stackexchange.com/a/126418/16595
-%\def\pgffor@scanround(#1)#2,{\def\pgffor@value{(#1)#2}\pgffor@scanned}
-% fixed in 3.0.0
-
-% http://tex.stackexchange.com/a/126418/16595
+%% http://tex.stackexchange.com/a/126418/16595
+%% instead of \foreach \var in {start, start + delta, ..., end}
+%% this allows to use \foreach[use int={start to end step delta}] without(!) a list in {}
+%% the values start, end and delta are evaluated by PGFmath at the start of the loop.
+%% In addition to use int, there's also use float.
 \newif\ifqrr@pgf@foreach@no@list
 \pgfqkeys{/pgf/foreach}{
   @use/.code args={#1to#2}{%
@@ -53,11 +63,16 @@
          {\pgffor@@vars}}}}}%
 
 %% Handlers
+%% .pgfmath evaluates values given to keys in PGFmath before handing them over.
+%% .pgfmath int truncates the result
+%% .pgfmath strcat concatenates the given values
 \pgfkeys{/handlers/.pgfmath/.code=\pgfmathparse{#1}\expandafter\pgfkeys@exp@call\expandafter{\pgfmathresult}}
-\pgfkeys{/handlers/.pgfmath int/.code=\pgfmathparse{int(#1)}\expandafter\pgfkeys@exp@call\expandafter{\pgfmathresult}}
-\pgfkeys{/handlers/.pgfmath strcat/.code=\pgfmathparse{strcat(#1)}\expandafter\pgfkeys@exp@call\expandafter{\pgfmathresult}}
+\pgfkeys{/handlers/.pgfmath int/.code=\pgfmathint{#1}\expandafter\pgfkeys@exp@call\expandafter{\pgfmathresult}}
+\pgfkeys{/handlers/.pgfmath strcat/.code=\pgfmathstrcat{#1}\expandafter\pgfkeys@exp@call\expandafter{\pgfmathresult}}
 
-% http://tex.stackexchange.com/a/144187/16595
+%% http://tex.stackexchange.com/a/144187/16595
+%% key/.List={(point-1),(point-2),(point-...),(point-6)} will call
+%% key=(point-1)(point-2)(point-3)(point-5)(point-5),(point-6)
 \pgfkeys{/handlers/.List/.code={%
     \let\pgfkeys@global@temp\pgfutil@empty
     \foreach \pgfkeys@temp in{#1}{
@@ -70,6 +85,7 @@
     \expandafter\pgfkeys@exp@call\expandafter{\pgfkeys@global@temp}}}
 
 %% PGFmath
+%% strrepeat("x", 5) = "xxxxx"
 \pgfmathdeclarefunction{strrepeat}{2}{%
   \begingroup\pgfmathint{#2}\pgfmath@count\pgfmathresult
     \let\pgfmathresult\pgfutil@empty
@@ -78,11 +94,15 @@
       \advance\pgfmath@count-1\relax
     \pgfutil@repeat\pgfmath@smuggleone\pgfmathresult\endgroup}
 
+%% instr("foo", "foobar") = true (= 1)
+%% instr("boo", "foobar") = false (= 0)
 \ifdefined\pgfmathinstr\else
 \pgfmathdeclarefunction{instr}{2}{%
   \pgfutil@in@{#1}{#2}%
   \ifpgfutil@in@\def\pgfmathresult{1}\else\def\pgfmathresult{0}\fi}
 \fi
+
+%% strcat("foo", "bar") = "foobar" (can have more than two parameters)
 \ifdefined\pgfmathstrcat\else
 \pgfmathdeclarefunction{strcat}{...}{%
   \begingroup
@@ -197,7 +217,7 @@
   \endgroup}
 
 \tikzset{
-  if/.code n args=3{%
+  ifTF/.code n args=3{%
     \pgfmathparse{#1}%
     \ifnum\pgfmathresult=0\relax
       \expandafter\pgfutil@firstoftwo
