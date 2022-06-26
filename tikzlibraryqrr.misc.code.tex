@@ -133,24 +133,24 @@
 \pgfmathdeclarefunction{atanXY}{2}{\pgfmathatantwo@{#2}{#1}}
 \pgfmathdeclarefunction{atanYX}{2}{\pgfmathatantwo@{#1}{#2}}
 %% http://tex.stackexchange.com/a/141333/16595
-\let\tikz@auto@anchor@orig      \tikz@auto@anchor
-\let\tikz@auto@anchor@prime@orig\tikz@auto@anchor@prime
-\tikzset{
-  Auto/.code=\pgfkeysalso{/tikz/auto=#1}%
-    \let\tikz@auto@anchor      \tikz@Auto@anchor
-    \let\tikz@auto@anchor@prime\tikz@Auto@anchor@prime,
-  auto/.prefix code=\let\tikz@auto@anchor      \tikz@auto@anchor@orig
-                    \let\tikz@auto@anchor@prime\tikz@auto@anchor@prime@orig}
-\def\tikz@Auto@anchor{%
-  \pgfmathatanXY@{\pgf@sys@tonumber\pgf@x}{\pgf@sys@tonumber\pgf@y}%
-  \pgfutil@tempdima=\pgfmathresult pt\relax
-  \advance\pgfutil@tempdima-90pt\relax
-  \edef\tikz@anchor{\pgf@sys@tonumber\pgfutil@tempdima}}
-\def\tikz@Auto@anchor@prime{%
-  \pgfmathatanXY@{\pgf@sys@tonumber\pgf@x}{\pgf@sys@tonumber\pgf@y}%
-  \pgfutil@tempdima=\pgfmathresult pt\relax
-  \advance\pgfutil@tempdima90pt\relax
-  \edef\tikz@anchor{\pgf@sys@tonumber\pgfutil@tempdima}}
+%\let\tikz@auto@anchor@orig      \tikz@auto@anchor
+%\let\tikz@auto@anchor@prime@orig\tikz@auto@anchor@prime
+%\tikzset{
+%  Auto/.code=\pgfkeysalso{/tikz/auto=#1}%
+%    \let\tikz@auto@anchor      \tikz@Auto@anchor
+%    \let\tikz@auto@anchor@prime\tikz@Auto@anchor@prime,
+%  auto/.prefix code=\let\tikz@auto@anchor      \tikz@auto@anchor@orig
+%                    \let\tikz@auto@anchor@prime\tikz@auto@anchor@prime@orig}
+%\def\tikz@Auto@anchor{%
+%  \pgfmathatanXY@{\pgf@sys@tonumber\pgf@x}{\pgf@sys@tonumber\pgf@y}%
+%  \pgfutil@tempdima=\pgfmathresult pt\relax
+%  \advance\pgfutil@tempdima-90pt\relax
+%  \edef\tikz@anchor{\pgf@sys@tonumber\pgfutil@tempdima}}
+%\def\tikz@Auto@anchor@prime{%
+%  \pgfmathatanXY@{\pgf@sys@tonumber\pgf@x}{\pgf@sys@tonumber\pgf@y}%
+%  \pgfutil@tempdima=\pgfmathresult pt\relax
+%  \advance\pgfutil@tempdima90pt\relax
+%  \edef\tikz@anchor{\pgf@sys@tonumber\pgfutil@tempdima}}
 
 %% http://tex.stackexchange.com/a/132939/16595
 \tikzset{
