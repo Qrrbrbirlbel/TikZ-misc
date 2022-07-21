@@ -47,6 +47,7 @@
   only vertical second/.style={to path={
     \pgfextra
       \let\tikz@ortho@anchor\pgfutil@empty
+      \let\tikz@origtotarget\pgfutil@empty
       \tikz@scan@one@point\pgfutil@firstofone(\tikztostart)\relax
       \iftikz@shapeborder
         \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
@@ -60,16 +61,21 @@
       \fi
       \def\tikz@tempa{#1}%
       \ifx\tikz@tempa\pgfutil@empty\else
+        \let\tikz@origtotarget\tikztotarget
         \edef\tikztotarget{[xshift={#1}]\tikztotarget\tikz@ortho@anchor}%
       \fi
     \endpgfextra
     [insert path/.expanded={
       (perpendicular cs: horizontal line through={(\tikztostart)},
-                         vertical line through={(\tikztotarget)}) -- (\tikztotarget)}] \tikztonodes}},
+                         vertical line through={(\tikztotarget)}) -- (\tikztotarget)}] \tikztonodes
+      \pgfextra
+        \ifx\tikz@origtotarget\pgfutil@empty\else
+          \iftikz@ortho@preflush(\tikz@origtotarget)\fi\fi\endpgfextra}},
   only vertical second/.default=,
   only horizontal second/.style={to path={
     \pgfextra
       \let\tikz@ortho@anchor\pgfutil@empty
+      \let\tikz@origtotarget\pgfutil@empty
       \tikz@scan@one@point\pgfutil@firstofone(\tikztostart)\relax
       \iftikz@shapeborder
         \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
@@ -83,16 +89,21 @@
       \fi
       \def\tikz@tempa{#1}%
       \ifx\tikz@tempa\pgfutil@empty\else
+        \let\tikz@origtotarget\tikztotarget
         \edef\tikztotarget{[yshift={#1}]\tikztotarget\tikz@ortho@anchor}%
       \fi
     \endpgfextra
     [insert path/.expanded={
       (perpendicular cs: vertical line through={(\tikztostart)},
-                         horizontal line through={(\tikztotarget)}) -- (\tikztotarget)}] \tikztonodes}},
+                         horizontal line through={(\tikztotarget)}) -- (\tikztotarget)}] \tikztonodes
+    \pgfextra
+      \ifx\tikz@origtotarget\pgfutil@empty\else
+        \iftikz@ortho@preflush(\tikz@origtotarget)\fi\fi\endpgfextra}},
   only horizontal second/.default=,
   only vertical first/.style={to path={
     \pgfextra
       \let\tikz@ortho@anchor\pgfutil@empty
+      \let\tikz@origtotarget\pgfutil@empty
       \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
       \iftikz@shapeborder
         \let\tikz@origtotarget\tikztotarget
@@ -121,6 +132,7 @@
   only horizontal first/.style={to path={
     \pgfextra
       \let\tikz@ortho@anchor\pgfutil@empty
+      \let\tikz@origtotarget\pgfutil@empty
       \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
       \iftikz@shapeborder
         \let\tikz@origtotarget\tikztotarget
