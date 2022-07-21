@@ -215,11 +215,10 @@
     \fi
     \pgfmath@smuggleone\pgfmathresult
   \endgroup}
-
-\tikzset{
-  ifTF/.code n args=3{%
+\pgfqkeys{/utils}{
+  if/.code n args=3{%
     \pgfmathparse{#1}%
-    \ifnum\pgfmathresult=0\relax
+    \ifnum\pgfmathresult=0
       \expandafter\pgfutil@firstoftwo
     \else
       \expandafter\pgfutil@secondoftwo

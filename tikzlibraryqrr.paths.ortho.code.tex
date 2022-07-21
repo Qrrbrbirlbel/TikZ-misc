@@ -46,62 +46,105 @@
   vertical horizontal vertical/.style={to path={|-| (\tikztotarget) \tikztonodes}},
   only vertical second/.style={to path={
     \pgfextra
+      \let\tikz@ortho@anchor\pgfutil@empty
       \tikz@scan@one@point\pgfutil@firstofone(\tikztostart)\relax
       \iftikz@shapeborder
         \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
         \ifdim\pgf@y>\tikz@lasty\relax
           \edef\tikztostart{\tikztostart.north}%
+          \iftikz@shapeborder\def\tikz@ortho@anchor{.south}\fi
         \else
           \edef\tikztostart{\tikztostart.south}%
+          \iftikz@shapeborder\def\tikz@ortho@anchor{.north}\fi
         \fi
       \fi
+      \def\tikz@tempa{#1}%
+      \ifx\tikz@tempa\pgfutil@empty\else
+        \edef\tikztotarget{[xshift={#1}]\tikztotarget\tikz@ortho@anchor}%
+      \fi
     \endpgfextra
-    (perpendicular cs: horizontal line through={(\tikztostart)},
-                       vertical line through={(\tikztotarget)}) -- (\tikztotarget) \tikztonodes}},
+    [insert path/.expanded={
+      (perpendicular cs: horizontal line through={(\tikztostart)},
+                         vertical line through={(\tikztotarget)}) -- (\tikztotarget)}] \tikztonodes}},
+  only vertical second/.default=,
   only horizontal second/.style={to path={
     \pgfextra
+      \let\tikz@ortho@anchor\pgfutil@empty
       \tikz@scan@one@point\pgfutil@firstofone(\tikztostart)\relax
       \iftikz@shapeborder
         \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
         \ifdim\pgf@x>\tikz@lastx\relax
           \edef\tikztostart{\tikztostart.east}%
+          \iftikz@shapeborder\def\tikz@ortho@anchor{.west}\fi
         \else
           \edef\tikztostart{\tikztostart.west}%
+          \iftikz@shapeborder\def\tikz@ortho@anchor{.east}\fi
         \fi
+      \fi
+      \def\tikz@tempa{#1}%
+      \ifx\tikz@tempa\pgfutil@empty\else
+        \edef\tikztotarget{[yshift={#1}]\tikztotarget\tikz@ortho@anchor}%
       \fi
     \endpgfextra
-    (perpendicular cs: vertical line through={(\tikztostart)},
-                     horizontal line through={(\tikztotarget)}) -- (\tikztotarget) \tikztonodes}},
+    [insert path/.expanded={
+      (perpendicular cs: vertical line through={(\tikztostart)},
+                         horizontal line through={(\tikztotarget)}) -- (\tikztotarget)}] \tikztonodes}},
+  only horizontal second/.default=,
   only vertical first/.style={to path={
-      \pgfextra
+    \pgfextra
+      \let\tikz@ortho@anchor\pgfutil@empty
       \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
       \iftikz@shapeborder
         \let\tikz@origtotarget\tikztotarget
+        \tikz@scan@one@point\pgfutil@firstofone(\tikztostart)\relax
         \ifdim\pgf@y>\tikz@lasty\relax
           \edef\tikztotarget{\tikztotarget.south}%
+          \iftikz@shapeborder\def\tikz@ortho@anchor{.north}\fi
         \else
           \edef\tikztotarget{\tikztotarget.north}%
+          \iftikz@shapeborder\def\tikz@ortho@anchor{.south}\fi
         \fi
       \fi
-      \endpgfextra
-    (\tikztostart) -- (perpendicular cs: vertical line through={(\tikztostart)},
-                                         horizontal line through={(\tikztotarget)})
-    \tikztonodes \ifx\tikz@origtotarget\pgfutil@empty\else\iftikz@ortho@preflush(\tikz@origtotarget)\fi\fi}},
+      \def\tikz@tempa{#1}%
+      \ifx\tikz@tempa\pgfutil@empty\else
+        \edef\tikztostart{[xshift={#1}]\tikztostart\tikz@ortho@anchor}%
+      \fi
+    \endpgfextra
+    [insert path/.expanded={(\tikztostart)}] 
+    -- (perpendicular cs: vertical line through/.expanded={(\tikztostart)},
+                        horizontal line through={(\tikztotarget)})
+    \tikztonodes
+    \pgfextra
+      \ifx\tikz@origtotarget\pgfutil@empty\else
+        \iftikz@ortho@preflush(\tikz@origtotarget)\fi\fi\endpgfextra}},
+  only vertical first/.default=,
   only horizontal first/.style={to path={
-      \pgfextra
+    \pgfextra
+      \let\tikz@ortho@anchor\pgfutil@empty
       \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
       \iftikz@shapeborder
         \let\tikz@origtotarget\tikztotarget
+        \tikz@scan@one@point\pgfutil@firstofone(\tikztostart)\relax
         \ifdim\pgf@x>\tikz@lastx\relax
           \edef\tikztotarget{\tikztotarget.west}%
+          \iftikz@shapeborder\def\tikz@ortho@anchor{.east}\fi
         \else
           \edef\tikztotarget{\tikztotarget.east}%
+          \iftikz@shapeborder\def\tikz@ortho@anchor{.west}\fi
         \fi
       \fi
-      \endpgfextra
-    (\tikztostart) -- (perpendicular cs: horizontal line through={(\tikztostart)},
-                                         vertical line through={(\tikztotarget)})
-    \tikztonodes \ifx\tikz@origtotarget\pgfutil@empty\else\iftikz@ortho@preflush(\tikz@origtotarget)\fi\fi}},
+      \def\tikz@tempa{#1}%
+      \ifx\tikz@tempa\pgfutil@empty\else
+        \edef\tikztostart{[yshift={#1}]\tikztostart\tikz@ortho@anchor}%
+      \fi
+    \endpgfextra
+    [insert path/.expanded={(\tikztostart)}]
+      -- (perpendicular cs: horizontal line through/.expanded={(\tikztostart)},
+                              vertical line through={(\tikztotarget)})
+    \tikztonodes \pgfextra
+      \ifx\tikz@origtotarget\pgfutil@empty\else
+        \iftikz@ortho@preflush(\tikz@origtotarget)\fi\fi\endpgfextra}},
+  only horizontal first/.default=,
   only vertical first to center/.style={to path={
       \pgfextra
         \let\tikz@origtotarget\tikztotarget

@@ -1,2 +1,364 @@
-\input tikzlibraryqrr.shapes.roundedrectangle.code.tex
+\usepgflibrary{intersections}%
+\pgfset{
+  rectangle with rounded corners north west radius/.initial=6pt,
+  rectangle with rounded corners north east radius/.initial=6pt,
+  rectangle with rounded corners south west radius/.initial=6pt,
+  rectangle with rounded corners south east radius/.initial=6pt,
+  rectangle with rounded corners radius/.style={
+    /pgf/rectangle with rounded corners north west radius={#1},
+    /pgf/rectangle with rounded corners north east radius={#1},
+    /pgf/rectangle with rounded corners south west radius={#1},
+    /pgf/rectangle with rounded corners south east radius={#1}}
+}%
+\newbox\pgfnodepartlowerbox
+\pgfdeclareshape{split rectangle with rounded corners}{%
+  \nodeparts{text,lower}%
+  \savedmacro\splitrectanglewithroundedcornersparameter{%
+    \pgfmathsetlength\pgf@xa{\pgfkeysvalueof{/pgf/inner xsep}}%
+    \pgfmathsetlength\pgf@ya{\pgfkeysvalueof{/pgf/inner ysep}}%
+    \pgfmathsetlength\pgf@xc{\pgfkeysvalueof{/pgf/minimum width}}%
+    \pgfmathsetlength\pgf@yc{\pgfkeysvalueof{/pgf/minimum height}}%
+    %
+    \pgf@xb\wd\pgfnodeparttextbox
+    \advance\pgf@xb\ht\pgfnodeparttextbox
+    \advance\pgf@xb\dp\pgfnodeparttextbox
+    \pgf@yb\wd\pgfnodepartlowerbox
+    \advance\pgf@yb\ht\pgfnodepartlowerbox
+    \advance\pgf@yb\dp\pgfnodepartlowerbox
+    \ifdim\pgf@yb>\pgf@xb
+      \pgf@x\pgf@yb
+    \else
+      \pgf@x\pgf@xb
+    \fi
+    \pgf@y\pgf@x
+    \advance\pgf@x2\pgf@xa
+    \advance\pgf@y2\pgf@ya
+    \ifdim\pgf@x<\pgf@xc
+      \pgf@x\pgf@xc
+    \fi
+    \ifdim\pgf@y<\pgf@yc
+      \pgf@y\pgf@yc
+    \fi
+    %
+    \pgfutil@tempdima.5\pgf@x
+    \pgfutil@tempdimb.5\pgf@y
+    \edef\halfWidth{\the\pgfutil@tempdima}%
+    \edef\halfHeight{\the\pgfutil@tempdimb}%
+    \addtosavedmacro\halfWidth
+    \addtosavedmacro\halfHeight
+    %
+    \advance\pgf@x-2\pgf@xa
+    \advance\pgf@y-2\pgf@ya
+%    \ifdim\pgf@x<\pgf@y
+%      \pgf@x\pgf@y
+%    \else
+%      \pgf@y\pgf@x
+%    \fi
+    \pgfutil@tempdima\pgf@x
+    \pgfutil@tempdimb\pgf@y
+    \pgf@y-.5\pgf@y
+    \advance\pgf@y\ht\pgfnodeparttextbox
+    \pgf@x.5\pgf@x
+    \pgfextract@process\centerpoint{}%
+    \addtosavedmacro\centerpoint
+    %
+    \pgf@x\pgfutil@tempdima
+    \pgf@y\pgfutil@tempdimb
+    \advance\pgf@x-\wd\pgfnodepartlowerbox
+    \advance\pgf@y-\ht\pgfnodeparttextbox
+    \advance\pgf@y-\dp\pgfnodepartlowerbox
+    \pgf@y-\pgf@y
+    \pgfextract@process\loweranchor{}%
+    \addtosavedmacro\loweranchor
+    %
+    \pgfmathsetlength\pgf@xb{\pgfkeysvalueof{/pgf/outer xsep}}%
+    \pgfmathsetlength\pgf@yb{\pgfkeysvalueof{/pgf/outer ysep}}%
+    %
+    \pgfextract@process\belownorthwest{%
+      \pgfpointadd{\centerpoint}{\pgfqpoint{-\halfWidth}{\halfHeight}}%
+      \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners north west radius}}%
+      \advance\pgf@y-\pgfutil@tempdima
+      \advance\pgf@x-\pgf@xb
+    }%
+    \addtosavedmacro\belownorthwest
+    %
+    \pgfextract@process\leftnortheast{%
+      \pgfpointadd{\centerpoint}{\pgfqpoint{\halfWidth}{\halfHeight}}%
+      \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners north east radius}}%
+      \advance\pgf@x-\pgfutil@tempdima
+      \advance\pgf@y\pgf@yb
+    }%
+    \addtosavedmacro\leftnortheast
+    %
+    \pgfextract@process\abovesoutheast{%
+      \pgfpointadd{\centerpoint}{\pgfqpoint{\halfWidth}{-\halfHeight}}%
+      \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners south east radius}}%
+      \advance\pgf@y\pgfutil@tempdima
+      \advance\pgf@x\pgf@xb
+    }%
+    \addtosavedmacro\abovesoutheast
+    %
+    \pgfextract@process\rightsouthwest{%
+      \pgfpointadd{\centerpoint}{\pgfqpoint{-\halfWidth}{-\halfHeight}}%
+      \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners south west radius}}%
+      \advance\pgf@x\pgfutil@tempdima
+      \advance\pgf@y-\pgf@yb
+    }%
+    \addtosavedmacro\rightsouthwest
+  }%
+  \anchor{lower}{\splitrectanglewithroundedcornersparameter\loweranchor}
+  \anchor{center}{\splitrectanglewithroundedcornersparameter\centerpoint}
+  \anchor{below north west}{\splitrectanglewithroundedcornersparameter\belownorthwest}
+  \anchor{left north east}{\splitrectanglewithroundedcornersparameter\leftnortheast}
+  \anchor{above south east}{\splitrectanglewithroundedcornersparameter\abovesoutheast}
+  \anchor{right south west}{\splitrectanglewithroundedcornersparameter\rightsouthwest}
+  \anchor{west}{\splitrectanglewithroundedcornersparameter
+    \centerpoint\pgf@ya\pgf@y \belownorthwest\pgf@y\pgf@ya}
+  \anchor{east}{\splitrectanglewithroundedcornersparameter
+    \centerpoint\pgf@ya\pgf@y \abovesoutheast\pgf@y\pgf@ya}
+  \anchor{north}{\splitrectanglewithroundedcornersparameter
+    \centerpoint\pgf@xa\pgf@x \leftnortheast\pgf@x\pgf@xa}
+  \anchor{south}{\splitrectanglewithroundedcornersparameter
+    \centerpoint\pgf@xa\pgf@x \rightsouthwest\pgf@x\pgf@xa}
+  \anchor{mid}{\splitrectanglewithroundedcornersparameter\centerpoint\pgfmathsetlength\pgf@y{+.5ex}}
+  \anchor{mid west}{\splitrectanglewithroundedcornersparameter\belownorthwest\pgfmathsetlength\pgf@y{+.5ex}}
+  \anchor{mid east}{\splitrectanglewithroundedcornersparameter\abovesoutheast\pgfmathsetlength\pgf@y{+.5ex}}
+  \anchor{base}{\splitrectanglewithroundedcornersparameter\centerpoint\pgf@y0pt}
+  \anchor{base west}{\splitrectanglewithroundedcornersparameter\belownorthwest\pgf@y0pt}
+  \anchor{base east}{\splitrectanglewithroundedcornersparameter\abovesoutheast\pgf@y0pt}
+  \anchor{north west}{\splitrectanglewithroundedcornersparameter
+    \belownorthwest
+    \pgf@xa\pgf@x
+    \pgf@xb-\pgf@x
+    \pgf@ya\pgf@y
+    \leftnortheast
+    \advance\pgf@xa\pgf@y
+    \advance\pgf@xa-\pgf@ya
+    \advance\pgf@xb\pgf@xa
+    \pgfpointpolar{135}{\pgf@xb}
+    \advance\pgf@x\pgf@xa
+    \advance\pgf@y\pgf@ya
+  }
+  \anchor{south west}{\splitrectanglewithroundedcornersparameter
+    \rightsouthwest
+    \pgf@xa\pgf@x
+    \pgf@ya\pgf@y
+    \pgf@yb-\pgf@y
+    \belownorthwest
+    \advance\pgf@ya-\pgf@x
+    \advance\pgf@ya\pgf@xa
+    \advance\pgf@yb\pgf@ya
+    \pgfpointpolar{225}{\pgf@yb}
+    \advance\pgf@x\pgf@xa
+    \advance\pgf@y\pgf@ya
+  }
+  \anchor{south east}{\splitrectanglewithroundedcornersparameter
+    \abovesoutheast
+    \pgf@ya\pgf@y
+    \pgf@xb\pgf@x
+    \pgf@xa\pgf@x
+    \rightsouthwest
+    \advance\pgf@xa\pgf@y
+    \advance\pgf@xa-\pgf@ya
+    \advance\pgf@xb-\pgf@xa
+    \pgfpointpolar{315}{\pgf@xb}
+    \advance\pgf@x\pgf@xa
+    \advance\pgf@y\pgf@ya
+  }
+  \anchor{north east}{\splitrectanglewithroundedcornersparameter
+    \leftnortheast
+    \pgf@xa\pgf@x
+    \pgf@ya\pgf@y
+    \pgf@yb\pgf@y
+    \abovesoutheast
+    \advance\pgf@ya-\pgf@x
+    \advance\pgf@ya\pgf@xa
+    \advance\pgf@yb-\pgf@ya
+    \pgfpointpolar{45}{\pgf@yb}
+    \advance\pgf@x\pgf@xa
+    \advance\pgf@y\pgf@ya
+  }
+  \anchor{right north west}{\splitrectanglewithroundedcornersparameter
+    \belownorthwest\pgf@xa\pgf@x\pgf@ya\pgf@y
+    \leftnortheast\pgf@xb\pgf@x
+    \advance\pgf@xa\pgf@y
+    \advance\pgf@xa-\pgf@ya
+    \pgf@x\pgf@xa
+  }
+  \anchor{below north east}{\splitrectanglewithroundedcornersparameter
+    \leftnortheast\pgf@xa\pgf@x\pgf@ya\pgf@y
+    \abovesoutheast\pgf@yb\pgf@y
+    \advance\pgf@ya-\pgf@x
+    \advance\pgf@ya\pgf@xa
+    \pgf@y\pgf@ya
+  }
+  \anchor{left south east}{\splitrectanglewithroundedcornersparameter
+    \abovesoutheast\pgf@xa\pgf@x\pgf@ya\pgf@y
+    \rightsouthwest\pgf@xb\pgf@x
+    \advance\pgf@xa\pgf@y
+    \advance\pgf@xa-\pgf@ya
+    \pgf@x\pgf@xa
+  }%
+  \anchor{above south west}{\splitrectanglewithroundedcornersparameter
+    \rightsouthwest\pgf@xa\pgf@x\pgf@ya\pgf@y
+    \belownorthwest\pgf@yb\pgf@y
+    \advance\pgf@ya-\pgf@x
+    \advance\pgf@ya\pgf@xa
+    \pgf@y\pgf@ya
+  }%
+  \backgroundpath{%
+    \splitrectanglewithroundedcornersparameter
+    \pgfmathsetlength\pgf@xb{\pgfkeysvalueof{/pgf/outer xsep}}%
+    \pgfmathsetlength\pgf@yb{\pgfkeysvalueof{/pgf/outer ysep}}%
+    \pgfpathmoveto{\pgfpointadd{\belownorthwest}{\pgfqpoint{\pgf@xb}{+0pt}}}%
+    \pgfpathlineto{\pgfpointadd{\pgf@sh@reanchor{split rectangle with rounded corners}{above south west}}{\pgfqpoint{\pgf@xb}{+0pt}}}%
+    \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners south west radius}}%
+    \pgfpatharcto{\pgfutil@tempdima}{\pgfutil@tempdima}{0}{0}{1}{\pgfpointadd{\rightsouthwest}{\pgfqpoint{+0pt}{\pgf@yb}}}%
+    \pgfpathlineto{\pgfpointadd{\pgf@sh@reanchor{split rectangle with rounded corners}{left south east}}{\pgfqpoint{+0pt}{\pgf@yb}}}%
+    \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners south east radius}}%
+    \pgfpatharcto{\pgfutil@tempdima}{\pgfutil@tempdima}{0}{0}{1}{\pgfpointadd{\abovesoutheast}{\pgfqpoint{-\pgf@xb}{+0pt}}}%
+    \pgfpathlineto{\pgfpointadd{\pgf@sh@reanchor{split rectangle with rounded corners}{below north east}}{\pgfqpoint{-\pgf@xb}{+0pt}}}%
+    \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners north east radius}}%
+    \pgfpatharcto{\pgfutil@tempdima}{\pgfutil@tempdima}{0}{0}{1}{\pgfpointadd{\leftnortheast}{\pgfqpoint{+0pt}{-\pgf@yb}}}%
+    \pgfpathlineto{\pgfpointadd{\pgf@sh@reanchor{split rectangle with rounded corners}{right north west}}{\pgfqpoint{+0pt}{-\pgf@yb}}}%
+    \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/rectangle with rounded corners north west radius}}%
+    \pgfpatharcto{\pgfutil@tempdima}{\pgfutil@tempdima}{0}{0}{1}{\pgfpointadd{\belownorthwest}{\pgfqpoint{\pgf@xb}{+0pt}}}%
+    \pgfpathclose
+    \loweranchor
+    \pgf@xa\pgf@x
+    \advance\pgf@y-\dp\pgfnodepartlowerbox
+    \pgfpathmoveto{\pgfqpoint{+0pt}{\pgf@y}}%
+    \advance\pgf@xa\wd\pgfnodepartlowerbox
+    \pgfpathlineto{\pgfqpoint{\pgf@xa}{\ht\pgfnodeparttextbox}}%
+  }%
+  \anchorborder{%
+    \pgf@xb=\pgf@x
+    \pgf@yb=\pgf@y
+    \pgf@process{\pgf@sh@reanchor{split rectangle with rounded corners}{south}}%
+    \pgf@ya\pgf@y
+    \pgf@process{\pgf@sh@reanchor{split rectangle with rounded corners}{west}}%
+    \pgf@xa\pgf@x
+    \pgf@process{\pgf@sh@reanchor{split rectangle with rounded corners}{north}}%
+    \pgf@yc\pgf@y
+    \pgf@process{\pgf@sh@reanchor{split rectangle with rounded corners}{east}}%
+    \pgf@y\pgf@yc
+    \advance\pgf@x by-\pgf@xa%
+    \advance\pgf@y by-\pgf@ya%
+    \pgf@xc=.5\pgf@x% x/y is half width/height
+    \pgf@yc=.5\pgf@y%
+    \advance\pgf@xa by\pgf@xc% xa/ya becomes center
+    \advance\pgf@ya by\pgf@yc%
+    \edef\pgf@marshal{%
+      \noexpand\pgfpointborderrectangle
+      {\noexpand\pgfqpoint{\the\pgf@xb}{\the\pgf@yb}}
+      {\noexpand\pgfqpoint{\the\pgf@xc}{\the\pgf@yc}}%
+    }%
+    \pgf@process{\pgf@marshal}%
+    \advance\pgf@xa by\pgf@x%
+    \advance\pgf@ya by\pgf@y%
+    %
+    \pgfutil@tempdima\pgf@xa
+    \pgfutil@tempdimb\pgf@ya
+%    \pgf@x\pgf@xa
+%    \pgf@y\pgf@ya
+    \splitrectanglewithroundedcornersparameter
+    \centerpoint
+    \pgf@xc\pgf@x
+    \pgf@yc\pgf@y
+    \ifdim\pgfutil@tempdima>\pgf@xc
+      \ifdim\pgfutil@tempdimb>\pgf@yc % north east
+        \pgf@lib@sh@qrr@get@radius@and@center0\pgfutil@tempdima\pgfutil@tempdimb
+      \else                 % south east
+        \pgf@lib@sh@qrr@get@radius@and@center3\pgfutil@tempdima\pgfutil@tempdimb
+      \fi
+    \else
+      \ifdim\pgfutil@tempdimb>\pgf@yc % north west
+        \pgf@lib@sh@qrr@get@radius@and@center1\pgfutil@tempdima\pgfutil@tempdimb
+      \else                 % south west
+        \pgf@lib@sh@qrr@get@radius@and@center2\pgfutil@tempdima\pgfutil@tempdimb
+      \fi
+    \fi
+  }
+}
+\def\pgf@lib@sh@qrr@get@radius@and@center#1#2#3{%
+  \begingroup
+    \pgfutil@tempswafalse
+    \ifcase#1% north east
+      \def\pgf@tempa{1}%
+      \leftnortheast
+      \pgf@xa\pgf@x
+      \pgf@ya\pgf@y
+      \pgf@yb\pgf@y
+      \abovesoutheast
+      \advance\pgf@ya-\pgf@x
+      \advance\pgf@ya\pgf@xa
+      \advance\pgf@yb-\pgf@ya
+      \ifdim#3>\pgf@ya
+        \ifdim#2>\pgf@xa
+          \pgfutil@tempswatrue
+        \fi
+      \fi
+    \or      % north west
+      \def\pgf@tempa{1}%
+      \belownorthwest
+      \pgf@xa\pgf@x
+      \pgf@yb-\pgf@x
+      \pgf@ya\pgf@y
+      \leftnortheast
+      \advance\pgf@xa\pgf@y
+      \advance\pgf@xa-\pgf@ya
+      \advance\pgf@yb\pgf@xa
+      \ifdim#3>\pgf@ya
+        \ifdim#2<\pgf@xa
+          \pgfutil@tempswatrue
+        \fi
+      \fi
+    \or      % south west
+      \def\pgf@tempa{2}%
+      \rightsouthwest
+      \pgf@xa\pgf@x
+      \pgf@ya\pgf@y
+      \pgf@yb-\pgf@y
+      \belownorthwest
+      \advance\pgf@ya-\pgf@x
+      \advance\pgf@ya\pgf@xa
+      \advance\pgf@yb\pgf@ya
+      \ifdim#3<\pgf@ya
+        \ifdim#2<\pgf@xa
+          \pgfutil@tempswatrue
+        \fi
+      \fi
+    \else    % south east
+      \def\pgf@tempa{2}%
+      \abovesoutheast
+      \pgf@ya\pgf@y
+      \pgf@yb\pgf@x
+      \pgf@xa\pgf@x
+      \rightsouthwest
+      \advance\pgf@xa\pgf@y
+      \advance\pgf@xa-\pgf@ya
+      \advance\pgf@yb-\pgf@xa
+      \ifdim#3<\pgf@ya
+        \ifdim#2>\pgf@xa
+          \pgfutil@tempswatrue
+        \fi
+      \fi
+    \fi
+    \pgfinterruptboundingbox
+      \ifpgfutil@tempswa
+        \pgfintersectionofpaths{
+          \pgfpathmoveto{\pgfqpoint{\pgf@xc}{\pgf@yc}}%
+          \pgfpathlineto{\pgfqpoint{#2}{#3}}%
+        }{%
+          \pgfpathcircle{\pgfqpoint{\pgf@xa}{\pgf@ya}}{\pgf@yb}%
+        }%
+        \pgfpointintersectionsolution{\pgf@tempa}
+        \pgftransforminvert
+        \pgfpointtransformed{}%
+      \else
+        \pgf@process{\pgfqpoint{#2}{#3}}%
+      \fi
+    \endpgfinterruptboundingbox
+  \endgroup
+}
 \endinput
