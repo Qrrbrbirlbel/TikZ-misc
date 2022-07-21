@@ -46,6 +46,7 @@
   vertical horizontal vertical/.style={to path={|-| (\tikztotarget) \tikztonodes}},
   only vertical second/.style={to path={
     \pgfextra
+      \tikz@scan@one@point\pgfutil@firstofone(\tikztostart)\relax
       \iftikz@shapeborder
         \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
         \ifdim\pgf@y>\tikz@lasty\relax
@@ -59,6 +60,7 @@
                        vertical line through={(\tikztotarget)}) -- (\tikztotarget) \tikztonodes}},
   only horizontal second/.style={to path={
     \pgfextra
+      \tikz@scan@one@point\pgfutil@firstofone(\tikztostart)\relax
       \iftikz@shapeborder
         \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
         \ifdim\pgf@x>\tikz@lastx\relax
