@@ -6,6 +6,7 @@
             \pgfcalendarmatchesfalse
             \pgfqkeys{/pgf/calendar}{#2}%
         \fi},
+    not/.code=\pgfcalendar@launch@ifdate{#1}{\pgfcalendarmatchesfalse}{\pgfcalendarmatchestrue},
     Jan/.code={\ifnum\pgfcalendarifdatemonth=1\relax\pgfcalendarmatchestrue\fi},
     Feb/.code={\ifnum\pgfcalendarifdatemonth=2\relax\pgfcalendarmatchestrue\fi},
     Mar/.code={\ifnum\pgfcalendarifdatemonth=3\relax\pgfcalendarmatchestrue\fi},
@@ -38,9 +39,9 @@
     leap year/.default=\pgfcalendarifdateyear,
     week of month/.code={%
         \pgfutil@tempcnta=#1\relax
-        \multiply\pgfutil@tempcnta7\relax
+        \multiply\pgfutil@tempcnta7
         \ifnum\pgfcalendarifdateday>\pgfutil@tempcnta\else
-            \advance\pgfutil@tempcnta-7\relax
+            \advance\pgfutil@tempcnta-7
             \ifnum\pgfcalendarifdateday>\pgfutil@tempcnta
                 \pgfcalendarmatchestrue
             \fi
@@ -49,10 +50,10 @@
         \pgfcalendar@getlastYMX\pgfcalendarifdateyear\pgfcalendarifdatemonth\pgfutil@tempcnta
         \advance\pgfutil@tempcnta1
         \pgfutil@tempcntb=#1\relax
-        \multiply\pgfutil@tempcntb7\relax
-        \advance\pgfutil@tempcnta-\pgfutil@tempcntb\relax
+        \multiply\pgfutil@tempcntb7
+        \advance\pgfutil@tempcnta-\pgfutil@tempcntb
         \ifnum\pgfcalendarifdateday<\pgfutil@tempcnta\else
-            \advance\pgfutil@tempcnta+7\relax
+            \advance\pgfutil@tempcnta+7
             \ifnum\pgfcalendarifdateday<\pgfutil@tempcnta
                 \pgfcalendarmatchestrue
             \fi
