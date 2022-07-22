@@ -1,0 +1,22 @@
+\def\tikz@swapanchor#1.#2\tikz@stop#3#4{#1#4#3}
+\def\tikz@add@anchor#1#2{%
+  \edef\tikz@temp{{#1}{#2}}%
+  \expandafter\pgfutil@in@\tikz@temp
+  \ifpgfutil@in@\expandafter\pgfutil@firstoftwo\else\expandafter\pgfutil@secondoftwo\fi
+  {%
+    \def\tikz@temp{#2}\ifx\tikz@temp\pgfutil@empty
+        \expandafter\pgfutil@firstoftwo\else\expandafter\pgfutil@secondoftwo\fi
+      {\edef#1{\expandafter\tikz@swapanchor#1\tikz@stop{}{}}}
+      {\edef#1{\expandafter\tikz@swapanchor#1\tikz@stop{#2}{.}}}%
+  }{%
+    \def\tikz@temp{#2}\ifx\tikz@temp\pgfutil@empty
+      \expandafter\pgfutil@gobble\else\expandafter\pgfutil@firstofone
+      {\edef#1{#1.#2}}%
+  }}
+\tikzset{
+  pin anchor/.style={tikz@pin@post/.append style={anchor=#1}},
+  label anchor/.style={tikz@label@post/.append style={anchor=#1}},
+  pin edge pin anchor/.style={
+    append after command={\pgfextra\tikz@add@anchor{\tikzlastnode}{#1}\endpgfextra}},
+  pin edge parent anchor/.style={
+    append after command={\pgfextra\tikz@add@anchor{\tikz@save@last@node}{#1}\endpgfextra}}}
