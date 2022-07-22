@@ -1,16 +1,23 @@
 \pgfutil@usemodule{pgfcalendar}%
 \pgfqkeys{/pgf/calendar}{
     and/.code 2 args=%
-        \pgfqkeys{/pgf/calendar}{#1}%
-        \ifpgfcalendarmatches
-            \pgfcalendarmatchesfalse
-            \pgfqkeys{/pgf/calendar}{#2}%
-        \fi,
+        \begingroup
+            \let\pgf@cal@temp\pgfutil@empty
+            \pgfcalendar@launch@ifdate{#1}{%
+                \pgfcalendar@launch@ifdate{#2}{%
+                    \def\pgf@cal@temp{\let\ifpgfcalendarmatches\iftrue}%
+                }{}%
+            }{}%
+            \expandafter\endgroup\pgf@cal@temp,
     And/.code=%
-        \ifpgfcalendarmatches
-            \pgfcalendarmatchesfalse
-            \pgfqkeys{/pgf/calendar}{#1}%
-        \fi,
+        \begingroup
+            \let\pgf@cal@temp\pgfutil@empty
+            \ifpgfcalendarmatches
+                \expandafter\pgfutil@firstofone
+            \else
+                \expandafter\pgfutil@gobble
+            \fi{\pgfcalendar@launch@ifdate{#1}{\def\pgf@cal@temp{\let\ifpgfcalendarmatches\iftrue}}{}}%
+            \expandafter\endgroup\pgf@cal@temp,
     not/.code=\pgfqkeys{/pgf/calendar}{#1}\ifpgfcalendarmatches\pgfcalendarmatchesfalse\else\pgfcalendarmatchestrue\fi,
     Jan/.code={\ifnum\pgfcalendarifdatemonth=1\pgfcalendarmatchestrue\fi},
     Feb/.code={\ifnum\pgfcalendarifdatemonth=2\pgfcalendarmatchestrue\fi},
@@ -23,7 +30,7 @@
     Sep/.code={\ifnum\pgfcalendarifdatemonth=9\pgfcalendarmatchestrue\fi},
     Oct/.code={\ifnum\pgfcalendarifdatemonth=10\pgfcalendarmatchestrue\fi},
     Nov/.code={\ifnum\pgfcalendarifdatemonth=11\pgfcalendarmatchestrue\fi},
-    Dez/.code={\ifnum\pgfcalendarifdatemonth=12\pgfcalendarmatchestrue\fi},
+    Dec/.code={\ifnum\pgfcalendarifdatemonth=12\pgfcalendarmatchestrue\fi},
     leap year/.code={%
         \pgfutil@tempcnta=#1\relax
         \divide\pgfutil@tempcnta4
