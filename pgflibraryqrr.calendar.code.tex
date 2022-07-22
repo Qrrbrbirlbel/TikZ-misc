@@ -1,24 +1,29 @@
 \pgfutil@usemodule{pgfcalendar}%
 \pgfqkeys{/pgf/calendar}{
-    and/.code 2 args={%
+    and/.code 2 args=%
         \pgfqkeys{/pgf/calendar}{#1}%
         \ifpgfcalendarmatches
             \pgfcalendarmatchesfalse
             \pgfqkeys{/pgf/calendar}{#2}%
-        \fi},
-    not/.code=\pgfcalendar@launch@ifdate{#1}{\pgfcalendarmatchesfalse}{\pgfcalendarmatchestrue},
-    Jan/.code={\ifnum\pgfcalendarifdatemonth=1\relax\pgfcalendarmatchestrue\fi},
-    Feb/.code={\ifnum\pgfcalendarifdatemonth=2\relax\pgfcalendarmatchestrue\fi},
-    Mar/.code={\ifnum\pgfcalendarifdatemonth=3\relax\pgfcalendarmatchestrue\fi},
-    Apr/.code={\ifnum\pgfcalendarifdatemonth=4\relax\pgfcalendarmatchestrue\fi},
-    May/.code={\ifnum\pgfcalendarifdatemonth=5\relax\pgfcalendarmatchestrue\fi},
-    Jun/.code={\ifnum\pgfcalendarifdatemonth=6\relax\pgfcalendarmatchestrue\fi},
-    Jul/.code={\ifnum\pgfcalendarifdatemonth=7\relax\pgfcalendarmatchestrue\fi},
-    Aug/.code={\ifnum\pgfcalendarifdatemonth=8\relax\pgfcalendarmatchestrue\fi},
-    Sep/.code={\ifnum\pgfcalendarifdatemonth=9\relax\pgfcalendarmatchestrue\fi},
-    Oct/.code={\ifnum\pgfcalendarifdatemonth=10\relax\pgfcalendarmatchestrue\fi},
-    Nov/.code={\ifnum\pgfcalendarifdatemonth=11\relax\pgfcalendarmatchestrue\fi},
-    Dez/.code={\ifnum\pgfcalendarifdatemonth=12\relax\pgfcalendarmatchestrue\fi},
+        \fi,
+    And/.code=%
+        \ifpgfcalendarmatches
+            \pgfcalendarmatchesfalse
+            \pgfqkeys{/pgf/calendar}{#1}%
+        \fi,
+    not/.code=\pgfqkeys{/pgf/calendar}{#1}\ifpgfcalendarmatches\pgfcalendarmatchesfalse\else\pgfcalendarmatchestrue\fi,
+    Jan/.code={\ifnum\pgfcalendarifdatemonth=1\pgfcalendarmatchestrue\fi},
+    Feb/.code={\ifnum\pgfcalendarifdatemonth=2\pgfcalendarmatchestrue\fi},
+    Mar/.code={\ifnum\pgfcalendarifdatemonth=3\pgfcalendarmatchestrue\fi},
+    Apr/.code={\ifnum\pgfcalendarifdatemonth=4\pgfcalendarmatchestrue\fi},
+    May/.code={\ifnum\pgfcalendarifdatemonth=5\pgfcalendarmatchestrue\fi},
+    Jun/.code={\ifnum\pgfcalendarifdatemonth=6\pgfcalendarmatchestrue\fi},
+    Jul/.code={\ifnum\pgfcalendarifdatemonth=7\pgfcalendarmatchestrue\fi},
+    Aug/.code={\ifnum\pgfcalendarifdatemonth=8\pgfcalendarmatchestrue\fi},
+    Sep/.code={\ifnum\pgfcalendarifdatemonth=9\pgfcalendarmatchestrue\fi},
+    Oct/.code={\ifnum\pgfcalendarifdatemonth=10\pgfcalendarmatchestrue\fi},
+    Nov/.code={\ifnum\pgfcalendarifdatemonth=11\pgfcalendarmatchestrue\fi},
+    Dez/.code={\ifnum\pgfcalendarifdatemonth=12\pgfcalendarmatchestrue\fi},
     leap year/.code={%
         \pgfutil@tempcnta=#1\relax
         \divide\pgfutil@tempcnta4
@@ -37,6 +42,31 @@
             \fi
         \fi},
     leap year/.default=\pgfcalendarifdateyear,
+    between days/.code args={#1and#2}{%
+        \pgfutil@tempcnta=#1\relax
+        \ifnum\pgfcalendarifdateday<\pgfutil@tempcnta\else
+            \pgfutil@tempcnta=#2\relax
+            \ifnum\pgfcalendarifdateday>\pgfutil@tempcnta\else
+                \pgfcalendarmatchestrue\fi\fi},
+    % setup nths weekdays/.style args={#1 #2:#3}{%
+    %     #1 #2/.code=%
+    %          \begingroup
+    %             \let\pgf@cal@temp\pgfutil@empty
+    %             \pgfcalendar@launch@ifdate{#2}{%
+    %                 \pgfcalendar@launch@ifdate{between days=#3}{%
+    %                     \def\pgf@cal@temp{\let\ifpgfcalendarmatches\iftrue}%
+    %                 }{%
+    %                     \def\pgf@cal@temp{\let\ifpgfcalendarmatches\iffalse}%
+    %                 }%
+    %             }{}%
+    %         \expandafter\endgroup\pgf@cal@temp
+    % },
+    % setup nths weekdays/.list={%
+    %     first Monday:1and7,first Tuesday:1and7,first Wednesday:1and7,first Thursday:1and7,first Friday:1and7,first Saturday:1and7,first Sunday:1and7,%
+    %     second Monday:8and14,second Tuesday:8and14,second Wednesday:8and14,second Thursday:8and14,second Friday:8and14,second Saturday:8and14,second Sunday:8and14,%
+    %     third Monday:15and21,third Tuesday:15and21,third Wednesday:15and21,third Thursday:15and21,third Friday:15and21,third Saturday:15and21,third Sunday:15and21,%
+    %     fourth Monday:22and28,fourth Tuesday:22and28,fourth Wednesday:22and28,fourth Thursday:22and28,fourth Friday:22and28,fourth Saturday:22and28,fourth Sunday:22and28,%
+    %     fifth Monday:29and31,fifth Tuesday:29and31,fifth Wednesday:29and31,fifth Thursday:29and31,fifth Friday:29and31,fifth Saturday:29and31,fifth Sunday:29and31},
     week of month/.code={%
         \pgfutil@tempcnta=#1\relax
         \multiply\pgfutil@tempcnta7
@@ -69,7 +99,12 @@
 \def\pgfcalendar@getlastYMX#1#2#3{% #1 = year, #2 = month, #3 := last day
     \begingroup
         \ifnum#2=2 % stupid February
-            \pgfcalendar@launch@ifdate{leap year=#1}{#3=29\relax}{#3=28\relax}%
+            \pgfqkeys{/pgf/calendar}{leap year=#1}
+            \ifpgfcalendarmatches
+                #3=29
+            \else
+                #3=28
+            \fi
         \else
             #3=\ifcase\pgfcalendarifdatemonth\or
             31\or\or31\or30\or31\or30\or31\or31\or30\or31\or30\or31\fi\relax
