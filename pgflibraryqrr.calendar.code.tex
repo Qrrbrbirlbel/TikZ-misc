@@ -1,24 +1,5 @@
 \pgfutil@usemodule{pgfcalendar}%
 \pgfqkeys{/pgf/calendar}{
-    and/.code 2 args=%
-        \begingroup
-            \let\pgf@cal@temp\pgfutil@empty
-            \pgfcalendar@launch@ifdate{#1}{%
-                \pgfcalendar@launch@ifdate{#2}{%
-                    \def\pgf@cal@temp{\let\ifpgfcalendarmatches\iftrue}%
-                }{}%
-            }{}%
-            \expandafter\endgroup\pgf@cal@temp,
-    And/.code=%
-        \begingroup
-            \let\pgf@cal@temp\pgfutil@empty
-            \ifpgfcalendarmatches
-                \expandafter\pgfutil@firstofone
-            \else
-                \expandafter\pgfutil@gobble
-            \fi{\pgfcalendar@launch@ifdate{#1}{\def\pgf@cal@temp{\let\ifpgfcalendarmatches\iftrue}}{}}%
-            \expandafter\endgroup\pgf@cal@temp,
-    not/.code=\pgfqkeys{/pgf/calendar}{#1}\ifpgfcalendarmatches\pgfcalendarmatchesfalse\else\pgfcalendarmatchestrue\fi,
     Jan/.code={\ifnum\pgfcalendarifdatemonth=1\pgfcalendarmatchestrue\fi},
     Feb/.code={\ifnum\pgfcalendarifdatemonth=2\pgfcalendarmatchestrue\fi},
     Mar/.code={\ifnum\pgfcalendarifdatemonth=3\pgfcalendarmatchestrue\fi},
@@ -58,15 +39,15 @@
     % setup nths weekdays/.style args={#1 #2:#3}{%
     %     #1 #2/.code=%
     %          \begingroup
-    %             \let\pgf@cal@temp\pgfutil@empty
+    %             \let\pgf@cal@tempa\pgfutil@empty
     %             \pgfcalendar@launch@ifdate{#2}{%
     %                 \pgfcalendar@launch@ifdate{between days=#3}{%
-    %                     \def\pgf@cal@temp{\let\ifpgfcalendarmatches\iftrue}%
+    %                     \def\pgf@cal@tempa{\let\ifpgfcalendarmatches\iftrue}%
     %                 }{%
-    %                     \def\pgf@cal@temp{\let\ifpgfcalendarmatches\iffalse}%
+    %                     \def\pgf@cal@tempa{\let\ifpgfcalendarmatches\iffalse}%
     %                 }%
     %             }{}%
-    %         \expandafter\endgroup\pgf@cal@temp
+    %         \expandafter\endgroup\pgf@cal@tempa
     % },
     % setup nths weekdays/.list={%
     %     first Monday:1and7,first Tuesday:1and7,first Wednesday:1and7,first Thursday:1and7,first Friday:1and7,first Saturday:1and7,first Sunday:1and7,%
@@ -100,7 +81,54 @@
         \pgfcalendar@ifdate@first{}1:#1\pgf@stop\fi},
     last/.code={\pgfutil@in@:{#1}\ifpgfutil@in@
         \pgfcalendar@ifdate@first'#1\pgf@stop\else
-        \pgfcalendar@ifdate@first'1:#1\pgf@stop\fi}}
+        \pgfcalendar@ifdate@first'1:#1\pgf@stop\fi},
+    % logic
+    and/.code 2 args=% and = {<cond 1>}{<cond 2>}
+        \begingroup
+            \let\pgf@cal@tempa\pgfutil@empty
+            \pgfcalendar@launch@ifdate{#1}{%
+                \pgfcalendar@launch@ifdate{#2}{%
+                    \def\pgf@cal@tempa{\pgfcalendarmatchestrue}%
+                }{}%
+            }{}%
+        \expandafter\endgroup\pgf@cal@tempa,
+    And/.code=% <cond 1>, And = <cond 2>, And = <cond 3>, …
+        \begingroup
+            \let\pgf@cal@tempa\pgfutil@empty
+            \ifpgfcalendarmatches
+                \expandafter\pgfutil@firstofone
+            \else
+                \expandafter\pgfutil@gobble
+            \fi
+            {\pgfcalendar@launch@ifdate{#1}{\def\pgf@cal@tempa{\pgfcalendarmatchestrue}}{\def\pgf@cal@tempa{\pgfcalendarmatchesfalse}}}%
+        \expandafter\endgroup\pgf@cal@tempa,
+    not/.code=%
+        \begingroup
+            \let\pgf@cal@tempa\pgfutil@empty
+            \pgfcalendar@launch@ifdate{#1}{}{\def\pgf@cal@tempa{\pgfcalendarmatchestrue}}%
+        \expandafter\endgroup\pgf@cal@tempa,
+    NOT/.style={not={#1}},
+    AND/.code=% AND = {<cond 1>, <cond 2>, <cond 3>, …}
+        \begingroup
+            \pgfcalendarmatches@true
+            \let\pgf@cal@tempa\pgfutil@empty
+            \pgfcalendar@launch@ifdate{AND/.cd,#1}{%
+            \ifPgfCalendarMatches@T{%
+                \def\pgf@cal@tempa{\pgfcalendarmatchestrue}
+            }}{}%
+        \expandafter\endgroup\pgf@cal@tempa,
+    AND/.unknown/.code=%
+        \ifPgfCalendarMatches@T{%
+            \expandafter\pgfcalendar@launch@ifdate\expandafter{\pgfkeyscurrentname={#1}}{}{\pgfcalendarmatches@false}%
+        },
+    OR/.code=\pgfqkeys{/pgf/calendar}{#1}%
+}
+\newif\ifpgfcalendarmatches@
+% \def\ifPgfCalendarMatches@{\ifpgfcalendarmatches@\expandafter\pgfutil@firstoftwo\else\expandafter\pgfutil@secondoftwo\fi}
+\def\ifPgfCalendarMatches@T{\ifpgfcalendarmatches@\expandafter\pgfutil@firstofone\else\expandafter\pgfutil@gobble\fi}
+% \def\ifPgfCalendarMatches@F{\ifpgfcalendarmatches@\expandafter\pgfutil@gobble\else\expandafter\pgfutil@firstofone\fi}
+% \def\pgfcalendarset{\pgfqkeys{/pgf/calendar}}
+% TODO: active colon
 \def\pgfcalendar@ifdate@first#1#2:#3\pgf@stop{%
     \pgfqkeys{/pgf/calendar}{and={#3}{week of month#1={#2}}}}
 \def\pgfcalendar@getlastYMX#1#2#3{% #1 = year, #2 = month, #3 := last day
