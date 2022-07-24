@@ -70,22 +70,22 @@
 \tikzset{node distance transformation/.is if=qrr@tikz@lib@place@postransform}
 \def\tikz@lib@place@handle@@#1#2#3#4{%
   \pgfutil@in@{of }{#1}%
-  \ifpgfutil@in@%
+  \ifpgfutil@in@
     \tikz@lib@place@of#1\tikz@stop{#4}%
-  \else%
+  \else
     \edef\tikz@lib@place@nums{#1}%
-  \fi%
-  \ifx\tikz@lib@place@nums\pgfutil@empty%
+  \fi
+  \ifx\tikz@lib@place@nums\pgfutil@empty
     % Ok, nothing to do, we have set the anchor and we are happy...
-  \else%
+  \else
     \expandafter\tikz@lib@place@parse@nums\expandafter{\tikz@lib@place@nums}%
-    \pgf@x=#2\pgf@x%
-    \pgf@y=#3\pgf@y%
+    \pgf@x=#2\pgf@x
+    \pgf@y=#3\pgf@y
     \ifqrr@tikz@lib@place@postransform
       \pgf@pos@transform{\pgf@x}{\pgf@y}% change from original
     \fi
     \edef\tikz@lib@pos@call{\noexpand\pgftransformshift{\noexpand\pgfqpoint{\the\pgf@x}{\the\pgf@y}}}%
-  \fi%
+  \fi
 }
 
 \def\tikz@lib@place@handle@#1#2#3#4#5#6{%
@@ -101,7 +101,7 @@
     \pgf@marshal
   \else
     \def\tikz@anchor{#2}%
-    \let\tikz@do@auto@anchor=\relax%
+    \let\tikz@do@auto@anchor=\relax
     \edef\tikz@temp{#1}%
     \def\tikz@lib@place@single@factor{#6}%
     \expandafter\tikz@lib@place@handle@@\expandafter{\tikz@temp}{#3}{#4}{#5}%
@@ -120,7 +120,7 @@
   \def\pgf@tempa{#1}%
   \def\pgf@tempb{#2}%
 }
-\def\qrr@xyshift@starred#1#2#3{
+\def\qrr@xyshift@starred#1#2#3{%
   \edef\tikz@marshal{\noexpand\pgfutil@in@{and}{\tikz@node@distance}}%
   \tikz@marshal
   \ifpgfutil@in@
@@ -136,7 +136,7 @@
       \pgftransformshift{\pgfqpoint{0pt}{\pgfmathresult pt}}%
     \fi
   \else
-    \ifx#2x
+    \ifx#2x%
       \pgf@process{\pgfqpointxy{\pgfmathresult}{0}}%
     \else
       \pgf@process{\pgfqpointxy{0}{\pgfmathresult}}%
@@ -145,7 +145,7 @@
   \fi}
 \tikzset{
   xshift*/.code=\qrr@xyshift@starred{#1}x\pgf@tempb,
-  yshift*/.code=\qrr@xyshift@starred{#1}y\pgf@tempa,
+  yshift*/.code=\qrr@xyshift@starred{#1}y\pgf@tempa
 }
 
 \def\pgfutil@firstofmany#1#2\pgf@stop{#1}
@@ -155,13 +155,13 @@
   \edef\pgf@temp{\expandafter\pgfutil@firstofmany#2\pgf@stop}
   \if\pgf@temp(%
     \tikz@lib@place@fit@scan{#2}{0}%
-  \else\if\pgf@temp|
+  \else\if\pgf@temp|%
       \expandafter\tikz@lib@place@fit@scan\expandafter{\pgfutil@secondofmany#2\pgf@stop}{1}%
     \else\ifx\pgf@temp\tikz@activebar
         \expandafter\tikz@lib@place@fit@scan\expandafter{\pgfutil@secondofmany#2\pgf@stop}{1}%
-      \else\if\pgf@temp-
+      \else\if\pgf@temp-%
           \expandafter\tikz@lib@place@fit@scan\expandafter{\pgfutil@secondofmany#2\pgf@stop}{2}%
-        \else\if\pgf@temp+
+        \else\if\pgf@temp+%
             \expandafter\tikz@lib@place@fit@scan\expandafter{\pgfutil@secondofmany#2\pgf@stop}{3}%
           \else
             \def\pgf@tempa{#2}%
@@ -182,7 +182,7 @@
   \fi%
   \edef\tikz@lib@place@nums{#1}%
 }
-\def\tikz@lib@place@fit@scan#1#2{
+\def\tikz@lib@place@fit@scan#1#2{%
   \pgf@xb=-16000pt\relax%
   \pgf@xa=16000pt\relax%
   \pgf@yb=-16000pt\relax%
@@ -201,7 +201,7 @@
        \def\noexpand\northeast{\noexpand\pgfqpoint{\the\pgf@xb}{\the\pgf@yb}}%
      }%
      \expandafter\def\csname pgf@sh@nt@fit bounding box\endcsname{{1}{0}{0}{1}{0pt}{0pt}}%
-     \expandafter\def\csname pgf@sh@pi@fit bounding box\endcsname{\pgfpictureid}%
+     \expandafter\def\csname pgf@sh@pi@fit bounding box\expandafter\endcsname\expandafter{\pgfpictureid}%
      \ifcase#2\relax
      \or % 1 = vertical
        \pgf@y=\pgf@yb%
