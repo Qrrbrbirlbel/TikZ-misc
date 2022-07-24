@@ -215,6 +215,7 @@
     \fi
     \pgfmath@smuggleone\pgfmathresult
   \endgroup}
+
 \pgfqkeys{/utils}{
   if/.code n args=3{%
     \pgfmathparse{#1}%
@@ -225,22 +226,22 @@
     \fi
     {\pgfkeysalso{#3}}%
     {\pgfkeysalso{#2}}},
-  IF/.code args={(#1)#2}}{%
+  IF/.code args={(#1)#2}{%
     \pgfmathparse{#1}%
     \pgfutil@in@{else}{#2}%
-    \ifpgfutin@in@
+    \ifpgfutil@in@
       \expandafter\pgfutil@firstoftwo
     \else
       \expandafter\pgfutil@secondoftwo
     \fi
-    {\qrr@misc@handle@else#2}{\qrr@misc@handle@else#2else{}}%
-  }
+    {\qrr@misc@handle@else#2\pgf@stop}{\qrr@misc@handle@else#2else\pgf@stop}%
+  },
 }
-\def\qrr@misc@handle@else#1else#2{%
+\def\qrr@misc@handle@else#1else#2\pgf@stop{%
   \ifdim\pgfmathresult pt=0pt
-  \expandafter\pgfutil@firstoftwo
+    \expandafter\pgfutil@firstoftwo
   \else
     \expandafter\pgfutil@secondoftwo
   \fi
   {\pgfkeysalso{#2}}%
-  {\pgfkeysalso{#1}}}}
+  {\pgfkeysalso{#1}}}
