@@ -235,8 +235,7 @@
     \pgfmath@temp\ifpgfutil@in@
       \expandafter\tikz@lib@place@handle@qrr@@\tikz@node@distance\tikz@stop
     \else
-      \edef\pgfmath@temp{\tikz@node@distance and\tikz@node@distance}%
-      \expandafter\tikz@lib@place@handle@qrr@@\pgfmath@temp\tikz@stop
+      \let\pgf@tempb\tikz@node@distance
     \fi
     \pgfmathparse{\pgf@tempb}%
     \pgfmath@smuggleone\pgfmathresult
@@ -248,8 +247,7 @@
     \pgfmath@temp\ifpgfutil@in@
       \expandafter\tikz@lib@place@handle@qrr@@\tikz@node@distance\tikz@stop
     \else
-      \edef\pgfmath@temp{\tikz@node@distance and\tikz@node@distance}%
-      \expandafter\tikz@lib@place@handle@qrr@@\pgfmath@temp\tikz@stop
+      \let\pgf@tempa\tikz@node@distance
     \fi
     \pgfmathparse{\pgf@tempa}%
     \pgfmath@smuggleone\pgfmathresult
