@@ -1,4 +1,5 @@
-\pgfutil@usemodule{pgfcalendar}%
+% \pgfutil@usemodule{pgfcalendar}%
+% \input{pgfcalendar.code.tex}%
 \pgfqkeys{/pgf/calendar}{
     Jan/.code={\ifnum\pgfcalendarifdatemonth=1\pgfcalendarmatchestrue\fi},
     Feb/.code={\ifnum\pgfcalendarifdatemonth=2\pgfcalendarmatchestrue\fi},
@@ -146,3 +147,175 @@
         \fi\expandafter
     \endgroup
     \expandafter#3\the#3\relax}
+
+%
+% Weeknumbers
+%
+\def\pgfcalendar@weeknumber@setup#1{%
+  \pgfutil@IfUndefined{pgfcalendar@weeknumber@#1}{%
+    \begingroup
+      \pgfcalendardatetojulian{#1-01-01}\pgfutil@tempcnta
+      \pgfcalendarjuliantoweekday\pgfutil@tempcnta\pgfutil@tempcntb
+      %
+      % tempcnta holds the julian number for first day of the current year
+      % tempcntb holds the weekday for the first day of the current year
+      %
+      % set tempcnta to the Monday of the week with first day of current year
+      %
+      \advance\pgfutil@tempcnta by -\pgfutil@tempcntb
+      %
+      % if the first week starts at Fri, Sat or Sun, next week is the 1st week
+      %
+      \ifnum\pgfutil@tempcntb>3\relax
+        \advance\pgfutil@tempcnta by 7\relax
+      \fi
+      %
+      \edef\pgf@cal@temp{\def\expandafter\noexpand\csname pgfcalendar@weeknumber@#1\endcsname
+        {{\the\pgfutil@tempcnta}{\the\pgfutil@tempcntb}}}%
+      \expandafter\endgroup\pgf@cal@temp
+  }{}%
+}
+
+\def\pgfcalendarjulianyeartoweeknumber#1#2#3{\pgfcalendarjulianyeartoweeknumber@#1{#2}#3\iftrue}
+\def\pgfcalendarjulianyeartoweeknumber@#1#2#3#4{%
+  % #1 = julian date (count)
+  % #2 = year
+  % #3 = count that holds the week number at the end
+  \begingroup
+    \pgfcalendar@weeknumber@setup{#2}%
+    #3=#1\relax
+    %
+    % calculate difference of days between current date and start of week number 1
+    %
+    \advance#3 by -\expandafter\expandafter\expandafter\pgfutil@firstoftwo\csname pgfcalendar@weeknumber@#2\endcsname\relax
+    \ifnum#3<0\relax % whoops, we are in the week of the previous year
+      \expandafter\pgfutil@firstoftwo
+    \else
+      \expandafter\pgfutil@secondoftwo
+    \fi
+    {% if first day of the year is Fri, Sat or Sun
+      \ifnum\expandafter\expandafter\expandafter\pgfutil@secondoftwo\csname pgfcalendar@weeknumber@#2\endcsname>3\relax
+        \expandafter\pgfutil@firstoftwo
+      \else
+        \expandafter\pgfutil@secondoftwo
+      \fi
+      {% we need to check the weeknumber of the previous
+        #3=#2\relax
+        \advance#3 by -1\relax
+        \edef\pgf@cal@temp{\noexpand\pgfcalendarjulianyeartoweeknumber@#1{\the#3}#3\noexpand\iffalse}%
+        \pgf@cal@temp
+      }{% yeah, it's weird
+        \divide#3 by 7\relax
+        \advance#3 by 1\relax        
+      }
+    }{%
+      \divide#3 by 7\relax
+      \advance#3 by 1\relax
+      #4%
+        \expandafter\pgfutil@firstofone
+      \else
+        \expandafter\pgfutil@gobble
+      \fi
+      {%
+        \ifnum#3=53\relax % whoops, we are possibly in the week of the next year
+            \expandafter\pgfutil@firstofone
+        \else
+            \expandafter\pgfutil@gobble
+        \fi
+        {%
+          \begingroup
+            \pgfcalendarmatchesfalse
+            \pgfkeys{/pgf/calendar/leap year=#2}%
+            \ifpgfcalendarmatches
+                \expandafter\pgfutil@firstoftwo
+            \else
+                \expandafter\pgfutil@secondoftwo
+            \fi
+            {% leap year
+                \ifnum\expandafter\expandafter\expandafter\pgfutil@secondoftwo\csname pgfcalendar@weeknumber@#2\endcsname=3\relax
+                \else % must be week 1 from the next year
+                \ifnum\expandafter\expandafter\expandafter\pgfutil@secondoftwo\csname pgfcalendar@weeknumber@#2\endcsname=2\relax\else
+                    #3=1\relax
+                \fi
+                \fi
+            }{% not a leap year, only week 53 possible when it starts and ends on a Thursday
+                \ifnum\expandafter\expandafter\expandafter\pgfutil@secondoftwo\csname pgfcalendar@weeknumber@#2\endcsname=3\relax
+                \else % must be week 1 from the next year
+                #3=1\relax
+                \fi
+            }
+            \expandafter
+          \endgroup\expandafter#3\the#3\relax
+        }
+      }%
+    }%
+    \expandafter
+  \endgroup\expandafter
+  #3\the#3\relax
+}
+
+%
+% shorthands for weeknumbers (n)
+%
+% n-: shortest
+% n=: shortest but prepends whitespace
+% n0: leading zero
+%
+\expandafter\def\csname pgfcalendar@shorthand@n-\endcsname{%
+  {\pgfutil@tempcnta=\pgfcalendarcurrentweeknumber\relax\the\pgfutil@tempcnta}}
+\expandafter\def\csname pgfcalendar@shorthand@n=\endcsname{%
+  {\pgfutil@tempcnta=\pgfcalendarcurrentweeknumber\relax\ifnum\pgfutil@tempcnta<10\relax\setbox0=\hbox{1}\kern\wd0\relax\fi\the\pgfutil@tempcnta}}
+\expandafter\def\csname pgfcalendar@shorthand@n0\endcsname{%
+  \pgfcalendarcurrentweeknumber}
+
+%
+% Overwriting original \pgfcalendar
+%
+\long\def\pgfcalendar#1#2#3#4{%
+  \begingroup%
+    % Setup local \ifdate
+    \let\ifdate=\pgfcalendar@local@ifdate%
+    % Let's start with computing start and end dates...
+    \def\pgfcalendarprefix{#1}%
+    \pgfcalendardatetojulian{#2}{\pgfcalendarcurrentjulian}%
+    \edef\pgfcalendarbeginjulian{\the\pgfcalendarcurrentjulian}%
+    \edef\pgfcalendarbeginiso{#2}%
+    \pgfcalendardatetojulian{#3}{\pgfutil@tempcnta}%
+    \edef\pgfcalendarendjulian{\the\pgfutil@tempcnta}%
+    \advance\pgfutil@tempcnta by1\relax%
+    \edef\pgfcalendarendjulianplus{\the\pgfutil@tempcnta}%
+    \edef\pgfcalendarendiso{#3}%
+    %
+    % Start main loop
+    %
+    \loop%
+    \ifnum\pgfcalendarcurrentjulian<\pgfcalendarendjulianplus\relax%
+      % Setup information about current date
+      \pgfcalendarjuliantodate{\pgfcalendarcurrentjulian}%
+        {\pgfcalendarcurrentyear}{\pgfcalendarcurrentmonth}{\pgfcalendarcurrentday}%
+      \pgfcalendarjuliantoweekday{\pgfcalendarcurrentjulian}{\pgfutil@tempcntb}%
+      \edef\pgfcalendarcurrentweekday{\the\pgfutil@tempcntb}%
+      \pgfcalendarjulianyeartoweeknumber{\pgfcalendarcurrentjulian}{\pgfcalendarcurrentyear}{\pgfutil@tempcntb}%
+      \edef\pgfcalendarcurrentweeknumber{\ifnum\pgfutil@tempcntb<10 0\fi\the\pgfutil@tempcntb}%
+      % Render:
+      #4%
+      % Advance day:
+      \advance\pgfcalendarcurrentjulian by1\relax%
+    \repeat%
+  \endgroup%
+}
+
+%
+% Overwriting original \pgfcalendar@local@ifdate
+%
+\def\pgfcalendar@local@ifdate{%
+  \let\pgfcalendarifdatejulian=\pgfcalendarcurrentjulian
+  \let\pgfcalendarifdateyear=\pgfcalendarcurrentyear
+  \let\pgfcalendarifdatemonth=\pgfcalendarcurrentmonth
+  \let\pgfcalendarifdateday=\pgfcalendarcurrentday
+  \let\pgfcalendarifdateweekday=\pgfcalendarcurrentweekday
+  \let\pgfcalendarifdateweeknumber=\pgfcalendarcurrentweeknumber
+  \pgfcalendar@launch@ifdate%
+}
+
+\pgfqkeys{/pgf/calendar}{week number/.code=\ifnum#1=\pgfcalendarifdateweeknumber\relax\pgfcalendarmatchestrue\fi}

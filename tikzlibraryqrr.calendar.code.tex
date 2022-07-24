@@ -1,0 +1,20 @@
+\usepgflibrary{qrr.calendar}
+
+% Shift between days
+
+\def\tikz@lib@cal@xshift{\pgfkeysvalueof{/tikz/day xshift}}
+\def\tikz@lib@cal@yshift{\pgfkeysvalueof{/tikz/day yshift}}
+\tikzset{day xshift/.initial=3ex,day yshift/.initial=3.5ex}
+
+% Shift between months
+
+\def\tikz@lib@cal@month@xshift{\pgfkeysvalueof{/tikz/month xshift}}
+\def\tikz@lib@cal@month@yshift{\pgfkeysvalueof{/tikz/month yshift}}
+\tikzset{month xshift/.initial=9ex,month yshift/.initial=9ex}
+
+\tikzset{
+  weeknumber code/.initial={%
+    \node[every weeknumber]{\pgfkeysvalueof{/tikz/weeknumber text}};},
+  weeknumber text/.initial={\%n=},
+  every weeknumber/.style=%
+}

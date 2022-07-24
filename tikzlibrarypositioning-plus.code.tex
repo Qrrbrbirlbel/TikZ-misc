@@ -206,19 +206,19 @@
      \or % 1 = vertical
        \pgf@y=\pgf@yb%
        \advance\pgf@y by-\pgf@ya%
-       \edef\pgf@marshal{\noexpand\tikzset{minimum height={\the\pgf@y-2*(\noexpand\pgfkeysvalueof{/pgf/outer ysep})}}}%
+       \edef\pgf@marshal{\noexpand\pgfset{minimum height={\the\pgf@y-2*(\noexpand\pgfkeysvalueof{/pgf/outer ysep})}}}%
        \pgf@marshal
      \or % 2 = horizontal
        \pgf@x=\pgf@xb%
        \advance\pgf@x by-\pgf@xa%
-       \edef\pgf@marshal{\noexpand\tikzset{minimum width={\the\pgf@x-2*(\noexpand\pgfkeysvalueof{/pgf/outer xsep})}}}%
+       \edef\pgf@marshal{\noexpand\pgfset{minimum width={\the\pgf@x-2*(\noexpand\pgfkeysvalueof{/pgf/outer xsep})}}}%
        \pgf@marshal
      \or % 3 = both directions
        \pgf@y=\pgf@yb%
        \advance\pgf@y by-\pgf@ya%
        \pgf@x=\pgf@xb%
        \advance\pgf@x by-\pgf@xa%
-       \edef\pgf@marshal{\noexpand\tikzset{minimum height={\the\pgf@y-2*(\noexpand\pgfkeysvalueof{/pgf/outer ysep})},minimum width={\the\pgf@x-2*(\noexpand\pgfkeysvalueof{/pgf/outer xsep})}}}%
+       \edef\pgf@marshal{\noexpand\pgfset{minimum height={\the\pgf@y-2*(\noexpand\pgfkeysvalueof{/pgf/outer ysep})},minimum width={\the\pgf@x-2*(\noexpand\pgfkeysvalueof{/pgf/outer xsep})}}}%
        \pgf@marshal
      \fi
   \fi
