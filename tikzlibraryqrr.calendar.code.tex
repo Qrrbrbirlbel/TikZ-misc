@@ -18,3 +18,28 @@
   weeknumber text/.initial={\%n=},
   every weeknumber/.style=%
 }
+
+\newif\iftikz@lib@cal@ifs@call
+
+%
+% Overwriting original \tikz@lib@cal@if@else@code
+%
+\def\tikz@lib@cal@if@else@code#1#2#3{%
+  \iftikz@lib@cal@ifs@call
+    \expandafter\pgfutil@firstoftwo
+  \else
+    \expandafter\pgfutil@secondoftwo
+  \fi
+  {\tikz@lib@cal@ifs@callfalse\ifdate{#1}{#2}{#3}}%
+  {\expandafter\def\expandafter\tikz@lib@cal@ifs\expandafter{\tikz@lib@cal@ifs\ifdate{#1}{#2}{#3}}}%
+  \tikz@lib@cal@scanner%
+}
+
+\tikzset{
+  more if/.code={%
+    \let\tikz@lib@cal@scanner@orig=\tikz@lib@cal@scanner%
+    \let\tikz@lib@cal@scanner=\relax%
+    \tikz@lib@cal@ifs@calltrue
+    \tikz@lib@cal@if f#1\relax%
+    \let\tikz@lib@cal@scanner=\tikz@lib@cal@scanner@orig
+}}
