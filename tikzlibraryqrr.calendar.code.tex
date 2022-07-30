@@ -13,33 +13,43 @@
 \tikzset{month xshift/.initial=9ex,month yshift/.initial=9ex}
 
 \tikzset{
-  weeknumber code/.initial={%
-    \node[every weeknumber]{\pgfkeysvalueof{/tikz/weeknumber text}};},
-  weeknumber text/.initial={\%n=},
-  every weeknumber/.style=%
+  week code/.initial={%
+    \node[every week]{\pgfkeysvalueof{/tikz/week text}};},
+  week text/.initial={\%n=},
+  every week/.style=%
 }
-
-\newif\iftikz@lib@cal@ifs@call
 
 %
 % Overwriting original \tikz@lib@cal@if@else@code
 %
 \def\tikz@lib@cal@if@else@code#1#2#3{%
-  \iftikz@lib@cal@ifs@call
-    \expandafter\pgfutil@firstoftwo
-  \else
+  \iftikz@lib@cal@exec@direct
     \expandafter\pgfutil@secondoftwo
+  \else
+    \expandafter\pgfutil@firstoftwo
   \fi
-  {\tikz@lib@cal@ifs@callfalse\ifdate{#1}{#2}{#3}}%
   {\expandafter\def\expandafter\tikz@lib@cal@ifs\expandafter{\tikz@lib@cal@ifs\ifdate{#1}{#2}{#3}}}%
+  {\ifdate{#1}{#2}{#3}}%
   \tikz@lib@cal@scanner%
 }
 
-\tikzset{
-  more if/.code={%
-    \let\tikz@lib@cal@scanner@orig=\tikz@lib@cal@scanner%
-    \let\tikz@lib@cal@scanner=\relax%
-    \tikz@lib@cal@ifs@calltrue
-    \tikz@lib@cal@if f#1\relax%
-    \let\tikz@lib@cal@scanner=\tikz@lib@cal@scanner@orig
-}}
+%
+% Overwriting original \tikz@lib@cal@stop
+%
+\def\tikz@lib@cal@stop{%
+    \pgftransformshift{\tikz@node@at}%
+    \expandafter\pgfcalendar\expandafter{\tikz@fig@name}{\tikz@lib@cal@start}{\tikz@lib@cal@end}%
+    {%
+      \tikz@before@day%
+      \scope%
+        \tikz@atbegin@day%
+        \tikz@lib@cal@exec@directtrue
+        \tikz@lib@cal@ifs%
+        \tikzdaycode%
+        \tikz@atend@day%
+      \endscope%
+      \tikz@after@day%
+    }%
+  \endgroup%
+}
+\newif\iftikz@lib@cal@exec@direct
