@@ -12,24 +12,34 @@
 \def\tikz@lib@cal@month@yshift{\pgfkeysvalueof{/tikz/month yshift}}
 \tikzset{month xshift/.initial=9ex,month yshift/.initial=9ex}
 
+% Internal option for storing the "width" of a calendar as a number of
+% days
+
+\def\tikz@lib@cal@width{\pgfkeysvalueof{/tikz/tikz@lib@cal@width}}
+\tikzset{tikz@lib@cal@width/.initial=1}
+
+% Weeks
+
+\def\tikzweekcode{\pgfkeysvalueof{/tikz/week code}}
+\def\tikzweektext{\pgfkeysvalueof{/tikz/week text}}
+
 \tikzset{
   week code/.initial={%
     \node[every week]{\pgfkeysvalueof{/tikz/week text}};},
   week text/.initial={\%n=},
-  every week/.style=%
-}
+  every week/.style=,
+  week label left/.style={
+    every week/.append style={
+      anchor=base east,
+      xshift=-1.25*\pgfkeysvalueof{/tikz/day xshift}},
+    execute before day scope=%
+      \ifdate{Monday, equals=\pgfcalendarbeginiso}{\tikzweekcode}{}}}
 
 %
 % Overwriting original \tikz@lib@cal@if@else@code
 %
 \def\tikz@lib@cal@if@else@code#1#2#3{%
-  \iftikz@lib@cal@exec@direct
-    \expandafter\pgfutil@secondoftwo
-  \else
-    \expandafter\pgfutil@firstoftwo
-  \fi
-  {\expandafter\def\expandafter\tikz@lib@cal@ifs\expandafter{\tikz@lib@cal@ifs\ifdate{#1}{#2}{#3}}}%
-  {\ifdate{#1}{#2}{#3}}%
+  \tikzcalendar@addto\tikz@lib@cal@ifs{\ifdate{#1}{#2}{#3}}%
   \tikz@lib@cal@scanner%
 }
 
@@ -43,7 +53,7 @@
       \tikz@before@day%
       \scope%
         \tikz@atbegin@day%
-        \tikz@lib@cal@exec@directtrue
+        \let\tikzcalendar@addto\pgfutil@secondoftwo
         \tikz@lib@cal@ifs%
         \tikzdaycode%
         \tikz@atend@day%
@@ -52,4 +62,23 @@
     }%
   \endgroup%
 }
-\newif\iftikz@lib@cal@exec@direct
+
+\def\tikzcalendar@addto#1#2{\expandafter\def\expandafter#1\expandafter{#1#2}}
+
+\pgfmathdeclarefunction{weeksinmonthofyear}{3}{% #1 = first weekday, #2 = month, #3 = year
+  \begingroup
+    \pgfmathlastdayinmonthofyear@{#2}{#3}%
+    \pgfmathadd@{#1}{\pgfmathresult}%
+    \pgfmathdivide@{\pgfmathresult}{7}%
+    \pgfmathceil@{\pgfmathresult}%
+    \pgfmathint@{\pgfmathresult}%
+    \pgfmathsmuggle\pgfmathresult
+  \endgroup
+}
+\pgfmathdeclarefunction{lastdayinmonthofyear}{2}{% #1 = month, #2 = year
+  \begingroup
+    \pgfcalendar@getlastYMX{#2}{#1}{\pgfutil@tempcnta}%
+    \edef\pgfmathresult{\the\pgfutil@tempcnta}%
+    \pgfmathsmuggle\pgfmathresult
+  \endgroup
+}
