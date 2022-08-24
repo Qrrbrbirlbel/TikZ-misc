@@ -1,5 +1,4 @@
 \pgfqkeys{/pgf}{
-    heat/.search also=/pgf,
     heat arc width/.initial=+4pt,
     heat arc sep/.initial=+1pt,
     heat arc rings/.initial=3,
@@ -8,7 +7,7 @@
     heat opacity high/.initial=.8,
     heat opacity low/.initial=.2,
     heat rotate/.initial=90,
-    heat options/.style={/pgf/heat/.cd,#1}%
+    heat/.code=\pgfqkeys{/pgf/heat}{#1}%
 }
 \pgfdeclareshape{heat}
 %
@@ -120,8 +119,8 @@
     \pgfmathsetcount\c@pgf@countb{\pgfkeysvalueof{/pgf/heat arcs}}%          heat arcs
     \pgfmathsetlength\pgf@xa{\pgfkeysvalueof{/pgf/heat arc width}}%          heat arc width
     \pgfmathsetlength\pgf@xb{\pgfkeysvalueof{/pgf/heat arc sep}}%            heat arc sep
-    \pgfmathsetmacro\pgf@tempa{\pgfkeysvalueof{/pgf/heat arc sep angle}}%    heat arc sep angle
-    \pgfmathsetmacro\pgf@tempb{(360-\c@pgf@countb*\pgf@tempa)/\c@pgf@countb}% heat arc
+    %\pgfmathsetmacro\pgf@tempa{\pgfkeysvalueof{/pgf/heat arc sep angle}}%    heat arc sep angle
+    \pgfmathsetmacro\pgf@tempb{360/\c@pgf@countb-(\pgfkeysvalueof{/pgf/heat arc sep angle})}% heat arc
     \pgfmathsetmacro\pgf@tempc{\pgfkeysvalueof{/pgf/heat rotate}}%           heat rotate
     %
     \pgfmathsetmacro\pgf@tempd{\pgfkeysvalueof{/pgf/heat opacity high}}%     heat opacity high
@@ -129,11 +128,11 @@
       \def\qrr@heat@opacity@seps{0}%
     \else
       \pgfmathsetmacro\qrr@heat@opacity@seps
-      {(\pgf@tempd-\pgfkeysvalueof{/pgf/heat opacity low})%
+      {(\pgf@tempd-(\pgfkeysvalueof{/pgf/heat opacity low}))%
          /(\c@pgf@counta-1)}%
     \fi
-    \pgfutil@tempcnta\z@
-    \pgfutil@tempcntb\z@
+    \pgfutil@tempcnta=0
+    \pgfutil@tempcntb=0
     \pgf@ya\innerradius\relax
     \pgftransformshift{\centerpoint}
     \pgfutil@loop % ring loop
@@ -171,6 +170,7 @@
         \pgf@ya\pgf@yb
         \pgfmathsetmacro\pgf@tempd{\pgf@tempd-\qrr@heat@opacity@seps}%
     \pgfutil@repeat
+    \pgftransformshift{\pgfqpointscale{-1}{\centerpoint}}%
   }
 }
 \endinput

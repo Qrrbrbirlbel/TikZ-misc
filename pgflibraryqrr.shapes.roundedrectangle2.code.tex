@@ -142,9 +142,9 @@
     \advance\pgf@x by \pgf@xa%
     \advance\pgf@y by \pgf@ya%
   }
-  \anchor{mid}{\csname pgf@anchor@rectangle with rounded corners@center\endcsname\pgfmathsetlength\pgf@y{.5ex}}
-  \anchor{base}{\csname pgf@anchor@rectangle with rounded corners@center\endcsname\pgf@y=0pt}
-  \anchor{north}{
+  \anchor{mid}{\csname pgf@anchor@rectangle with rounded corners@center\endcsname\pgf@y=.5ex }
+  \anchor{base}{\csname pgf@anchor@rectangle with rounded corners@center\endcsname\pgf@y=0pt }
+  \anchor{north}{%
     \rectangleWithRoundedCornersParameters
     \pgf@process{\southwest}%
     \pgf@xa=.5\pgf@x%
@@ -152,7 +152,7 @@
     \pgf@x=.5\pgf@x%
     \advance\pgf@x by \pgf@xa%
   }
-  \anchor{south}{
+  \anchor{south}{%
     \rectangleWithRoundedCornersParameters
     \pgf@process{\northeast}%
     \pgf@xa=.5\pgf@x%
@@ -160,7 +160,7 @@
     \pgf@x=.5\pgf@x%
     \advance\pgf@x by \pgf@xa%
   }
-  \anchor{west}{
+  \anchor{west}{%
     \rectangleWithRoundedCornersParameters
     \pgf@process{\northeast}%
     \pgf@ya=.5\pgf@y%
@@ -168,8 +168,8 @@
     \pgf@y=.5\pgf@y%
     \advance\pgf@y by \pgf@ya%
   }
-  \anchor{mid west}{\rectangleWithRoundedCornersParameters\southwest\pgfmathsetlength\pgf@y{.5ex}}
-  \anchor{base west}{\rectangleWithRoundedCornersParameters\southwest\pgf@y=0pt}
+  \anchor{mid west}{\rectangleWithRoundedCornersParameters\southwest\pgf@y=.5ex }
+  \anchor{base west}{\rectangleWithRoundedCornersParameters\southwest\pgf@y=0pt }
   \anchor{north west}{
     \rectangleWithRoundedCornersParameters
     \southwest
@@ -185,8 +185,8 @@
     \pgf@y=.5\pgf@y%
     \advance\pgf@y by \pgf@ya%
   }
-  \anchor{mid east}{\rectangleWithRoundedCornersParameters\northeast\pgfmathsetlength\pgf@y{.5ex}}
-  \anchor{base east}{\rectangleWithRoundedCornersParameters\northeast\pgf@y=0pt}
+  \anchor{mid east}{\rectangleWithRoundedCornersParameters\northeast\pgf@y=.5ex }
+  \anchor{base east}{\rectangleWithRoundedCornersParameters\northeast\pgf@y=0pt }
   \anchor{north east}{\rectangleWithRoundedCornersParameters\northeast}
   \anchor{south east}{
     \rectangleWithRoundedCornersParameters
