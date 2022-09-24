@@ -141,28 +141,49 @@
     %
     \tikz@node@transformations%
     \tikz@nlt%
-    % 
+    %
     \setbox\tikz@whichbox=\hbox{%
       \unhbox\tikz@whichbox%
       \hbox{{%
           \pgfinterruptpath%
             \pgfscope%
               \tikz@options%
-              \setbox\tikz@figbox=\box\pgfutil@voidb@x%
-              \setbox\tikz@figbox@bg=\box\pgfutil@voidb@x%
-              \pgfmultipartnode{\tikz@shape}{\tikz@anchor}{\tikz@fig@name}{%
-                \pgfutil@tempdima=\pgflinewidth%
-                {\begingroup\tikz@finish}%
-                \global\pgflinewidth=\pgfutil@tempdima%
-              }%
-            \endpgfscope
+              \tikz@do@rdf@pre@options%
+              \tikz@is@nodetrue%
+              \tikz@call@id@hook%
+              \pgfidscope%
+                \tikz@do@rdf@post@options%
+                \let\tikz@id@name\pgfutil@empty%
+                \setbox\tikz@figbox=\box\pgfutil@voidb@x%
+                \setbox\tikz@figbox@bg=\box\pgfutil@voidb@x%
+                % Add color modifications to text box
+                \setbox\pgfnodeparttextbox=\hbox{{%
+                    \pgfsys@begin@text% Colors moved here...
+                    \ifx\tikz@textcolor\pgfutil@empty%
+                    \else%
+                      \pgfutil@colorlet{.}{\tikz@textcolor}%
+                    \fi%
+                    \pgfsetcolor{.}%
+                    \pgfusetype{.text}%
+                    \pgfidscope%
+                      \box\pgfnodeparttextbox%
+                    \endpgfidscope%
+                    \pgfsys@end@text%
+                  }}%
+                \pgfmultipartnode{\tikz@shape}{\tikz@anchor}{\tikz@fig@name}{%
+                  \pgfutil@tempdima=\pgflinewidth%
+                  {\begingroup\tikz@finish}%
+                  \global\pgflinewidth=\pgfutil@tempdima%
+                }%
+              \endpgfidscope%
+            \endpgfscope%
           \endpgfinterruptpath%
       }}%
     }%
     %
     \tikz@alias%
     \tikz@node@finish%
-}
+}%
 \def\tikz@lib@nf@save#1#2#3#4{%
   \pgfutil@ifundefined{#1@#2@#3@done}{%
     \expandafter\global\expandafter\let\csname#1@#2@#3@done\endcsname\pgfutil@empty%
